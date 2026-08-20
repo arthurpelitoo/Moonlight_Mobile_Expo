@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import type { NextFunction, Request, Response } from 'express';
 import { userController, userService } from '../config/container.js';
 
 dotenv.config();
@@ -17,7 +16,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     return res.status(401).json({ message: 'Token não fornecido' });
   }
 
-  const parts = token.split(" ");
+  const parts = token.split("");
   if (parts.length !== 2 || !parts[1]) {
     return res.status(403).json({ message: 'Token inválido' });
   }

@@ -1,4 +1,3 @@
-import express from 'express';
 import { CheckoutController } from '../controllers/checkout.Controller.js';
 import { CheckoutService } from '../services/checkout.Service.js';
 import authMiddleware from '../middlewares/auth.Middleware.js';

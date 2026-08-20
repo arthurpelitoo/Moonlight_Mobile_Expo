@@ -1,4 +1,3 @@
-import { Router } from 'express';
 import { CategoryController } from '../controllers/category.Controller.js';
 import { authMiddleware } from '../middlewares/auth.Middleware.js';
 import { adminMiddleware } from '../middlewares/admin.Middleware.js';
