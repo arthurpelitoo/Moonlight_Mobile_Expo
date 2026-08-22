@@ -1,15 +1,17 @@
 export const DARK = {
-    bodyBg: "#070709",
-    secondaryBg: "#0F0F15",
-    tertiaryBg: "#181824",
-    borderColor: "#252535",
-    primary: "#C8FF00",
-    primaryText: "#000000",
+    bodyBg: "#000000",
+    secondaryBg: "#111827",
+    tertiaryBg: "#1F2330",
+    borderColor: "#2A2F42",
+    primary: "#FFFFFF",
+    primaryText: "#FFFFFF",
+    cta: "#2B7FFF",
+    ctaText: "#F2F2F8",
     danger: "#FF3A2D",
     success: "#00CC6A",
-    bodyColor: "#F2F2F8",
-    secondaryColor: "#6B6B80",
-    tertiaryColor: "#3F3F50",
+    bodyColor: "#F2F4F8",
+    secondaryColor: "#8A93A6",
+    tertiaryColor: "#4B5568",
     backdrop: "rgba(0,0,0,0.6)",
 };
 
@@ -18,10 +20,12 @@ export const LIGHT = {
     secondaryBg: "#FAFAF7",
     tertiaryBg: "#FFFFFF",
     borderColor: "#E2E2DC",
-    primary: "#0F0F1A",
-    primaryText: "#F2F2F8",
+    primary: "#000000",
+    primaryText: "#000000",
+    cta: "#2B7FFF",
+    ctaText: "#F2F2F8",
     danger: "#FF3A2D",
-    success: "#00A855",
+    success: "#00CC6A",
     bodyColor: "#0A0A12",
     secondaryColor: "#656570",
     tertiaryColor: "#A0A0AA",
@@ -29,11 +33,9 @@ export const LIGHT = {
 };
 
 export const FONT = {
-    headingFamily: "BebasNeue_400Regular",
-    base: "PlusJakartaSans_400Regular",
-    baseMedium: "PlusJakartaSans_500Medium",
-    baseSemibold: "PlusJakartaSans_600SemiBold",
-    baseBold: "PlusJakartaSans_700Bold",
+    base: "Poppins_400Regular",
+    baseMedium: "Poppins_500Medium",
+    baseSemibold: "Poppins_600SemiBold",
 };
 
 export const FONT_SIZE = {
