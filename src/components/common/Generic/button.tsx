@@ -1,4 +1,4 @@
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/src/contexts/ThemeContext";
 import { Text, TouchableOpacity } from "react-native";
 
 type Props = {
