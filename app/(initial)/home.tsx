@@ -1,5 +1,5 @@
-import { H3 } from "@/components/common/Generic/text";
-import { useTheme } from "@/contexts/ThemeContext";
+import { H3 } from "@/src/components/common/Generic/text";
+import { useTheme } from "@/src/contexts/ThemeContext";
 import { View } from "react-native";
 
 export default function Home() {

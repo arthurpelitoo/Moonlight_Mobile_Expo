@@ -1,4 +1,4 @@
-import { useTheme } from "@/contexts/ThemeContext"
+import { useTheme } from "@/src/contexts/ThemeContext"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Tabs } from "expo-router"
 
