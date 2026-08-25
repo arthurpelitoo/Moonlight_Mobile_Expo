@@ -1,44 +1,44 @@
-// import { useEffect, useState } from "react";
-// import toast from "react-hot-toast";
-// import { fetchPaginatedCategories } from "../../../services/realServices/category.service";
-// import type { CategoryPaginatedQueryPayload } from "../../../@types/category/category.payload";
-// import type { CategoryResponseDTO } from "../../../@types/category/category.dto";
+import { useEffect, useState } from "react";
+import Toast from "react-native-toast-message";
+import { fetchPaginatedCategories } from "../../../services/realServices/category.service";
+import type { CategoryPaginatedQueryPayload } from "../../../@types/category/category.payload";
+import type { CategoryResponseDTO } from "../../../@types/category/category.dto";
 
-// export function useFetchCategoriesTable(query: CategoryPaginatedQueryPayload){
-//     const [categories, setCategories] = useState<CategoryResponseDTO[]>([]);
-//     const [isLoading, setIsLoading] = useState(true);
-//     const [totalRows, setTotalRows] = useState(0);
-//     const [internalPage, setInternalPage] = useState(1);
-//     const [version, setVersion] = useState(0);
+export function useFetchCategoriesTable(query: CategoryPaginatedQueryPayload){
+    const [categories, setCategories] = useState<CategoryResponseDTO[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [totalRows, setTotalRows] = useState(0);
+    const [internalPage, setInternalPage] = useState(1);
+    const [version, setVersion] = useState(0);
 
-//     const {limit, name, random} = query
+    const {limit, name, random} = query
 
-//     useEffect(() => {
-//         setCategories([]);
-//         setInternalPage(1);
-//     }, [limit, name, random]);
+    useEffect(() => {
+        setCategories([]);
+        setInternalPage(1);
+    }, [limit, name, random]);
 
-//     useEffect(() => {
-//         let isMounted = true;
+    useEffect(() => {
+        let isMounted = true;
 
-//         // eslint-disable-next-line react-hooks/exhaustive-deps
-//         setIsLoading(true)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        setIsLoading(true)
 
-//         fetchPaginatedCategories({limit, page: internalPage, name, random})
-//         .then(({ data, total }) => {
-//             if (isMounted) {
-//                 setCategories(data);
-//                 setTotalRows(total);
-//             }
-//         }).catch(() =>
-//             toast.error("Não foi possivel carregar as categorias.")
-//         ).finally(() => {
-//             if(isMounted) setIsLoading(false)
-//         });
-//         return () => { isMounted = false; };
-//     }, [limit, internalPage, name, random, version]);
+        fetchPaginatedCategories({limit, page: internalPage, name, random})
+        .then(({ data, total }) => {
+            if (isMounted) {
+                setCategories(data);
+                setTotalRows(total);
+            }
+        }).catch(() =>
+          Toast.show({ type: "error", text1: "Não foi possivel carregar as categorias."})
+        ).finally(() => {
+            if(isMounted) setIsLoading(false)
+        });
+        return () => { isMounted = false; };
+    }, [limit, internalPage, name, random, version]);
 
-//     const refetch = () => setVersion(v => v + 1);
+    const refetch = () => setVersion(v => v + 1);
 
-//     return { categories, isLoading, totalRows, onPageChange: setInternalPage, refetch }
-// }
+    return { categories, isLoading, totalRows, onPageChange: setInternalPage, refetch }
+}

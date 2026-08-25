@@ -1,33 +1,41 @@
-// import { useSearchParams } from "react-router-dom";
+import { useCallback, useState } from "react";
 
-// /**
-//  * Hook para usar funções que atualizam parametros de url
-//  * e o hook de searchparams do react-router-dom.
-//  */
-// export function useUpdateUrlParam() {
-//   const [searchParams, setSearchParams] = useSearchParams();
 
-//   const updateURLParam = (key: string, value: string | undefined) => {
-//     setSearchParams((prev) => {
-//       if (value) prev.set(key, value);
-//       else prev.delete(key);
-//       return prev;
-//     });
-//   };
+type ParamsRecord = Record<string, string | undefined>;
 
-//   const updateURLParams = (
-//     paramsToUpdate: Record<string, string | undefined>,
-//   ) => {
-//     setSearchParams((prev) => {
-//       Object.entries(paramsToUpdate).forEach(([key, value]) => {
-//         if (value) prev.set(key, value);
-//         else prev.delete(key);
-//       });
-//       return prev;
-//     });
-//   };
+/**
+ * Hook para usar funções que atualizam parametros de pesquisa.
+ */
+export function useUpdateUrlParam() {
+  const [params, setParams] = useState<ParamsRecord>({});
 
-//   return {
-//     searchParams, updateURLParam, updateURLParams
-//   }
-// }
+  const updateURLParam = useCallback((key: string, value: string | undefined) => {
+    setParams((prev) => {
+      const next = { ...prev };
+      if (value) next[key] = value;
+      else delete next[key];
+      return next;
+    });
+  }, []);
+
+  const updateURLParams = useCallback((
+    paramsToUpdate: Record<string, string | undefined>,
+  ) => {
+    setParams((prev) => {
+      const next = { ...prev };
+      Object.entries(paramsToUpdate).forEach(([key, value]) => {
+        if (value) next[key] = value;
+        else delete next[key];
+      });
+      return next;
+    });
+  }, []);
+
+  const searchParams = {
+    get: (key: string) => params[key] ?? null
+  }
+
+  return {
+    searchParams, updateURLParam, updateURLParams
+  }
+}

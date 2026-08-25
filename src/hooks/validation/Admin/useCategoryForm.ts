@@ -1,7 +1,7 @@
 import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { router } from "expo-router";
 import { validateCategory } from "../../../utils/Validation/Admin/ValidateCategory";
-// import { createCategory, updateCategory } from "../../../services/realServices/category.service";
+import { createCategory, updateCategory } from "../../../services/realServices/category.service";
 import { getCategoryFormErrors } from "../../../utils/Validation/formErrors/Admin/getFormErrorsAdmin";
 import type { CategoryPayload } from "../../../@types/category/category.payload";
 
@@ -62,12 +62,12 @@ export function useCategoryForm(mode: CategoryFormData, initialData?: InitialDat
         try {
             setUi(prev => ({ ...prev, loading: true }));
             if(mode === "edit" && id_game){
-                // await updateCategory(id_game, buildPayload());
+                await updateCategory(id_game, buildPayload());
             } else{
-                // await createCategory(buildPayload());
+                await createCategory(buildPayload());
             }
             setUi(prev => ({ ...prev, success: true }));
-            // setTimeout(() => navigate("/admin/categories"), 1500);
+            // setTimeout(() => router.replace("/admin/categories"), 1500);
         } catch (err) {
             const message = err instanceof Error ? err.message : "Erro inesperado.";
             setUi(prev => ({ ...prev, apiError: message }));

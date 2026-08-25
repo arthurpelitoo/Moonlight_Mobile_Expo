@@ -1,12 +1,11 @@
 import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { router } from "expo-router";
 import { validateRegister } from "../../../utils/Validation/Customer/ValidateRegister";
 import { getRegisterFormErrors } from "../../../utils/Validation/formErrors/Customer/getFormErrors";
 import { formatCPF } from "../../../utils/Validation/dataRules/User/userCpf";
-// import { register } from "../../../services/realServices/auth.service";
+import { register } from "../../../services/realServices/auth.service";
 
 export function useRegisterForm() {
-    // const navigate = useNavigate();
 
     const [fields, setFields] = useState({
         name: "",
@@ -61,14 +60,14 @@ export function useRegisterForm() {
 
         try {
             setUi(prev => ({ ...prev, loading: true }));
-            // await register({
-            //     name: fields.name,
-            //     email: fields.email,
-            //     cpf: fields.cpf,
-            //     password: fields.password,
-            // });
+            await register({
+                name: fields.name,
+                email: fields.email,
+                cpf: fields.cpf,
+                password: fields.password,
+            });
             setUi(prev => ({ ...prev, success: true }));
-            // setTimeout(() => navigate("/login"), 1500);
+            // setTimeout(() => router.replace("/login"), 1500);
         } catch (err) {
             const message = err instanceof Error ? err.message : "Erro inesperado.";
             setUi(prev => ({ ...prev, apiError: message }));

@@ -1,14 +1,13 @@
-// import { useNavigate } from "react-router-dom";
+import { router } from "expo-router";
 import { useState } from "react";
 import { useAuth } from "../../auth/useAuth";
 import { formatCPF } from "../../../utils/Validation/dataRules/User/userCpf";
 import { validateEditUser } from "../../../utils/Validation/Customer/ValidateEditUser";
 import { getEditFormErrors } from "../../../utils/Validation/formErrors/Customer/getFormErrors";
-// import { updateMe } from "../../../services/realServices/user.service";
+import { updateMe } from "../../../services/realServices/user.service";
 
 
 export function useEditForm(initialData: {name: string, cpf: string}){
-    // const navigate = useNavigate();
     const { login, token, user } = useAuth();
 
     const [fields, setFields] = useState({
@@ -65,18 +64,18 @@ export function useEditForm(initialData: {name: string, cpf: string}){
 
             try {
                 setUi(prev => ({ ...prev, loading: true }));
-                // const data = await updateMe({
-                //     name: fields.name,
-                //     cpf: fields.cpf,
-                //     password: fields.password,
-                // });
-                // login(token!, data.user);
+                const data = await updateMe({
+                    name: fields.name,
+                    cpf: fields.cpf,
+                    password: fields.password,
+                });
+                login(token!, data.user);
                 setUi(prev => ({ ...prev, success: true }));
                 setTimeout(() => {
                     setUi({ showPassword: false, showConfirm: false, loading: false, success: false, submitted: false, apiError: null }); // reseta
                     setFields(prev => ({ ...prev, password: "", confirmPassword: ""}));
                     setTouched({ name: false, cpf: false, password: false, confirmPassword: false})
-                    // navigate("/profile");
+                    // router.replace("/profile");
                 }, 1500);
             } catch (err) {
                 const message = err instanceof Error ? err.message : "Erro inesperado.";

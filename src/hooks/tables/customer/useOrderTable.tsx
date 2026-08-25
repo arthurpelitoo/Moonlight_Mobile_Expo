@@ -1,7 +1,7 @@
 // import type { TableColumn } from "react-data-table-component";
-// import { formatCurrency } from "../../../utils/currencyFormatter/formatCurrency";
-// import { statusTranslation } from "./TraducaoDoStatus";
-// import type { OrderResponseDTO } from "../../../@types/order/order.dto";
+import { formatCurrency } from "../../../utils/currencyFormatter/formatCurrency";
+import { statusTranslation } from "./TraducaoDoStatus";
+import type { OrderResponseDTO } from "../../../@types/order/order.dto";
 
 
 // export const OrderColumns: TableColumn<OrderResponseDTO>[] = [

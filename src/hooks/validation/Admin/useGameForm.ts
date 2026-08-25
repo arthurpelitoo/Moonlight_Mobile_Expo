@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { router } from "expo-router";
 import { validateGame } from "../../../utils/Validation/Admin/ValidateGame";
 import { getGameFormErrors } from "../../../utils/Validation/formErrors/Admin/getFormErrorsAdmin";
-// import { createGame, updateGame } from "../../../services/realServices/game.service";
+import { createGame, updateGame } from "../../../services/realServices/game.service";
 import type { GamePayload } from "../../../@types/game/game.payload";
 
 type GameFormData = "create" | "edit";
@@ -38,7 +38,6 @@ const emptyFields: InitialData = {
  * @returns retorna muitos objetos para auxiliar o formulario sem encher de logica no componente.
  */
 export function useGameForm(mode: GameFormData, initialData?: InitialData) {
-  // const navigate = useNavigate();
   const [fields, setFields] = useState<InitialData>(initialData ?? emptyFields);
   const hasHydratedCategories = useRef(false);
 
@@ -114,12 +113,12 @@ export function useGameForm(mode: GameFormData, initialData?: InitialData) {
       try {
           setUi(prev => ({ ...prev, loading: true }));
           if(mode === "edit" && id_game){
-              // await updateGame(id_game, buildPayload());
+              await updateGame(id_game, buildPayload());
           } else{
-              // await createGame(buildPayload());
+              await createGame(buildPayload());
           }
           setUi(prev => ({ ...prev, success: true }));
-          // setTimeout(() => navigate("/admin/games"), 1500);
+          // setTimeout(() => router.replace("/admin/games"), 1500);
       } catch (err) {
           const message = err instanceof Error ? err.message : "Erro inesperado.";
           setUi(prev => ({ ...prev, apiError: message }));
