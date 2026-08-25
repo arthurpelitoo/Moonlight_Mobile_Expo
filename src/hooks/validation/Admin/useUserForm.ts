@@ -1,8 +1,8 @@
 import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { router } from "expo-router";
 import { validateUser } from "../../../utils/Validation/Admin/ValidateUser";
 import { getUserFormErrors } from "../../../utils/Validation/formErrors/Admin/getFormErrorsAdmin";
-// import { createUser, updateUser } from "../../../services/realServices/user.service";
+import { createUser, updateUser } from "../../../services/realServices/user.service";
 import type { UserPayload } from "../../../@types/user/user.payload";
 
 type UserFormData = "create" | "edit";
@@ -34,7 +34,6 @@ const emptyFields: InitialData = {
  * @returns retorna muitos objetos para auxiliar o formulario sem encher de logica no componente.
  */
 export function useUserForm(mode: UserFormData, initialData?: InitialData){
-    // const navigate = useNavigate();
     const [fields, setFields] = useState<InitialData>(initialData ?? emptyFields);
 
     const [ui, setUi] = useState({
@@ -89,12 +88,12 @@ export function useUserForm(mode: UserFormData, initialData?: InitialData){
         try {
             setUi(prev => ({ ...prev, loading: true }));
             if(mode === "edit" && id_game){
-                // await updateUser(id_game, buildPayload());
+                await updateUser(id_game, buildPayload());
             } else{
-                // await createUser(buildPayload());
+                await createUser(buildPayload());
             }
             setUi(prev => ({ ...prev, success: true }));
-            // setTimeout(() => navigate("/admin/users"), 1500);
+            // setTimeout(() => router.replace("/admin/users"), 1500);
         } catch (err) {
             const message = err instanceof Error ? err.message : "Erro inesperado.";
             setUi(prev => ({ ...prev, apiError: message }));
