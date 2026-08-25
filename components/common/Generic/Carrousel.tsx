@@ -1,5 +1,5 @@
 import React, { useRef } from "react"
-import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react"
+/*import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react"*/
 import { Button } from "./Button/Button"
 
 
@@ -32,7 +32,7 @@ export function Carrousel({children, cardsPerView = 3} : CarrouselProps) {
         <Button
             as="button"
             onClick={scrollLeft}
-            icon={<CaretLeftIcon size={32} weight="regular" color="white" />}
+           /* icon={<CaretLeftIcon size={32} weight="regular" color="white" />}*/
             variant="secondary"
             className="absolute -left-10 top-1/2 -translate-y-1/2 z-10 rounded-full p-2 cursor-pointer"
         />
@@ -62,7 +62,7 @@ export function Carrousel({children, cardsPerView = 3} : CarrouselProps) {
         <Button
             as="button"
             onClick={scrollRight}
-            icon={<CaretRightIcon size={32} weight="regular" color="white" />}
+            // icon={<CaretRightIcon size={32} weight="regular" color="white" />}
             variant="secondary"
             className="absolute -right-10 top-1/2 -translate-y-1/2 z-10 rounded-full p-2 cursor-pointer"
         />

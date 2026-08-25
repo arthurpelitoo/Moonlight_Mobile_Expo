@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import type { ButtonProps } from "./Button.types";
 
   const variantClass = {
@@ -31,10 +30,10 @@ export function Button(props: ButtonProps) {
   if (as === "link") {
     const { href, ...rest } = props as Extract<ButtonProps, { as: "link" }>;
     return (
-      <Link {...rest} to={href} className={classPattern}>
+      <View {...rest} to={href} className={classPattern}>
         {icon}
         {children}
-      </Link>
+      </View>
     );
   }
 

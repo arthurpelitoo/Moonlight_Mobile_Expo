@@ -1,7 +1,5 @@
 import { useContext } from "react";
 import type { GameResponseDTO } from "../../../../@types/game/game.dto";
-import { useCart } from "../../../../hooks/cart/useCart";
-import { LibraryContext } from "../../../../hooks/library/useLibrary";
 import { GameCard } from "../GameCard/GameCard";
 import { Button } from "../Button/Button";
 
@@ -11,14 +9,11 @@ type GameListProps = {
 
 export function GameList(props: GameListProps) {
 
-  const { addItemToCart, removeItemFromCart, items } = useCart();
-  const { isOwned } = useContext(LibraryContext);
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {props.games?.map((game) => {
-        const alreadyInCart = items.some(
-          (cartItem) => cartItem.id_game === game.id_game,
+        const alreadyInCart = Items.some(
+          () => cartItem.id_game === game.id_game,
         );
         const cartItem = {
           id_game: game.id_game!,
@@ -33,10 +28,10 @@ export function GameList(props: GameListProps) {
             game={game}
             onCart={() =>
               alreadyInCart
-                ? removeItemFromCart(game.id_game!)
-                : addItemToCart(cartItem)
+                ? (game.id_game!)
+                : (cartItem)
             }
-            onBuy={() => addItemToCart(cartItem, "cart")}
+            onBuy={() => addItem(cartItem, "cart")}
             gamePage={`/games/${game.id_game}`}
             isAlreadyInCart={alreadyInCart}
             key={game.id_game}

@@ -1,4 +1,3 @@
-import DataTable, { type TableColumn, type TableProps } from "react-data-table-component";
 import { Spinner } from "../Spinner";
 import { tableStyles } from "./TableStyles";
 import { paginationOptions } from "./TraducaoTabela";
