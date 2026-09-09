@@ -1,4 +1,3 @@
-import { ArrowLeftIcon } from "@phosphor-icons/react";
 import { Card, CardHeader } from "../../../components/common/Generic/Card";
 import { Button } from "../../../components/common/Generic/Button/Button";
 import { CategoryForm } from "./sections/CategoryForm";

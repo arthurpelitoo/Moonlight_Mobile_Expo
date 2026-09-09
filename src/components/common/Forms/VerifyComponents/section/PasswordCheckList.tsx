@@ -1,4 +1,4 @@
-import { passwordRules } from "..";
+
 
 type PasswordRulesProps = { password: string; }
 

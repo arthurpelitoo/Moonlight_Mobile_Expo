@@ -1,4 +1,3 @@
-import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { Button } from "./Button/Button";
 import { InputBar } from "./InputBar";
 

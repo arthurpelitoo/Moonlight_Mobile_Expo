@@ -1,3 +1,5 @@
+import React from "react"; 
+import "./StrengthBar.css";
 
 type StrengthBarProps = {
     level: number,

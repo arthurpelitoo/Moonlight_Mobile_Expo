@@ -1,4 +1,4 @@
-import { CircleNotchIcon } from "@phosphor-icons/react";
+
 
 const variantClass = {
     primary: "text-white",
@@ -11,5 +11,4 @@ type SpinnerProps = {
 }
 
 export function Spinner({variant} : SpinnerProps){
-    return <CircleNotchIcon size={64} className={`animate-spin ${variantClass[variant]}`} />
-}
+    return (<div className={`animate-spin ${variantClass[variant]}`}>-spinner</div>)
