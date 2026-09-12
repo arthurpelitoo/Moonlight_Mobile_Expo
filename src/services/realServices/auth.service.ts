@@ -11,7 +11,7 @@ export async function register(data: {
 
     const cleanData = sanitizeData(data);
 
-    if (process.env.EXPO_USE_MOCK === "true") {
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
         return registerMock(cleanData);
     }
 
@@ -26,7 +26,7 @@ export async function loginUser(data: {
 
     const cleanData = sanitizeData(data);
 
-    if(process.env.EXPO_USE_MOCK === "true"){
+    if(process.env.EXPO_PUBLIC_USE_MOCK === "true"){
         return loginMock(cleanData);
     }
 

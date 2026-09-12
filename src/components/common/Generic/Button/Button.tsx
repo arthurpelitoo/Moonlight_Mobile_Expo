@@ -1,48 +1,48 @@
-import type { ButtonProps } from "./Button.types";
+import { Text, TouchableOpacity } from "react-native";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import type { ButtonProps, ButtonVariant } from "./Button.types";
 
-  const variantClass = {
-    primary: "bg-night text-white transition-all duration-300 max-lg:active:bg-night-hover max-lg:active:scale-95 max-lg:active:text-text-night-hover lg:hover:bg-night-hover lg:hover:text-text-night-hover",
-    secondary: "bg-night-soft/60 text-white transition-all duration-200 hover:bg-night-soft/80 hover:scale-105 active:scale-95",
-    cta: "bg-blue-cta text-white transition-all duration-300 max-lg:active:bg-blue-cta-hover max-lg:active:scale-95 lg:hover:bg-blue-cta-hover lg:hover:scale-105",
-    transparent: "bg-transparent",
-    danger: "bg-red-600 text-white transition-all duration-300 max-lg:active:bg-red-700 max-lg:active:scale-95 lg:hover:bg-red-700 lg:hover:scale-105"
+// O porque de estar diferente do web: ver ADR em docs/decisions/mobile/components/button
+export function Button({ children, icon, onPress, variant = "transparent", disabled, style, onLayout }: ButtonProps) {
+  const { theme, radius, space, font, fontSize } = useTheme();
+
+  const variantStyle: Record<ButtonVariant, { bg: string; text: string }> = {
+    primary: { bg: theme.base, text: theme.textPrimary },
+    secondary: { bg: theme.baseSoft, text: theme.textPrimary },
+    cta: { bg: theme.blueCta, text: theme.ctaText },
+    transparent: { bg: "transparent", text: theme.textPrimary },
+    danger: { bg: theme.danger, text: "#FFFFFF" },
   };
 
-export function Button(props: ButtonProps) {
-  const { children, icon, className = "", variant = "transparent", as = "button" } = props;
-
-  const classPattern = `${variantClass[variant]} ${className}`.trim();
-
-  if (as === "a") {
-    const { href, ...rest } = props as Extract<ButtonProps, { as: "a" }>;
-    // Utility type do TypeScript : Extract<...>
-    // extraia um tipo de dentro do ButtonProps onde as = "a"
-    // type Resultado = ButtonAsAnchor;
-
-    return (
-      <a href={href} {...rest} className={classPattern}>
-        {icon}
-        {children}
-      </a>
-    );
-  }
-
-  if (as === "link") {
-    const { href, ...rest } = props as Extract<ButtonProps, { as: "link" }>;
-    return (
-      <View {...rest} to={href} className={classPattern}>
-        {icon}
-        {children}
-      </View>
-    );
-  }
-
-  const { ...rest } = props as Extract<ButtonProps, { as?: "button" }>;
+  const { bg, text } = variantStyle[variant];
 
   return (
-    <button {...rest} className={`${classPattern} cursor-pointer`}>
+    <TouchableOpacity
+      onPress={onPress}
+      onLayout={onLayout}
+      disabled={disabled}
+      activeOpacity={0.7} // equivalente ao active:scale-95/hover do web — feedback visual ao toque
+      style={[
+        {
+          backgroundColor: bg,
+          opacity: disabled ? 0.5 : 1,
+          borderRadius: radius.md,
+          paddingVertical: space[3],
+          paddingHorizontal: space[3],
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        style, // igual ao do frontweb, permite colocar estilização adicional.
+      ]}
+    >
       {icon}
-      {children}
-    </button>
+      {typeof children === "string" ? (
+        <Text style={{ color: text, fontFamily: font.baseSemibold, fontSize: fontSize.h4 }}>
+          {children}
+        </Text>
+      ) : (
+        children // JSX arbitrário (ex: CategoryCard) vai direto, sem passar por <Text>
+      )}
+    </TouchableOpacity>
   );
 }

@@ -8,7 +8,7 @@ import { createUserMock, fetchUserByIdMock, fetchUsersMock, updateMeMock } from 
 
 
 export async function fetchUsersPaginated(query: UserPaginatedQueryPayload): Promise<PaginatedResponse<UserResponseDTO>> {
-    if (process.env.EXPO_USE_MOCK === "true") {
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
         return fetchUsersMock(query.page, query.limit);
     }
 
@@ -17,7 +17,7 @@ export async function fetchUsersPaginated(query: UserPaginatedQueryPayload): Pro
 }
 
 export async function fetchUserById(id_user: number): Promise<UserResponseDTO> {
-    if (process.env.EXPO_USE_MOCK === "true") {
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
         return fetchUserByIdMock(id_user);
     }
     const response = await api.get(`/api/users/${id_user}`);
@@ -26,7 +26,7 @@ export async function fetchUserById(id_user: number): Promise<UserResponseDTO> {
 
 export async function createUser(data: UserPayload): Promise<ApiResponse>{
     const cleanData = sanitizeData(data);
-    if (process.env.EXPO_USE_MOCK === "true") {
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
         return createUserMock(cleanData);
     }
     const response = await api.post(`/api/users`, cleanData);
@@ -50,7 +50,7 @@ export async function deleteUser(id_user: number): Promise<ApiResponse> {
 export async function updateMe(data: UpdateMePayload): Promise<UpdateMeResponseDTO> {
 
     const cleanData = sanitizeData(data);
-    if (process.env.EXPO_USE_MOCK === "true") {
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
         return updateMeMock(cleanData);
     }
 

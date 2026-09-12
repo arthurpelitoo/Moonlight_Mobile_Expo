@@ -1,12 +1,12 @@
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { router } from "expo-router";
 import { logoutFn } from "../utils/authBridge/logout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "../config";
 let redirecting = false;
 
 export const api = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL,
+  baseURL: API_URL,
   timeout: 5000,
   headers: {"Content-Type": "application/json"}
 });

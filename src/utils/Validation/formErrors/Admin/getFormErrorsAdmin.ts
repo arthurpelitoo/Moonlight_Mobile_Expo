@@ -5,10 +5,10 @@ import { isPriceValid } from "../../dataRules/Game/gamePrice";
 import { isTitleValid } from "../../dataRules/Game/gameTitle";
 import { isNameValid } from "../../dataRules/User/userName";
 import { getPasswordVerifiedLevel } from "../../dataRules/User/userPassword";
-import { isUserTypeValid } from "../../dataRules/User/userType";
 import type { CategoryFormData, CategoryTouched, GameFormData, GameTouched, UserFormData, UserTouched } from "./formErrorsTypesAdmin";
 import { isDescriptionValid } from "../../dataRules/Category/categoryDescription";
 import { isCategoryNameValid } from "../../dataRules/Category/categoryName";
+import { hasSelectedRole } from "../../dataRules/User/userRole";
 
 export function getUserFormErrors(data: UserFormData, touched: UserTouched, submitted: boolean){
      /* validações para mostrar erro */
@@ -17,7 +17,8 @@ export function getUserFormErrors(data: UserFormData, touched: UserTouched, subm
     const emailValid = isEmailValid(data.email);
     const strengthLevel = getPasswordVerifiedLevel(data.password);
     const passwordMatch = data.password === data.confirmPassword;
-    const typeValid = isUserTypeValid(data.type);
+    // const typeValid = isUserTypeValid(data.type);
+    const roleValid = hasSelectedRole(data.id_roles);
 
     return {
         showErrorUser: (touched.name || submitted) && !nameValid,
@@ -25,7 +26,8 @@ export function getUserFormErrors(data: UserFormData, touched: UserTouched, subm
         showErrorCpf: (touched.cpf || submitted) && !cpfValid,
         showErrorPassword: (touched.password || submitted) && strengthLevel < 5,
         showErrorConfirmPass: (touched.confirmPassword || submitted) && !passwordMatch,
-        showErrorUserType: (touched.type || submitted) && !typeValid
+        // showErrorUserType: (touched.type || submitted) && !typeValid
+        showErrorUserRoles: (touched.id_roles || submitted) && !roleValid
     }
 }
 

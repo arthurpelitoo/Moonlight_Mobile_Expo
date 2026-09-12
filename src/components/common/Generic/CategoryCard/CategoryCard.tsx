@@ -1,26 +1,45 @@
-import type { Category } from "../../../../@types/Category";
-import { Card } from "../Card";
+import { useRef } from "react";
+import { Animated, Image, Pressable, PressableProps, View } from "react-native";
+import type { CategoryResponseDTO } from "@/src/@types/category/category.dto";
+import { Card } from "../Card/Card";
+import { P } from "../Text";
+import { resolveImageUrl } from "@/src/utils/resolveImage/resolveImageUrl";
 
 type CategoryCardProps = {
-    category: Category
-    classNameImage?: string
-}
+  category: CategoryResponseDTO;
+} & Pick<PressableProps, "onPress">;
 
-export function CategoryCard({category, classNameImage = "object-cover object-center"} : CategoryCardProps) {
+export function CategoryCard({ category, onPress }: CategoryCardProps) {
+  const pressAnim = useRef(new Animated.Value(0)).current;
+
+  function animateTo(value: number) {
+    Animated.timing(pressAnim, {
+      toValue: value,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }
+
+  const scale = pressAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
+  const translateY = pressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -4] });
 
   return (
-    <Card variant="container" className="w-full relative overflow-hidden group">
-      <img
-        src={category.image}
-        className={`h-64 w-full rounded-md grayscale
-         group-hover:scale-105 group-hover:grayscale-0 group-hover:-translate-y-1 transition-all duration-300 ${classNameImage}`}
-      />
+    <Pressable onPress={onPress} onPressIn={() => animateTo(1)} onPressOut={() => animateTo(0)}>
+      <Card variant="container" style={{ width: "100%", position: "relative", overflow: "hidden" }}>
+        <Animated.View style={{ transform: [{ scale }, { translateY }], width: "100%" }}>
+          <Image
+            source={{ uri: resolveImageUrl(category.image) }}
+            resizeMode="contain"
+            style={{ height: 256, width: "100%", borderRadius: 8 }}
+          />
 
-      <div className="absolute inset-0 transition-all duration-300 flex items-center justify-center rounded-md">
-        <p className="text-white bg-night-soft font-bold text-xl group-hover:-translate-y-1 transition-all duration-300 rounded-md p-2">
-          {category.name}
-        </p>
-      </div>
-    </Card>
+          <View style={{ position: "absolute", width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}>
+            <P style={{ backgroundColor: "rgba(17,24,39,0.8)", fontWeight: "bold", fontSize: 20, borderRadius: 8, padding: 8 }}>
+              {category.name}
+            </P>
+          </View>
+        </Animated.View>
+      </Card>
+    </Pressable>
   );
 }

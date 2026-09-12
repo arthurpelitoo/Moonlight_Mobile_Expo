@@ -1,71 +1,87 @@
-import React, { useRef } from "react"
+import React, { ReactNode, useRef, useState } from "react"
 /*import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react"*/
 import { Button } from "./Button/Button"
+import { NativeScrollEvent, NativeSyntheticEvent, ScrollView, View } from "react-native"
+import { CaretLeftIcon, CaretRightIcon } from "phosphor-react-native"
+import { useTheme } from "@/src/contexts/ThemeContext"
 
 
 type CarrouselProps = {
-    children?: React.ReactNode
-    cardsPerView?: number
+  children?: ReactNode
+  cardsPerView?: number
+  containerWidth: number;
 }
 
-export function Carrousel({children, cardsPerView = 3} : CarrouselProps) {
-    const scrollRef = useRef<HTMLDivElement>(null)
+const GAP = 16;
 
-    function scrollLeft() {
-        scrollRef.current?.scrollBy({
-            left: - scrollRef.current.clientWidth, 
-            behavior: "smooth" 
-        })
+export function Carrousel({ children, cardsPerView = 3, containerWidth }: CarrouselProps) {
+  const { theme, radius } = useTheme();
+  const scrollRef = useRef<ScrollView>(null);
+  const offsetX = useRef(0);
+  const [buttonWidth, setButtonWidth] = useState(0);
+  const itemWidth = buttonWidth > 0
+    ? (containerWidth - buttonWidth * 2 - (cardsPerView - 1) * GAP) / cardsPerView
+    : 0; // 0 só no primeiro frame, até o botão reportar sua largura real
+
+  function handleScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
+      offsetX.current = e.nativeEvent.contentOffset.x;
     }
 
-    function scrollRight() {
-        scrollRef.current?.scrollBy({ 
-            left: scrollRef.current.clientWidth,
-            behavior: "smooth" 
-        })
-    }
+  function scrollLeft() {
+    scrollRef.current?.scrollTo({
+      x: Math.max(0, offsetX.current - (itemWidth + GAP)),
+      animated: true,
+    });
+  }
+
+  function scrollRight() {
+    scrollRef.current?.scrollTo({
+      x: offsetX.current + (itemWidth + GAP),
+      animated: true,
+    });
+  }
 
   return (
-    <div className="relative">
+    <View style={{ position: "relative", flexDirection: "row", width: "100%"}}>
 
         {/* botão esquerda */}
         <Button
-            as="button"
-            onClick={scrollLeft}
-           /* icon={<CaretLeftIcon size={32} weight="regular" color="white" />}*/
+            onLayout={(e) => setButtonWidth(e.nativeEvent.layout.width)}
+            onPress={scrollLeft}
+            icon={<CaretLeftIcon size={24} weight="regular" color={theme.iconBase} />}
             variant="secondary"
-            className="absolute -left-10 top-1/2 -translate-y-1/2 z-10 rounded-full p-2 cursor-pointer"
+            style={{ borderRadius: radius.circle, flex: 0, alignSelf: "center" }}
         />
 
         {/* conteúdo */}
-        <div
-            ref={scrollRef}
-            className="flex gap-4 overflow-hidden scroll-smooth snap-x snap-mandatory"
-            >
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          decelerationRate={"fast"}
+          snapToInterval={itemWidth + GAP}
+          snapToAlignment="start"
+          contentContainerStyle={{gap: GAP}}
+          style={{ flex: 1 }}
+        >
             {React.Children.map(children, (child) => (
-                <div
-                className="snap-start"
-                style={{
-                    minWidth: `calc((100% - ${(cardsPerView - 1) * 16}px)/ ${cardsPerView})`, 
-                    // (100% do espaço - (cards visiveis na tela - 1) * 16px de espaço gap) / cards visiveis na tela)
-                    // ? itens + espaço entre eles (gap)
-                    // Layout com gap SEMPRE precisa compensar no cálculo
-
-                }}
+                <View
+                  style={{ width: itemWidth }}
                 >
                     {child}
-                </div>
+                </View>
             ))}
-        </div>
+        </ScrollView>
 
         {/* botão direita */}
         <Button
-            as="button"
-            onClick={scrollRight}
-            // icon={<CaretRightIcon size={32} weight="regular" color="white" />}
+            onPress={scrollRight}
+            icon={<CaretRightIcon size={24} weight="regular" color={theme.iconBase} />}
             variant="secondary"
-            className="absolute -right-10 top-1/2 -translate-y-1/2 z-10 rounded-full p-2 cursor-pointer"
+            style={{ borderRadius: radius.circle, flex: 0, alignSelf: "center" }}
         />
-    </div>
+    </View>
   );
 }

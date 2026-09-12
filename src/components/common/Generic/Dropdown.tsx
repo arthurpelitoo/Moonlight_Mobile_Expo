@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState} from 'react';
 
-/** 
+/**
  * Render Prop é quando você passa uma função como prop para em vez de um valor
  *  — e essa função recebe dados do componente pai para usar no filho.
 */
 
 type DropdownProps = {
-    trigger: (open: Boolean) => React.ReactNode; 
-    children: React.ReactNode; 
+    trigger: (open: Boolean) => React.ReactNode;
+    children: React.ReactNode;
     alignment: 'left' | 'middle' | 'right';
     backgroundActive: "on"|"off";
 };
 
 const backgorundClass ={
-    on: "rounded-md border border-white/10 bg-night-soft z-20",
+    on: "rounded-md border border-white/10 bg-base-soft z-20",
     off: ""
 };
 
