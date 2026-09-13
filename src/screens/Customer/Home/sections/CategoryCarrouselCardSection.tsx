@@ -6,13 +6,15 @@ import { CategoryCardSkeleton } from "../../../../components/common/Generic/Cate
 import { useFetchPaginatedCategories } from "../../../../hooks/fetchItems/store/useFetchPaginatedCategories";
 import type { CategoryPaginatedQueryPayload } from "../../../../@types/category/category.payload";
 import { H2 } from "@/src/components/common/Generic/Text";
-import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { Animated, StyleSheet, useWindowDimensions, View } from "react-native";
 import { Link } from "expo-router";
 import { useTheme } from "@/src/contexts/ThemeContext";
 import { LinearGradient } from "expo-linear-gradient";
+import { useFadeIn } from "@/src/hooks/animation/useFadeIn";
 
 export function CategoryCarrouselCardSection() {
   const { theme, space } = useTheme();
+  const fadeIn = useFadeIn();
   const query: CategoryPaginatedQueryPayload = useMemo(() => ({
       page: 1,
       limit: 9,
@@ -26,12 +28,14 @@ export function CategoryCarrouselCardSection() {
 
   const styles = StyleSheet.create({
     container: {
+      paddingTop: space[7],
       position: "relative",
       width: "100%",
-      gap: space[7],
       justifyContent: "center",
       alignItems: "center",
       minHeight: 300,
+      opacity: fadeIn.opacity,
+      transform: fadeIn.transform
     },
     content: {
       position: "absolute",
@@ -46,14 +50,14 @@ export function CategoryCarrouselCardSection() {
       bottom: 0,
       left: 0,
       right: 0,
-      height: 0, // Ajuste a altura do fade conforme necessário
+      height: 60, // Ajuste a altura do fade conforme necessário
       zIndex: 10,
     }
   });
 
 
     return(
-        <View style={styles.container}>
+        <Animated.View style={styles.container}>
 
             <H2 style={{ textAlign: "center" }}>Categorias de Jogos a Explorar:</H2>
             <View style={{ width: "100%", justifyContent: "center"}}>
@@ -74,6 +78,6 @@ export function CategoryCarrouselCardSection() {
                     style={styles.fadeOverlay}
                 />
             </View>
-        </View>
+        </Animated.View>
     )
 }

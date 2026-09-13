@@ -5,6 +5,8 @@ import { IconContext } from "phosphor-react-native";
 import { Stack } from "expo-router";
 import { ThemeProvider, useTheme } from '@/src/contexts/ThemeContext';
 import Toast from 'react-native-toast-message';
+import { CartProvider } from '@/src/contexts/CartContext';
+import { LibraryProvider } from '@/src/contexts/LibraryContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,10 +35,15 @@ export default function RootLayout() {
 
 function InnerLayout() {
   const {theme} = useTheme();
-  return(
-    <IconContext.Provider value={{ color: theme.iconBase, size: 24, weight: "regular" }}>
-      <Stack screenOptions={{ headerShown: false }} />
-      <Toast />
-    </IconContext.Provider>
+
+  return (
+    <LibraryProvider>
+      <CartProvider>
+        <IconContext.Provider value={{ color: theme.iconBase, size: 24, weight: "regular" }}>
+          <Stack screenOptions={{ headerShown: false }} />
+          <Toast />
+        </IconContext.Provider>
+      </CartProvider>
+    </LibraryProvider>
   )
 }

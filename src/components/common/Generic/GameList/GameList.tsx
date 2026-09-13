@@ -1,60 +1,56 @@
 import { useContext } from "react";
-import type { GameResponseDTO } from "../../../../../@types/game/game.dto";
 import { GameCard } from "../GameCard/GameCard";
-import { Button } from "../Button/Button";
+import { useCart } from "@/src/hooks/cart/useCart";
+import { LibraryContext } from "@/src/hooks/library/useLibrary";
+import { GameResponseDTO } from "@/src/@types/game/game.dto";
+import { FlatList, View } from "react-native";
+import { H3 } from "../Text";
 
 type GameListProps = {
   games: GameResponseDTO[]
 }
 
 export function GameList(props: GameListProps) {
+  const { addItemToCart, removeItemFromCart, items } = useCart();
+  const { isOwned } = useContext(LibraryContext);
+
+  if (props.games.length == 0) {
+    return <H3>Nenhum jogo encontrado.</H3>
+  }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {props.games?.map((game) => {
-        const alreadyInCart = Items.some(
-          () => cartItem.id_game === game.id_game,
-        );
+    <FlatList
+      data={props.games}
+      numColumns={2}
+      columnWrapperStyle={{ gap: 16 }}
+      contentContainerStyle={{ gap: 16 }}
+      keyExtractor={(game) => String(game.id_game)}
+      scrollEnabled={false}
+      renderItem={({ item }) => {
+        const alreadyInCart = items.some((cartItem) => cartItem.id_game === item.id_game);
         const cartItem = {
-          id_game: game.id_game!,
-          title: game.title,
-          price: game.price,
-          image: game.image,
-          categories: game.categories,
+          id_game: item.id_game!,
+          title: item.title,
+          price: item.price,
+          image: item.image,
+          categories: item.categories,
         };
 
         return (
-          <GameCard
-            game={game}
-            onCart={() =>
-              alreadyInCart
-                ? (game.id_game!)
-                : (cartItem)
-            }
-            onBuy={() => addItem(cartItem, "cart")}
-            gamePage={`/games/${game.id_game}`}
-            isAlreadyInCart={alreadyInCart}
-            key={game.id_game}
-            isOwned={isOwned(game.id_game!)}
-            actions={
-              isOwned(game.id_game!) ? (
-                <Button
-                  variant="cta"
-                  className="rounded-md p-2 w-full animate-glow-cta"
-                  onClick={() => window.open(game.link)}
-                >
-                  Baixar
-                </Button>
-              ) : undefined
-            }
-          />
+          <View style={{ flex: 1 }}>
+            <GameCard
+              game={item}
+              onCart={() =>
+                alreadyInCart ? removeItemFromCart(item.id_game!) : addItemToCart(cartItem)
+              }
+              onBuy={() => addItemToCart(cartItem, "cart")}
+              gamePage={{ pathname: "/games/[id]", params: { id: String(item.id_game) } }}
+              isAlreadyInCart={alreadyInCart}
+              isOwned={isOwned(item.id_game!)}
+            />
+          </View>
         );
-      })}
-
-      {props.games.length == 0 &&
-          <h3>Nenhum jogo encontrado.</h3>
-      }
-    </div>
-  )
-
+      }}
+    />
+  );
 }

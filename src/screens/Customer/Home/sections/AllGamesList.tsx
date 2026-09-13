@@ -5,8 +5,16 @@ import { getRandomSeed } from "../../../../utils/getRandomSeed";
 import type { GamePaginatedQueryPayload } from "../../../../@types/game/game.payload";
 import { Spinner } from "../../../../components/common/Generic/Spinner";
 import { GameList } from "../../../../components/common/Generic/GameList/GameList";
+import { useCart } from "@/src/hooks/cart/useCart";
+import { Animated, View } from "react-native";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { useFadeIn } from "@/src/hooks/animation/useFadeIn";
+import { H1, P } from "@/src/components/common/Generic/Text";
 
-export function AllGamesList(){
+export function AllGamesList() {
+    const { theme } = useTheme()
+    const fadeIn = useFadeIn(600, true);
+
     const query: GamePaginatedQueryPayload = useMemo(() => ({
         page: 1,
         limit: 8,
@@ -20,34 +28,33 @@ export function AllGamesList(){
         price_max: undefined
     }), [])
 
-    const {games, hasMore, loadMore, isLoading} = useFetchPaginatedGames(query);
+    const {games, hasMore, loadMore, isLoading: queryIsLoading} = useFetchPaginatedGames(query);
+    const { isLoaded: cartIsLoaded } = useCart();
+
     let conteudo;
-    if (isLoading) {
+    if (queryIsLoading && games.length === 0 || !cartIsLoaded) {
       conteudo = <Spinner />;
     } else if (games.length === 0) {
-      conteudo = <p>Nenhum jogo encontrado.</p>
+      conteudo = <P>Nenhum jogo encontrado.</P>
     } else {
       conteudo = <GameList games={games}/>
     }
 
     return(
-        <section className="pt-8 w-full bg-gradient-to-b from-base-soft ">
-            <div className="container justify-self-center w-full animate-fade-in p-6">
-                <div className="mb-5">
-                    <h1 className="text-2xl">Todos os Jogos disponiveis no catálogo:</h1>
-                </div>
+        <View style={{ paddingTop: 32, width: "100%", backgroundColor: theme.baseSoft}}>
+            <Animated.View style={{ justifyContent: "center", width: "100%", padding: 24, opacity: fadeIn.opacity, transform: fadeIn.transform}}>
+                <View style={{marginBottom: 20}}>
+                    <H1>Todos os Jogos disponiveis no catálogo:</H1>
+                </View>
                 {conteudo}
-                <div className="p-8 w-full">
-                    {hasMore
-                    ? (
-                        <Button variant="cta" className="p-4 rounded-md flex justify-self-center" onClick={() => loadMore()}>
-                            Ver mais
+                <View style={{padding: 32, width: "100%"}}>
+                    {hasMore && games.length > 0 &&(
+                        <Button variant="cta" style={{padding: 16, justifyContent: "center"}} onPress={loadMore}>
+                          Ver mais
                         </Button>
-                    ) : (
-                        ""
                     )}
-                </div>
-            </div>
-        </section>
+                </View>
+            </Animated.View>
+        </View>
     )
 }

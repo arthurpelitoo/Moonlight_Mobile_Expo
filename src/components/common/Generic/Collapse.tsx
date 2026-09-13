@@ -1,23 +1,42 @@
+import { useTheme } from "@/src/contexts/ThemeContext";
 import { useState } from "react";
-import { Button } from "./Button/Button";
+import { LayoutAnimation, Platform, Pressable, UIManager, View } from "react-native";
+import { P } from "./Text";
+import { CaretDownIcon, CaretUpIcon } from "phosphor-react-native";
 
-type CollapseProps = {
-    children: React.ReactNode;
-    label: string; // texto do botão
+if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-export function Collapse({children, label} : CollapseProps){
-    const [open, setOpen] = useState(false);
-    return(
-        <div className="w-full bg-base-soft/60 text-white transition-all duration-200 animate-fade-in">
-            <Button className="w-full p-6 block max-lg:active:scale-105 lg:hover:scale-105" variant="cta" onClick={() => setOpen(!open)}>
-                {label}
-            </Button>
-            {open &&
-                <div className="justify-self-center flex flex-col gap-4 p-8 animate-fade-in">
-                    {open && children}
-                </div>
-            }
-        </div>
-    )
+type CollapseProps = {
+  label: string;
+  children: React.ReactNode;
+}
+
+export function Collapse({ label, children }: CollapseProps) {
+  const [open, setOpen] = useState(false);
+  const { theme, space } = useTheme();
+
+  function toggle() : void{
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setOpen((prev) => !prev);
+  }
+
+  return (
+    <View style={{width: "100%", backgroundColor: theme.baseSoft}}>
+      <Pressable
+        onPress={toggle}
+        style={{ backgroundColor: theme.blueCta, width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: space[2], paddingVertical: space[3]}}
+      >
+        <P style={{ color: theme.textPrimary }}>{label}</P>
+        {open ? (
+          <CaretUpIcon size={16} color={theme.iconBase}/>
+        ) : (
+          <CaretDownIcon size={16} color={theme.iconBase}/>
+        )}
+      </Pressable>
+
+      {open && <View>{children}</View>}
+    </View>
+  )
 }

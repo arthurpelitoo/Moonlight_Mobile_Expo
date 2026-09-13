@@ -5,6 +5,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { HeroSection } from "./sections/HeroSection";
 import { ScrollView } from "react-native";
 import { CategoryCarrouselCardSection } from "./sections/CategoryCarrouselCardSection";
+import { GamesUnder20List } from "./sections/GamesUnder20List";
+import { AllGamesList } from "./sections/AllGamesList";
 
 export default function Home() {
   const { game, isLoading } = useFetchGame(1);
@@ -19,12 +21,16 @@ export default function Home() {
 
     return (
       <GradientBackground>
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
+          <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+            }}
+          >
             {game && <HeroSection game={game} />}
             <CategoryCarrouselCardSection />
-            {/*<GamesUnder20List />*/}
-            {/*<AllGamesList />*/}
+            <GamesUnder20List />
+            <AllGamesList />
           </ScrollView>
         </SafeAreaView>
       </GradientBackground>

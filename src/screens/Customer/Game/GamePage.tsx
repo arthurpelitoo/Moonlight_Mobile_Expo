@@ -1,19 +1,20 @@
-import { useParams } from "react-router-dom";
+import { useLocalSearchParams } from "expo-router";
+import { ScrollView } from "react-native";
+import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
 import { GameDetail } from "./sections/GameDetail";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-
-function GamePage() {
-  const { id } = useParams();
+export default function GameScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
   const id_game = Number(id);
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-base-soft via-base-soft to-base flex flex-col items-center justify-center">
-      <GameDetail id_game={id_game}/>
-    </main>
-  )
+    <GradientBackground>
+      <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <GameDetail id_game={id_game} />
+        </ScrollView>
+      </SafeAreaView>
+    </GradientBackground>
+  );
 }
-
-// ideia colocar uma sessão de carrousel de game card em baixo, para mostrar mais jogos que os usuarios gostam.
-
-
-export default GamePage;

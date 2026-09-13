@@ -1,21 +1,23 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { LibraryContext } from "../hooks/library/useLibrary";
-// import { fetchUserLibrary } from "../services/realServices/order.service";
 import { AuthContext } from "../hooks/auth/useAuth";
 import type { OrderResponseLibraryDTO } from "../@types/order/order.dto";
+import { fetchUserLibrary } from "../services/realServices/order.service";
+import { AppState, AppStateStatus } from "react-native";
 
 
 export function LibraryProvider({children}: { children: React.ReactNode }){
     const [isLoading, setIsLoading] = useState(true);
     const [library, setLibrary] = useState<OrderResponseLibraryDTO[]>([]);
     const {isAuthenticated} = useContext(AuthContext);
+    const appState = useRef(AppState.currentState);
 
     const refreshLibrary = async () => {
         if(!isAuthenticated) return setIsLoading(false); //se nao logou nem faz refresh por nada
 
         try {
-          // const data = await fetchUserLibrary();
-          // setLibrary(data || []);
+          const data = await fetchUserLibrary();
+          setLibrary(data || []);
         } catch(error){
             console.error("Erro ao carregar biblioteca", error);
         } finally{
@@ -30,8 +32,15 @@ export function LibraryProvider({children}: { children: React.ReactNode }){
             setLibrary([]); // Limpa a biblioteca ao deslogar
             setIsLoading(false);
         }
-        window.addEventListener("focus", refreshLibrary);
-        return () => window.removeEventListener("focus", refreshLibrary);
+
+        const subscription = AppState.addEventListener("change", (nextState: AppStateStatus) => {
+            if (appState.current.match(/inactive|background/) && nextState === "active") {
+              refreshLibrary();
+            }
+            appState.current = nextState;
+          });
+
+          return () => subscription.remove();
     }, [isAuthenticated]);
 
     /**

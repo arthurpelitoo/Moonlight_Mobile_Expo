@@ -27,8 +27,8 @@ export function useFetchPaginatedGames(query: GamePaginatedQueryPayload){
         fetchGamesPaginated({limit, page: internalPage, category, launch_date_from, launch_date_to, price_max, price_min, random, title})
         .then(response => {
             if (isMounted) {
-                setGames(prev => internalPage === 1 ? response.data : [...prev, ...response.data]);
-                if(response.data.length < limit) setHasMore(false);
+              setGames(prev => internalPage === 1 ? response.data : [...prev, ...response.data]);
+              setHasMore(internalPage < response.totalPages);
             }
         }).catch(() =>
           Toast.show({ type: "error", text1: "Não foi possivel carregar os jogos."})

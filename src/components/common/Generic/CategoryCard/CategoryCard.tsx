@@ -4,12 +4,14 @@ import type { CategoryResponseDTO } from "@/src/@types/category/category.dto";
 import { Card } from "../Card/Card";
 import { P } from "../Text";
 import { resolveImageUrl } from "@/src/utils/resolveImage/resolveImageUrl";
+import { useTheme } from "@/src/contexts/ThemeContext";
 
 type CategoryCardProps = {
   category: CategoryResponseDTO;
 } & Pick<PressableProps, "onPress">;
 
 export function CategoryCard({ category, onPress }: CategoryCardProps) {
+  const { theme } = useTheme();
   const pressAnim = useRef(new Animated.Value(0)).current;
 
   function animateTo(value: number) {
@@ -34,7 +36,7 @@ export function CategoryCard({ category, onPress }: CategoryCardProps) {
           />
 
           <View style={{ position: "absolute", width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}>
-            <P style={{ backgroundColor: "rgba(17,24,39,0.8)", fontWeight: "bold", fontSize: 20, borderRadius: 8, padding: 8 }}>
+            <P style={{ backgroundColor: theme.baseSoft, fontWeight: "bold", fontSize: 20, borderRadius: 8, padding: 8 }}>
               {category.name}
             </P>
           </View>

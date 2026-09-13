@@ -3,6 +3,7 @@ import Toast from "react-native-toast-message";
 import { logoutFn } from "../utils/authBridge/logout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../config";
+import { useRouter } from "expo-router";
 let redirecting = false;
 
 export const api = axios.create({
@@ -23,6 +24,7 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
       const status = error.response?.status;
+      const router = useRouter();
 
       if ((status === 401 || status === 403) && !redirecting) {
         redirecting = true;

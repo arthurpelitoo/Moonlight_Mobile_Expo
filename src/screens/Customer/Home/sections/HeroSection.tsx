@@ -56,14 +56,14 @@ export function HeroSection({ game }: HeroSectionProps) {
             <Animated.View
               style={{
                 position: "absolute",
-                inset: -4,
+                inset: -2,
                 borderRadius: radius.md,
                 backgroundColor: theme.blueCta,
                 opacity: glowOpacity,
               }}
             />
             <Link href={`/games/${game.id_game}`} asChild>
-              <Button variant="cta">
+              <Button variant="cta" style={{padding: space[2]}}>
                 Visitar a página do jogo
               </Button>
             </Link>

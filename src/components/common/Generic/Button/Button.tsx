@@ -27,8 +27,6 @@ export function Button({ children, icon, onPress, variant = "transparent", disab
           backgroundColor: bg,
           opacity: disabled ? 0.5 : 1,
           borderRadius: radius.md,
-          paddingVertical: space[3],
-          paddingHorizontal: space[3],
           justifyContent: "center",
           alignItems: "center",
         },

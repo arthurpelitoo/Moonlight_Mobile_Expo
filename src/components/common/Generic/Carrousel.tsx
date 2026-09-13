@@ -15,7 +15,7 @@ type CarrouselProps = {
 const GAP = 16;
 
 export function Carrousel({ children, cardsPerView = 3, containerWidth }: CarrouselProps) {
-  const { theme, radius } = useTheme();
+  const { theme, radius, space } = useTheme();
   const scrollRef = useRef<ScrollView>(null);
   const offsetX = useRef(0);
   const [buttonWidth, setButtonWidth] = useState(0);
@@ -42,7 +42,7 @@ export function Carrousel({ children, cardsPerView = 3, containerWidth }: Carrou
   }
 
   return (
-    <View style={{ position: "relative", flexDirection: "row", width: "100%"}}>
+    <View style={{ position: "relative", flexDirection: "row", width: "100%", padding: space[1]}}>
 
         {/* botão esquerda */}
         <Button
@@ -50,7 +50,7 @@ export function Carrousel({ children, cardsPerView = 3, containerWidth }: Carrou
             onPress={scrollLeft}
             icon={<CaretLeftIcon size={24} weight="regular" color={theme.iconBase} />}
             variant="secondary"
-            style={{ borderRadius: radius.circle, flex: 0, alignSelf: "center" }}
+            style={{ borderRadius: radius.circle, flex: 0, alignSelf: "center", padding: space[2] }}
         />
 
         {/* conteúdo */}
@@ -80,7 +80,7 @@ export function Carrousel({ children, cardsPerView = 3, containerWidth }: Carrou
             onPress={scrollRight}
             icon={<CaretRightIcon size={24} weight="regular" color={theme.iconBase} />}
             variant="secondary"
-            style={{ borderRadius: radius.circle, flex: 0, alignSelf: "center" }}
+            style={{ borderRadius: radius.circle, flex: 0, alignSelf: "center", padding: space[2]}}
         />
     </View>
   );

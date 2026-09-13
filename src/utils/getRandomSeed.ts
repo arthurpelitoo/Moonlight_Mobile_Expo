@@ -1,10 +1,10 @@
+let cachedSeed: number | null = null;
+
 export function getRandomSeed(): number {
-  const stored = sessionStorage.getItem('game_random_seed');
-  if (stored) return Number(stored);
-  
-  const seed = Math.floor(Math.random() * 1_000_000);
-  sessionStorage.setItem('game_random_seed', String(seed));
-  return seed;
+  if (cachedSeed !== null) return cachedSeed;
+
+  cachedSeed = Math.floor(Math.random() * 1_000_000);
+  return cachedSeed;
 }
 
 // Ao chamar a API:

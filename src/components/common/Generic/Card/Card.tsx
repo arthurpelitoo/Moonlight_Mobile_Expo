@@ -30,8 +30,8 @@ export function Card({ children, variant = "primary", style }: CardProps) {
   const cardStyle = [
     {
       borderRadius: radius.xl,
-      paddingVertical: space[4],
-      paddingHorizontal: space[4],
+      paddingVertical: space[3],
+      paddingHorizontal: space[3],
       justifyContent: "center" as const,
       alignItems: "center" as const,
       overflow: "hidden" as const,
