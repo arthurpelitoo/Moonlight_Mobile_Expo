@@ -8,7 +8,7 @@ import { fetchGameByIdMock, fetchGamesPaginatedMock } from "../fakeServices/game
 
 
 export async function fetchGamesPaginated(query: GamePaginatedQueryPayload): Promise<PaginatedResponse<GameResponseDTO>> {
-    if (process.env.EXPO_USE_MOCK === "true") {
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
         return fetchGamesPaginatedMock(query.page, query.limit);
     }
     const response = await api.get(`/api/games/pag`, { params: query });
@@ -16,7 +16,7 @@ export async function fetchGamesPaginated(query: GamePaginatedQueryPayload): Pro
 }
 
 export async function fetchGamesPaginatedAdmin(query: GamePaginatedQueryPayload): Promise<PaginatedResponse<GameResponseDTO>> {
-    if (process.env.EXPO_USE_MOCK === "true") {
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
         return fetchGamesPaginatedMock(query.page, query.limit);
     }
     const response = await api.get(`/api/games/pagadmin`, { params: query });
@@ -24,7 +24,7 @@ export async function fetchGamesPaginatedAdmin(query: GamePaginatedQueryPayload)
 }
 
 export async function fetchGameById(id_game: number): Promise<GameResponseDTO> {
-    if (process.env.EXPO_USE_MOCK === "true") {
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
         return fetchGameByIdMock(id_game);
     }
     const response = await api.get(`/api/games/${id_game}`);

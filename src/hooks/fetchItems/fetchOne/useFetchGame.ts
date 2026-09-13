@@ -11,9 +11,9 @@ export function useFetchGame(id_game: number){
         fetchGameById(id_game)
         .then(response => {
             setGame(response);
-        }).catch(() =>
-          Toast.show({ type: "error", text1: "Não foi possivel encontrar o jogo ou ele não existe."})
-        ).finally(() =>
+        }).catch(() => {
+          Toast.show({ type: "error", text1: "Não foi possivel encontrar o jogo ou ele não existe." })
+        }).finally(() =>
             setIsLoading(false)
         );
     }, [id_game]);

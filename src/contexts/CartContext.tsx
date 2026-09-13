@@ -1,62 +1,70 @@
-    // import toast from "react-hot-toast";
-    // import { useNavigate } from "react-router-dom";
-    import { useContext, useState } from "react";
-    import { CartContext } from "../hooks/cart/useCart";
-    import { LibraryContext } from "../hooks/library/useLibrary";
-import type { CartItem } from "../@types/common/cartItem";
+import { useContext, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
+import { useRouter } from "expo-router";
+import { CartItem } from "@/src/@types/common/cartItem";
+import { CartContext } from "@/src/hooks/cart/useCart";
+import { LibraryContext } from "@/src/hooks/library/useLibrary";
 
-    export function CartProvider({ children }: { children: React.ReactNode }) {
-        // Fonte da verdade única
-        const [items, setItems] = useState<CartItem[]>(() =>
-            JSON.parse(localStorage.getItem("cart") || "[]")
-        );
+export function CartProvider({ children }: { children: React.ReactNode }) {
+    // Fonte da verdade única
+    const [items, setItems] = useState<CartItem[]>([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
-        const { isOwned } = useContext(LibraryContext);
-        // const navigate = useNavigate();
+    useEffect(() => {
+      async function loadCart() {
+        const stored = await AsyncStorage.getItem("cart");
+        setItems(stored ? JSON.parse(stored) : []);
+        setIsLoaded(true);
+      }
+      loadCart();
+    }, []);
 
-        // Cálculo memorizado automaticamente por estar no corpo do provider
-        const totalPrice = items.reduce((accumulator, item) => accumulator + Number(item.price), 0);
-        // accumulator começa com o valor 0 inicialmente(aquele 0 no final) e vai iterando nele cada preço dos objetos.
+    const { isOwned } = useContext(LibraryContext);
 
-        const addItemToCart = (game: CartItem, redirect?: "cart"): void => {
+    const router = useRouter();
 
-            // if (isOwned(game.id_game)) {
-            //     toast.error("Você já possui este jogo na sua biblioteca!");
-            //     return;
-            // }
+    // Cálculo memorizado automaticamente por estar no corpo do provider
+    const totalPrice = items.reduce((accumulator, item) => accumulator + Number(item.price), 0);
+    // accumulator começa com o valor 0 inicialmente(aquele 0 no final) e vai iterando nele cada preço dos objetos.
 
-            const alreadyInCart = items.some(cartItem => cartItem.id_game === game.id_game);
-            // if (alreadyInCart) {
-            //     toast.error("Este jogo já está no seu carrinho.");
-            //     return;
-            // };
+    const addItemToCart = async (game: CartItem, redirect?: "cart"): Promise<void> => {
+      if (isOwned(game.id_game)) {
+          Toast.show({ type: "error", text1: "Você já possui este jogo na sua biblioteca!" })
+          return;
+      }
 
-            const newCart = [...items, { ...game, price: Number(game.price) }];
+      const alreadyInCart = items.some(cartItem => cartItem.id_game === game.id_game);
+      if (alreadyInCart) {
+          Toast.show({ type: "error", text1: "Este jogo já está no seu carrinho." })
+          return;
+      };
 
-            // Atualiza os dois ao mesmo tempo
-            setItems(newCart);
-            localStorage.setItem("cart", JSON.stringify(newCart));
-            // toast.success("Item adicionado ao carrinho!");
+      const newCart = [...items, { ...game, price: Number(game.price) }];
 
-            // if (redirect) navigate("/cart");
-        };
+      // Atualiza os dois ao mesmo tempo
+      setItems(newCart);
+      await AsyncStorage.setItem("cart", JSON.stringify(newCart));
+      Toast.show({ type: "success", text1: "Item adicionado ao carrinho!" })
+      // if (redirect) router.push("/cart");
+    };
 
-        const removeItemFromCart = (id_game: number) => {
-            const newCart = items.filter(cartItem => cartItem.id_game !== id_game);
+    const removeItemFromCart = async (id_game: number): Promise<void> => {
+      const newCart = items.filter(cartItem => cartItem.id_game !== id_game);
 
-            setItems(newCart);
-            localStorage.setItem("cart", JSON.stringify(newCart));
-            // toast.success("Item removido do carrinho!");
-        };
+      setItems(newCart);
+      await AsyncStorage.setItem("cart", JSON.stringify(newCart));
+      Toast.show({ type: "success", text1: "Item removido do carrinho!" })
+    };
 
-        const clearUpCart = () => {
-            setItems([]);
-            localStorage.removeItem("cart");
-        };
+    const clearUpCart = async (): Promise<void> => {
+      setItems([]);
+      await AsyncStorage.removeItem("cart");
+    };
 
-        return (
-            <CartContext.Provider value={{ items, addItemToCart, removeItemFromCart, totalPrice, clearUpCart }}>
-                {children}
-            </CartContext.Provider>
-        );
-    }
+    return (
+        <CartContext.Provider value={{ items, addItemToCart, removeItemFromCart, totalPrice, clearUpCart, isLoaded }}>
+            {children}
+        </CartContext.Provider>
+    );
+}

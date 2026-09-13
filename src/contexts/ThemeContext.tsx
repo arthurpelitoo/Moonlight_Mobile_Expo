@@ -1,4 +1,4 @@
-import { DARK, FONT, FONT_SIZE, LIGHT, RADIUS, SPACE, ThemeColor } from "@/src/style/theme-pattern";
+import { DARK, FONT, FONT_SIZE, LIGHT, RADIUS, SPACE, ThemeColor } from "@/src/styles/theme-pattern";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 

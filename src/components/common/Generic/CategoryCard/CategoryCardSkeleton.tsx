@@ -1,16 +1,19 @@
-import { Card } from "../Card";
+import { Animated, View } from "react-native";
+import { Card } from "../Card/Card";
+import { P } from "../Text";
+import { usePulse } from "@/src/hooks/animation/usePulse";
 
 export function CategoryCardSkeleton() {
-    return(
-        <>
-            <Card className="h-64 w-full relative overflow-hidden animate-pulse">
-                <div className="bg-gray-700 h-full w-full object-cover rounded-md"></div>
-                <div className="absolute inset-0 transition-all duration-300 flex items-center justify-center rounded-md">
-                    <p className="text-white bg-night-soft font-bold text-xl transition-all duration-300 rounded-md p-2">
-                    ...
-                    </p>
-                </div>
-            </Card>
-        </>
-    )
+  const pulseValue = usePulse();
+
+  return (
+    <Card variant="primary" style={{ height: 256, width: "100%", position: "relative", overflow: "hidden" }}>
+      <Animated.View style={{ opacity: pulseValue, backgroundColor: "#4B5568", height: "100%", width: "100%", borderRadius: 8 }} />
+      <View style={{ position: "absolute", justifyContent: "center", alignItems: "center", width: "100%", height: "100%" }}>
+        <P style={{ backgroundColor: "rgba(17,24,39,0.6)", fontWeight: "bold", fontSize: 20, borderRadius: 8, padding: 8 }}>
+          ...
+        </P>
+      </View>
+    </Card>
+  );
 }

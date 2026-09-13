@@ -1,15 +1,7 @@
-import { CircleNotchIcon } from "@phosphor-icons/react";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { ActivityIndicator } from "react-native";
 
-const variantClass = {
-    primary: "text-white",
-    secondary: "text-night",
-    soft: "text-night-soft",
-};
-
-type SpinnerProps = {
-    variant: "primary" | "secondary" | "soft";
-}
-
-export function Spinner({variant} : SpinnerProps){
-    return <CircleNotchIcon size={64} className={`animate-spin ${variantClass[variant]}`} />
+export function Spinner() {
+  const {theme} = useTheme();
+  return <ActivityIndicator size="large" color={theme.blueCta} />;
 }

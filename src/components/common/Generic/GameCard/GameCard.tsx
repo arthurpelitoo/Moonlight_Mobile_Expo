@@ -1,33 +1,41 @@
 import { formatCurrency } from "../../../../utils/currencyFormatter/formatCurrency";
-import { Button } from "../Button/Button";
-import { Card, CardContent} from "../Card";
 import type { GameCardProps } from "./GameCard.types";
-import { RenderDefaultActions } from "./GameCard.actions";
+import { resolveImageUrl } from "../../../../utils/resolveImage/resolveImageUrl";
+import { Card } from "../Card/Card";
+import { Link } from "expo-router";
+import { RenderDefaultActions } from "./GameCard.Actions";
+import { Image, View } from "react-native";
+import { H3, P } from "../Text";
+import { CardContent } from "../Card/CardContent";
 
-export function GameCard(props : GameCardProps) {
-  const {game, gamePage, actions, isOwned} = props;
+export function GameCard(props: GameCardProps) {
+  const { game, gamePage, actions, isOwned } = props;
 
   return (
-      <Card className="hover:scale-105 hover:border-white/30 transition-all duration-300 cursor-pointer">
-          <Button as="link" href={gamePage} className="block">
-              <img src={game.image} className="h-64 w-full object-contain rounded-md" />
-              <CardContent className="mt-1">
-                <h3>{game.title}</h3>
-                <div className="h-6">
-                  {!isOwned ? (
-                    <p className="text-sm text-gray-400">
-                      {game.price == 0 ? "Grátis" : formatCurrency(game.price)}
-                    </p>
-                  ) : (
-                    <p className="text-sm text-blue-400 font-medium">Na Biblioteca</p>
-                  )}
-                </div>
-              </CardContent>
-          </Button>
-          <div className="flex max-lg:flex-col gap-2 mt-2 items-center text-center">
+      <Card style={{height: "auto"}}>
+          <Link href={gamePage}>
+              <Image
+                source={{ uri: resolveImageUrl(game.image) }}
+                style={{ height: 256, borderRadius: 8, width: "100%" }}
+                resizeMode="contain"
+              />
+                <CardContent style={{ marginTop: 4, alignItems: "center", width: "100%" }}>
+                  <H3 numberOfLines={1}>{game.title}</H3>
+                  <View style={{ height: 24 }}>
+                    {!isOwned ? (
+                      <P>
+                        {game.price == 0 ? "Grátis" : formatCurrency(game.price)}
+                      </P>
+                    ) : (
+                      <P>Na Biblioteca</P>
+                    )}
+                  </View>
+                </CardContent>
+          </Link>
+          <View style={{gap: 4, marginTop: 8, alignItems: "center", flexDirection: "row"}}>
             {
               actions ?? <RenderDefaultActions {...props} />}
-          </div>
+          </View>
       </Card>
   );
 }
