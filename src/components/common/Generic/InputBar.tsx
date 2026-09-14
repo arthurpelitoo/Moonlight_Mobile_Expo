@@ -1,26 +1,35 @@
-import type { ComponentPropsWithoutRef } from "react";
+import { TextInput, StyleSheet } from "react-native";
+import type { TextInputProps } from "react-native";
+import { DARK, FONT, FONT_SIZE } from "@/src/style/theme-pattern";
 
-    type InputBarStyle = "primary" | "secondary" | "terciary";
+type InputBarStyle = "primary" | "secondary" | "terciary";
 
-    type InputBarProps = ComponentPropsWithoutRef<"input"> & {
-        variant?: InputBarStyle;
-    };
+type InputBarProps = TextInputProps & {
+    variant?: InputBarStyle;
+};
 
-    const variantClass = {
-        primary: "bg-night-soft text-black border-3 rounded-md border-night",
-        secondary: "bg-night text-white border-3 rounded-md border-white",
-        terciary: "bg-white/5 border rounded-md transition-all duration-300 focus-within:border-white/40 focus-within:bg-white/8"
-    };
+const variantStyles = {
+    primary:   { backgroundColor: DARK.secondaryBg, borderWidth: 1, borderColor: DARK.borderColor },
+    secondary: { backgroundColor: DARK.bodyBg,      borderWidth: 1, borderColor: DARK.primary },
+    terciary:  { backgroundColor: "transparent",    borderWidth: 0 },
+};
 
-export function InputBar(props : InputBarProps){
-    const {className = "", variant = "primary", ...rest } = props;
-
-    const classPattern = `${variantClass[variant]} ${className}`.trim();
-
-    return(
-        <input
-            className={classPattern}
+export function InputBar({ variant = "primary", style, ...rest }: InputBarProps) {
+    return (
+        <TextInput
+            style={[styles.base, variantStyles[variant], style]}
+            placeholderTextColor={DARK.tertiaryColor}
             {...rest}
         />
-    )
+    );
 }
+
+const styles = StyleSheet.create({
+    base: {
+        flex: 1,
+        fontFamily: FONT.base,
+        fontSize: FONT_SIZE.base,
+        color: DARK.primaryText,
+        paddingVertical: 0,
+    },
+});

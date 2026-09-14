@@ -1,48 +1,90 @@
-import type { ButtonProps } from "./Button.types";
+import { Pressable, Text, StyleSheet, Linking } from "react-native";
+import { Link } from "expo-router";
+import { DARK } from "@/src/style/theme-pattern";
+import type { ButtonProps, ButtonVariant } from "./Button.types";
 
-  const variantClass = {
-    primary: "bg-night text-white transition-all duration-300 max-lg:active:bg-night-hover max-lg:active:scale-95 max-lg:active:text-text-night-hover lg:hover:bg-night-hover lg:hover:text-text-night-hover",
-    secondary: "bg-night-soft/60 text-white transition-all duration-200 hover:bg-night-soft/80 hover:scale-105 active:scale-95",
-    cta: "bg-blue-cta text-white transition-all duration-300 max-lg:active:bg-blue-cta-hover max-lg:active:scale-95 lg:hover:bg-blue-cta-hover lg:hover:scale-105",
-    transparent: "bg-transparent",
-    danger: "bg-red-600 text-white transition-all duration-300 max-lg:active:bg-red-700 max-lg:active:scale-95 lg:hover:bg-red-700 lg:hover:scale-105"
-  };
+const BG: Record<ButtonVariant, string> = {
+    primary:     DARK.secondaryBg,
+    secondary:   DARK.tertiaryBg,
+    cta:         DARK.cta,
+    transparent: "transparent",
+    danger:      DARK.danger,
+};
+
+const TEXT_COLOR: Record<ButtonVariant, string> = {
+    primary:     DARK.primaryText,
+    secondary:   DARK.primaryText,
+    cta:         DARK.ctaText,
+    transparent: DARK.primaryText,
+    danger:      "#FFFFFF",
+};
 
 export function Button(props: ButtonProps) {
-  const { children, icon, className = "", variant = "transparent", as = "button" } = props;
+    const { children, icon, variant = "transparent" } = props;
 
-  const classPattern = `${variantClass[variant]} ${className}`.trim();
+    const bg        = BG[variant];
+    const textColor = TEXT_COLOR[variant];
 
-  if (as === "a") {
-    const { href, ...rest } = props as Extract<ButtonProps, { as: "a" }>;
-    // Utility type do TypeScript : Extract<...>
-    // extraia um tipo de dentro do ButtonProps onde as = "a"
-    // type Resultado = ButtonAsAnchor;
-
-    return (
-      <a href={href} {...rest} className={classPattern}>
-        {icon}
-        {children}
-      </a>
+    const inner = (
+        <>
+            {icon}
+            {typeof children === "string"
+                ? <Text style={[styles.label, { color: textColor }]}>{children}</Text>
+                : children}
+        </>
     );
-  }
 
-  if (as === "link") {
-    const { href, ...rest } = props as Extract<ButtonProps, { as: "link" }>;
+    // Navegação interna (expo-router)
+    if (props.as === "link") {
+        return (
+            <Link href={props.href as any} asChild>
+                <Pressable style={({ pressed }) => [styles.base, { backgroundColor: bg, opacity: pressed ? 0.8 : 1 }]}>
+                    {inner}
+                </Pressable>
+            </Link>
+        );
+    }
+
+    // Link externo
+    if (props.as === "a") {
+        return (
+            <Pressable
+                style={({ pressed }) => [styles.base, { backgroundColor: bg, opacity: pressed ? 0.8 : 1 }]}
+                onPress={() => Linking.openURL(props.href)}
+            >
+                {inner}
+            </Pressable>
+        );
+    }
+
+    // Botão padrão
+    const { as: _as, href: _href, ...rest } = props as any;
     return (
-      <View {...rest} to={href} className={classPattern}>
-        {icon}
-        {children}
-      </View>
+        <Pressable
+            {...rest}
+            style={({ pressed }) => [
+                styles.base,
+                { backgroundColor: bg, opacity: pressed ? 0.8 : 1 },
+                typeof rest.style === "function" ? rest.style({ pressed }) : rest.style,
+            ]}
+        >
+            {inner}
+        </Pressable>
     );
-  }
-
-  const { ...rest } = props as Extract<ButtonProps, { as?: "button" }>;
-
-  return (
-    <button {...rest} className={`${classPattern} cursor-pointer`}>
-      {icon}
-      {children}
-    </button>
-  );
 }
+
+const styles = StyleSheet.create({
+    base: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        borderRadius: 8,
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+    },
+    label: {
+        fontFamily: "Poppins_500Medium",
+        fontSize: 13,
+    },
+});

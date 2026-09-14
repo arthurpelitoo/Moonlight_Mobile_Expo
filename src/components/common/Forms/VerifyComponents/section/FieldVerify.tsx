@@ -1,3 +1,6 @@
+import { View, Text, StyleSheet } from "react-native";
+import { DARK } from "@/src/style/theme-pattern";
+
 type FieldVerifyProps = {
     passed: boolean;
     showError: boolean;
@@ -7,21 +10,30 @@ type FieldVerifyProps = {
 export function FieldVerify({ passed, showError, errorMessage }: FieldVerifyProps) {
     if (!showError) return null;
 
-    const color = passed ? "#1D9E75" : "#EF4444";
+    const color = passed ? DARK.success : DARK.danger;
 
     return (
-        <div className="flex flex-col gap-2 mt-1">
-            <div className="flex gap-1">
-                <div
-                    className="h-0.5 flex-1 rounded-full transition-all duration-500"
-                    style={{ backgroundColor: color }}
-                />
-            </div>
+        <View style={styles.container}>
+            <View style={[styles.bar, { backgroundColor: color }]} />
             {!passed && (
-                <span className="text-xs" style={{ color }}>
+                <Text style={[styles.message, { color }]}>
                     {errorMessage}
-                </span>
+                </Text>
             )}
-        </div>
+        </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        gap: 6,
+        marginTop: 4,
+    },
+    bar: {
+        height: 2,
+        borderRadius: 999,
+    },
+    message: {
+        fontSize: 11,
+    },
+});

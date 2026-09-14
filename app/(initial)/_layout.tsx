@@ -1,15 +1,16 @@
-import { useTheme } from "@/src/contexts/ThemeContext"
-import FontAwesome from "@expo/vector-icons/FontAwesome"
-import { Tabs } from "expo-router"
+import React from 'react';
+import { useTheme } from "@/src/contexts/ThemeContext";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Tabs } from "expo-router";
 
 export default function Layout() {
-    const { theme } = useTheme()
+    const { theme } = useTheme();
 
     return (
         <Tabs
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: theme.primary,
+                tabBarActiveTintColor: theme.cta,
                 tabBarInactiveTintColor: theme.secondaryColor,
                 tabBarStyle: {
                     backgroundColor: theme.secondaryBg,
@@ -21,9 +22,11 @@ export default function Layout() {
                 name="home"
                 options={{
                     title: "Home",
-                    tabBarIcon: ({ color }) => <FontAwesome size={18} name="home" color={color} />
+                    tabBarIcon: ({ color }) => (
+                        <FontAwesome size={18} name="home" color={color} />
+                    ),
                 }}
             />
         </Tabs>
-    )
+    );
 }

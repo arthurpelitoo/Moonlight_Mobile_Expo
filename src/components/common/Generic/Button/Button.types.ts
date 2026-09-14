@@ -1,30 +1,27 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ReactNode } from "react";
+import type { PressableProps } from "react-native";
 
-type ButtonStyle = "primary" | "secondary" | "cta" | "transparent" | "danger";
+export type ButtonVariant = "primary" | "secondary" | "cta" | "transparent" | "danger";
 
 type SharedProps = {
-  children?: ReactNode;
-  icon?: ReactNode;
-  className?: string;
-  variant?: ButtonStyle;
+    children?: ReactNode;
+    icon?: ReactNode;
+    variant?: ButtonVariant;
 };
 
-type AsButton = SharedProps &
-  ComponentPropsWithoutRef<"button"> & {
+type AsButton = SharedProps & PressableProps & {
     as?: "button";
     href?: never;
-  };
-
-type AsAnchor = SharedProps &
-  ComponentPropsWithoutRef<"a"> & {
-    as: "a";
-    href: string;
-  };
-
-type AsLink = SharedProps &
-  ComponentPropsWithoutRef<"a"> & {
-  as: "link";
-  href: string;
 };
 
-export type ButtonProps = AsButton | AsAnchor | AsLink;
+type AsLink = SharedProps & {
+    as: "link";
+    href: string;
+};
+
+type AsAnchor = SharedProps & {
+    as: "a";
+    href: string;
+};
+
+export type ButtonProps = AsButton | AsLink | AsAnchor;
