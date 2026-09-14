@@ -1,32 +1,56 @@
-import { ShoppingCartIcon } from "@phosphor-icons/react";
-import { Button } from "../../../../components/common/Generic/Button/Button";
-import { Card, CardContent, CardHeader } from "../../../../components/common/Generic/Card";
+import { Button } from "@/src/components/common/Generic/Button/Button"
+import { Card } from "@/src/components/common/Generic/Card/Card"
+import { CardContent } from "@/src/components/common/Generic/Card/CardContent"
+import { CardHeader } from "@/src/components/common/Generic/Card/CardHeader"
+import { H1, H2, H3} from "@/src/components/common/Generic/Text"
+import { useTheme } from "@/src/contexts/ThemeContext"
+import { useGlow } from "@/src/hooks/animation/useGlow"
+import { Link } from "expo-router"
+import { ShoppingCartIcon } from "phosphor-react-native"
+import { Animated, View } from "react-native"
 
 type CartItemsQuantityProps = {
     quantity: number
 }
 
-export function CartItemsQuantity({quantity} : CartItemsQuantityProps){
+export function CartItemsQuantity({ quantity }: CartItemsQuantityProps) {
+  const glowOpacity = useGlow();
+  const { theme, space, radius } = useTheme();
 
     if(quantity > 0){
         return(
-            <Card className="flex flex-col gap-10 border p-8">
-                <CardHeader><h1 className="text-2xl text-center">Seu Carrinho</h1></CardHeader>
-                <CardContent className="flex justify-center">
+            <Card style={{gap: space[6], borderColor: theme.borderBase, padding: space[5]}}>
+                <CardHeader><H2 style={{textAlign: "center"}}>Seu Carrinho</H2></CardHeader>
+                <CardContent style={{ justifyContent: "center"}}>
+                  <H3>
                     Tem {quantity} {quantity > 1 ? "itens" : "item"}
+                  </H3>
                 </CardContent>
             </Card>
         )
     } else{
         return(
-            <Card className="flex flex-col gap-10 border p-16">
-                <CardHeader><h1 className="text-2xl text-center">Seu carrinho está vazio.</h1></CardHeader>
-                <CardContent className="flex justify-center">
-                    <Button as="link" href="/" variant="cta" className="p-4 flex gap-2 items-center rounded-md">
-                       <ShoppingCartIcon size={28}/> Ver jogos
-                    </Button> 
+            <Card style={{gap: space[7], borderColor: theme.borderBase, padding: space[9]}}>
+                <CardHeader><H1 style={{textAlign: "center"}}>Seu carrinho está vazio.</H1></CardHeader>
+                <CardContent style={{ justifyContent: "center"}}>
+                    <View>
+                      <Animated.View
+                        style={{
+                          position: "absolute",
+                          inset: -2,
+                          borderRadius: radius.md,
+                          backgroundColor: theme.blueCta,
+                          opacity: glowOpacity,
+                        }}
+                      />
+                      <Link href={`/home`} asChild>
+                        <Button variant="cta" style={{padding: space[2], gap: space[1], alignItems: "center"}}>
+                          <ShoppingCartIcon size={28}/> Ver jogos
+                        </Button>
+                      </Link>
+                    </View>
                 </CardContent>
-                
+
             </Card>
         )
     }

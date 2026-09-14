@@ -1,4 +1,3 @@
-// components/common/Generic/GradientBackground.tsx
 import { useTheme } from "@/src/contexts/ThemeContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, ViewStyle } from "react-native";

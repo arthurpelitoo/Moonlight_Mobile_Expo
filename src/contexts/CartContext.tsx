@@ -46,7 +46,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setItems(newCart);
       await AsyncStorage.setItem("cart", JSON.stringify(newCart));
       Toast.show({ type: "success", text1: "Item adicionado ao carrinho!" })
-      // if (redirect) router.push("/cart");
+      if (redirect) router.push("/cart");
     };
 
     const removeItemFromCart = async (id_game: number): Promise<void> => {

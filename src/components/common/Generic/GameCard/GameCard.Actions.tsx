@@ -75,7 +75,7 @@ export const RenderDefaultActions = (props: GameCardProps) => {
                   opacity: glowOpacity,
                 }}
               />
-              <Button variant="cta" style={{padding: space[2], width: "100%"}} onPress={() => onBuy()}>
+              <Button variant="cta" style={{padding: space[1], width: "100%"}} onPress={() => onBuy()}>
                 Comprar
               </Button>
             </View>
@@ -85,7 +85,7 @@ export const RenderDefaultActions = (props: GameCardProps) => {
           {showCartButton && (
             <Button
               variant={isAlreadyInCart ? "danger" : "primary"}
-              style={{padding: space[3], flexGrow: 0}}
+              style={{padding: space[2], flexGrow: 0}}
               onPress={() => {
                 onCart();
               }}

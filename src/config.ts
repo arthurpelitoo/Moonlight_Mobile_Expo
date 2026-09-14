@@ -7,9 +7,10 @@ const getDynamicHost = (): string => {
   const hostUri = Constants.expoConfig?.hostUri;
   const resultIp = hostUri ? hostUri.split(':')[0] : '10.0.2.2';
 
-  // // Log estruturado mostrando entradas e saída
-  // console.log('🔍 [API Debug] hostUri do Metro:', hostUri);
-  // console.log('🔍 [API Debug] IP Extraído:', resultIp);
+  // Log estruturado mostrando entradas e saída
+  console.log('🔍 [API Debug] hostUri do Metro:', hostUri);
+  console.log('🔍 [API Debug] IP Extraído:', resultIp);
+  console.log('🔍 [API Debug] FINAL:' + `http://${resultIp}:3000`);
 
   return `http://${resultIp}:3000`;
 };

@@ -1,10 +1,14 @@
-import { TrashIcon } from "@phosphor-icons/react";
-import { Button } from "../../../../components/common/Generic/Button/Button";
-import { formatCurrency } from "../../../../utils/currencyFormatter/formatCurrency";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import type { CartItem } from "../../../../@types/common/cartItem";
-import { resolveImageUrl } from "../../../../utils/resolveImage/resolveImageUrl";
+import { CartItem } from "@/src/@types/common/cartItem";
+import { Button } from "@/src/components/common/Generic/Button/Button";
+import { P } from "@/src/components/common/Generic/Text";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { formatCurrency } from "@/src/utils/currencyFormatter/formatCurrency";
+import { resolveImageUrl } from "@/src/utils/resolveImage/resolveImageUrl";
+import { Link, useRouter } from "expo-router";
+import { TrashIcon } from "phosphor-react-native";
+import { Image, StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
+
 
 // CartData.tsx
 type CartDataProps = {
@@ -17,56 +21,60 @@ type CartDataProps = {
 }
 
 export function CartData({ items, onRemove, onClear, totalPrice, isAuthenticated }: CartDataProps) {
-
-    const navigate = useNavigate();
+    const {space, theme, radius} = useTheme()
+    const router = useRouter();
 
     function handleCheckout() {
         if (!isAuthenticated) {
-            toast.error("Faça login para finalizar a compra.");
-            navigate("/login");
+            Toast.show({ type: "info", text1: "Faça login para finalizar a compra."});
+            // router.push("/login");
             return;
         }
     }
 
   return (
-    <div className="flex flex-col gap-4">
+    <View style={{gap: space[2]}}>
       {items.map(item => (
-        <div key={item.id_game} className="flex gap-4 items-center bg-white/5 border border-white/10 rounded-xl p-4">
-          <img src={`${resolveImageUrl(item.image)}`} alt={item.title} className="w-24 h-16 object-cover rounded-lg shrink-0" />
-          <div className="flex-1 min-w-0">
-              <p className="text-white font-medium truncate">{item.title}</p>
-              <p className="text-slate-400 text-sm line-clamp-1">{item.categories?.join(", ")}</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <p className="text-white font-medium">
+        <View key={item.id_game} style={{ backgroundColor: theme.opacityBase, flexDirection: "row", gap: space[2], alignItems: "center", borderColor: theme.borderBase, borderWidth: 1, borderRadius: radius.xl, padding: space[2]}}>
+          <Image source={{ uri: resolveImageUrl(item.image) }} style={{width: 96, height: 64, borderRadius: radius.lg, flexShrink: 0}} resizeMode="contain" />
+          <View style={{flex: 1, minWidth: 0}}>
+            <P numberOfLines={1} ellipsizeMode="tail">{item.title}</P>
+            <P numberOfLines={1} ellipsizeMode="tail" style={{ color: theme.secondaryColor, fontSize: 12 }}>{item.categories?.join(", ")}</P>
+          </View>
+          <View style={{ alignItems: "center", flexDirection: "row", gap: space[4] }}>
+            <P style={{ fontWeight: "500" }}>
               {item.price === 0 ? "Grátis" : `${formatCurrency(item.price)}`}
-            </p>
-            <Button variant="danger" className="block rounded-md p-2 w-fit" onClick={() => onRemove(item.id_game)}>
-              <TrashIcon size={18} />
+            </P>
+            <Button variant="danger" style={{padding: space[2]}} onPress={() => onRemove(item.id_game)}>
+              <TrashIcon size={18} color={theme.textPrimary} />
             </Button>
-          </div>
-        </div>
+          </View>
+        </View>
       ))}
 
-      <div className="flex justify-between items-center border-t border-white/10 pt-4 mt-2">
-        <Button variant="danger" className="block rounded-md p-2 w-fit" onClick={onClear}>
-          Limpar carrinho
-        </Button>
-        <div className="flex items-center gap-6">
-          <div className="text-right">
-            <p className="text-sm text-slate-400">Total</p>
-            <p className="text-xl text-white font-medium">{totalPrice == 0 ? 'Gratuito' : `${formatCurrency(totalPrice)}`}</p>
-          </div>
+      <View style={{ gap: space[6], justifyContent: "space-between", borderTopWidth: 1, borderTopColor: theme.borderBase, paddingTop: space[4], marginTop: space[2]}}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: space[6], justifyContent: "space-between" }}>
           {isAuthenticated
-              ? <Button as="link" href="/checkout" variant="cta" className="px-6 py-2 rounded-md">
-                  Finalizar compra
-                </Button>
-              : <Button as="button" onClick={handleCheckout} variant="cta" className="px-6 py-2 rounded-md">
+              ? <Link href={`/home`} asChild>
+                  <Button variant="cta" style={{padding: space[2]}}>
+                    Finalizar compra
+                  </Button>
+                </Link>
+              : <Button variant="cta" onPress={handleCheckout} style={{padding: space[2]}}>
                   Finalizar compra
                 </Button>
           }
-        </div>
-      </div>
-    </div>
+          <View style={{ alignItems: "flex-end" }}>
+            <P style={{ color: theme.secondaryColor, fontSize: 12 }}>Total</P>
+            <P style={{ fontSize: 18, fontWeight: "500" }}>{totalPrice === 0 ? 'Gratuito' : `${formatCurrency(totalPrice)}`}</P>
+          </View>
+        </View>
+        <View>
+          <Button variant="danger" style={{padding: space[2]}} onPress={onClear}>
+            Limpar carrinho
+          </Button>
+        </View>
+      </View>
+    </View>
   );
 }

@@ -1,18 +1,17 @@
 import type { ComponentPropsWithoutRef } from "react"
+import { StyleProp, View, ViewStyle } from "react-native";
 
-type CardHeaderProps = ComponentPropsWithoutRef<"div"> & {
+type CardHeaderProps = {
   children: React.ReactNode
+  style?: StyleProp<ViewStyle>;
 }
 
 export function CardHeader(props: CardHeaderProps) {
-  
-  const {children, className, ...rest} = props;
-
-  const classPattern = `mb-2 ${className ?? ""}`;
+  const { children, style } = props;
 
   return (
-    <div className={classPattern} {...rest}>
+    <View style={[style]}>
       {children}
-    </div>
+    </View>
   )
 }

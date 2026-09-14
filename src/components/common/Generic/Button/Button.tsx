@@ -1,10 +1,11 @@
 import { Text, TouchableOpacity } from "react-native";
 import { useTheme } from "@/src/contexts/ThemeContext";
 import type { ButtonProps, ButtonVariant } from "./Button.types";
+import React from "react";
 
 // O porque de estar diferente do web: ver ADR em docs/decisions/mobile/components/button
 export function Button({ children, icon, onPress, variant = "transparent", disabled, style, onLayout }: ButtonProps) {
-  const { theme, radius, space, font, fontSize } = useTheme();
+  const { theme, radius, font, fontSize } = useTheme();
 
   const variantStyle: Record<ButtonVariant, { bg: string; text: string }> = {
     primary: { bg: theme.base, text: theme.textPrimary },
@@ -27,6 +28,7 @@ export function Button({ children, icon, onPress, variant = "transparent", disab
           backgroundColor: bg,
           opacity: disabled ? 0.5 : 1,
           borderRadius: radius.md,
+          flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",
         },
@@ -34,12 +36,15 @@ export function Button({ children, icon, onPress, variant = "transparent", disab
       ]}
     >
       {icon}
-      {typeof children === "string" ? (
-        <Text style={{ color: text, fontFamily: font.baseSemibold, fontSize: fontSize.h4 }}>
-          {children}
-        </Text>
-      ) : (
-        children // JSX arbitrário (ex: CategoryCard) vai direto, sem passar por <Text>
+      {React.Children.map(children, (child) =>
+        // string ou número solto precisa de <Text> — qualquer outro tipo (ícone, JSX) passa direto
+        typeof child === "string" || typeof child === "number" ? (
+          <Text style={{ color: text, fontFamily: font.base, fontSize: fontSize.h4 }}>
+            {child}
+          </Text>
+        ) : (
+          child
+        )
       )}
     </TouchableOpacity>
   );
