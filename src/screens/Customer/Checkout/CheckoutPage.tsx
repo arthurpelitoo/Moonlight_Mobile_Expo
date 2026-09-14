@@ -1,40 +1,63 @@
-// CheckoutPage.tsx
-import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
+import { WebView } from 'react-native-webview';
 import { useCheckout } from '../../../hooks/checkout/useCheckout';
-import { Card, CardContent, CardHeader } from '../../../components/common/Generic/Card';
 import { Spinner } from '../../../components/common/Generic/Spinner';
-import { Navigate} from 'react-router-dom';
+import { Animated, ScrollView, View } from 'react-native';
+import { Card } from '@/src/components/common/Generic/Card/Card';
+import { CardHeader } from '@/src/components/common/Generic/Card/CardHeader';
+import { CardContent } from '@/src/components/common/Generic/Card/CardContent';
+import { H1 } from '@/src/components/common/Generic/Text';
+import { useFadeIn } from '@/src/hooks/animation/useFadeIn';
+import { useTheme } from '@/src/contexts/ThemeContext';
+import { useRouter } from 'expo-router';
+import { GradientBackground } from '@/src/components/common/Generic/GradientBackground';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY);
 
-export function CheckoutPage() {
-    const {preferenceId, isLoading} = useCheckout();
+export default function CheckoutPage() {
+    const { space, font } = useTheme();
+    const fadeIn = useFadeIn();
+    const {checkoutUrl, isLoading} = useCheckout();
+    const router = useRouter();
 
     if (isLoading) {
-        return (
-            <div className="w-full h-screen bg-gradient-to-b from-base-soft via-base-soft to-base flex items-center justify-center">
-                <Spinner />
-            </div>
-        );
+      return (
+        <Animated.View style={{ justifyContent: "center", width: "100%", height: "100%", padding: 24, opacity: fadeIn.opacity, transform: fadeIn.transform}}>
+          <Spinner />
+        </Animated.View>
+      );
     }
 
-    if (!isLoading && !preferenceId) {
-        return <Navigate to="/" replace />;
+    if (!checkoutUrl) {
+      router.replace("/home");
+      return null;
     }
 
     return (
-        <main className="min-h-screen bg-gradient-to-b from-base-soft via-base-soft to-base flex flex-col items-center justify-center">
-            {/* Equivalente ao <script data-preference-id> do PHP */}
-            {preferenceId && (
-                <Card variant="primary" className="p-8 animate-fade-in">
-                    <CardHeader><h1 className="text-center text-3xl font-bold text-white">Checkout</h1></CardHeader>
-                    <CardContent>
-                        <Wallet
-                            initialization={{ preferenceId }}
-                        />
-                    </CardContent>
-                </Card>
-            )}
-        </main>
+    <GradientBackground>
+      <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <Animated.View style={{ opacity: fadeIn.opacity, transform: fadeIn.transform}}>
+            <Card variant="primary" style={{padding: space[6]}}>
+                <CardHeader><H1 style={{textAlign: "center", fontFamily: font.baseSemibold}}>Checkout</H1></CardHeader>
+                <CardContent>
+                  <WebView
+                    source={{ uri: checkoutUrl }}
+                    onNavigationStateChange={(navState) => {
+                      // detecta quando o MP redireciona pra sua URL de sucesso/falha/pending
+                      if (navState.url.includes('/checkout/success')) {
+                        router.replace('/home');
+                      } else if (navState.url.includes('/checkout/failure')) {
+                        router.replace('/home');
+                      } else if (navState.url.includes('/checkout/pending')) {
+                        router.replace('/home');
+                      }
+                    }}
+                  />
+                </CardContent>
+            </Card>
+          </Animated.View>
+        </ScrollView>
+      </SafeAreaView>
+    </GradientBackground>
     );
 }

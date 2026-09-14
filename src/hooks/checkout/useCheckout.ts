@@ -10,6 +10,7 @@ export function useCheckout(){
     const { items, totalPrice } = useCart();
     const { user } = useAuth();
     const [preferenceId, setPreferenceId] = useState<string | null>(null);
+    const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const hasFetched = useRef(false);
 
@@ -26,8 +27,10 @@ export function useCheckout(){
         const query: CheckoutQueryPayload = { items, total: Number(totalPrice), user: user! };
 
         createCheckoutPreference(query)
-            .then(({ preference_id }) => setPreferenceId(preference_id))
-            .catch((error) => {
+            .then(({ preference_id, checkout_url }) => {
+              setPreferenceId(preference_id);
+              setCheckoutUrl(checkout_url);
+            }).catch((error) => {
                 hasFetched.current = false; // Se der erro, permite tentar de novo
                 const apiError = error.response?.data?.message;
                 Toast.show({ type: "error", text1: apiError || "Erro ao processar seu pedido."})
@@ -36,5 +39,5 @@ export function useCheckout(){
 
     }, []);
 
-    return { preferenceId, isLoading }
+    return { preferenceId, checkoutUrl, isLoading }
 }

@@ -30,6 +30,9 @@ export default function CustomerLayout() {
           }}
         />
 
+        {/* tela de checkout é exclusivamente redirecionada pela tela do carrinho */}
+        <Drawer.Screen name="checkout" options={{ title: "Checkout", drawerItemStyle: { display: "none" } }} />
+
         {/* telas de detalhe: existem, navegáveis, mas escondidas da lista do menu */}
         <Drawer.Screen name="categories/[id]" options={{ title: "Categoria", drawerItemStyle: { display: "none" } }} />
         <Drawer.Screen name="games/[id]" options={{ title: "Jogo", drawerItemStyle: { display: "none" } }} />

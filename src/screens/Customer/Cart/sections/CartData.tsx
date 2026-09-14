@@ -55,7 +55,7 @@ export function CartData({ items, onRemove, onClear, totalPrice, isAuthenticated
       <View style={{ gap: space[6], justifyContent: "space-between", borderTopWidth: 1, borderTopColor: theme.borderBase, paddingTop: space[4], marginTop: space[2]}}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: space[6], justifyContent: "space-between" }}>
           {isAuthenticated
-              ? <Link href={`/home`} asChild>
+              ? <Link href={`/checkout`} asChild>
                   <Button variant="cta" style={{padding: space[2]}}>
                     Finalizar compra
                   </Button>
