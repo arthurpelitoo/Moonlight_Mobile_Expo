@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useRouter } from "expo-router";
 import { AddressBookIcon, ArrowRightIcon, CheckIcon, EnvelopeIcon, EyeIcon, EyeSlashIcon, LockKeyIcon, UserIcon } from "phosphor-react-native";
 import { Button } from "@/src/components/common/Generic/Button/Button";
 import { LoadingDots } from "@/src/components/common/Forms/LoadingDots";
@@ -12,6 +13,7 @@ import { isEmailValid } from "@/src/utils/Validation/dataRules/User/userEmail";
 import { DARK, FONT, FONT_SIZE } from "@/src/style/theme-pattern";
 
 export function RegisterForm() {
+    const router = useRouter();
     const {
         fields, ui, showErrors,
         setField, setCpf, handleBlur,
@@ -104,7 +106,7 @@ export function RegisterForm() {
             <Button
                 onPress={handleSubmit}
                 disabled={ui.loading}
-                variant="primary"
+                variant="cta"
                 style={styles.submitButton}
             >
                 {ui.loading
@@ -118,9 +120,9 @@ export function RegisterForm() {
 
             <View style={styles.loginRow}>
                 <Text style={styles.loginText}>Já tem uma conta? </Text>
-                <Button variant="transparent" as="link" href="/login">
+                <Pressable onPress={() => router.push("/(initial)/LoginPage")}>
                     <Text style={styles.loginLink}>Fazer login</Text>
-                </Button>
+                </Pressable>
             </View>
 
         </View>

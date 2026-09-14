@@ -1,36 +1,95 @@
-
-import { Button } from "../../../../components/common/Generic/Button/Button";
-import { Card } from "../../../../components/common/Generic/Card";
-import { dir, BackgroundCircle } from "../../../../components/common/Generic/BackgroundCircle";
+import React from "react";
+import {
+    View, Image, ScrollView,
+    KeyboardAvoidingView, Platform, StyleSheet,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { AuthTabs } from "@/src/components/common/Forms/AuthTabs";
 import { LoginForm } from "./sections/LoginForm";
-import moonlightIcone from "@/assets/MoonlightIcone.png";
-import { AuthTabs } from "../../../../components/common/Forms/AuthTabs";
 
+const moonlightIcon = require("@/src/pages/img/MoonlightIcon.png");
 
-function LoginPage() {
+export default function LoginPage() {
+    const router = useRouter();
+    const { theme } = useTheme();
 
     return (
-          <main className="p-24 bg-gradient-to-b from-night-soft via-night-soft to-night flex items-center justify-center">
-            {/* Fundo decorativo */}
-              <BackgroundCircle />
+        <View style={styles.root}>
+            {/* Gradiente de fundo */}
+            <LinearGradient
+                colors={["#000000", "#060D1F", "#000000"]}
+                style={StyleSheet.absoluteFillObject}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
+            />
 
-              <div className="relative w-full max-w-md animate-fade-in">
-                {/* Logo */}
-                <div className="flex justify-center mb-8">
-                    <Button as="link" href="/" className="bg-transparent flex items-center gap-3 group">
-                        <img src={moonlightIcone} alt="Moonlight" className="h-auto w-auto" />
-                    </Button>
-                </div>
+            {/* Glow decorativo */}
+            <View pointerEvents="none" style={[styles.glow, { backgroundColor: theme.cta }]} />
 
-                {/* Card */}
-                <Card className="bg-white/5 border border-white/8 rounded-sm p-8 backdrop-blur-sm">
-                    <AuthTabs/>
-                    <LoginForm/>
-                </Card>
+            <SafeAreaView style={styles.safe}>
+                <KeyboardAvoidingView
+                    style={styles.flex}
+                    behavior={Platform.OS === "ios" ? "padding" : undefined}
+                >
+                    <ScrollView
+                        contentContainerStyle={styles.scroll}
+                        keyboardShouldPersistTaps="handled"
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <View style={styles.content}>
+                            {/* Logo */}
+                            <View style={styles.logoRow}>
+                                <Image
+                                    source={moonlightIcon}
+                                    style={styles.logo}
+                                    resizeMode="contain"
+                                />
+                            </View>
 
-              </div>
-          </main>
+                            {/* Card */}
+                            <View style={[styles.card, {
+                                backgroundColor: theme.secondaryBg,
+                                borderColor: theme.borderColor,
+                            }]}>
+                                <AuthTabs />
+                                <LoginForm />
+                            </View>
+                        </View>
+                    </ScrollView>
+                </KeyboardAvoidingView>
+            </SafeAreaView>
+        </View>
     );
 }
 
-export default LoginPage;
+const styles = StyleSheet.create({
+    root:    { flex: 1, backgroundColor: "#000000" },
+    safe:    { flex: 1 },
+    flex:    { flex: 1 },
+    glow: {
+        position: "absolute",
+        width: 380, height: 380,
+        borderRadius: 190,
+        opacity: 0.07,
+        alignSelf: "center",
+        top: -80,
+    },
+    scroll: {
+        flexGrow: 1,
+        justifyContent: "center",
+        paddingHorizontal: 24,
+        paddingVertical: 32,
+    },
+    content: { width: "100%", maxWidth: 420, alignSelf: "center" },
+    logoRow: { alignItems: "center", marginBottom: 28 },
+    logo:    { width: 70, height: 80 },
+    card: {
+        borderWidth: 1,
+        borderRadius: 14,
+        padding: 24,
+        gap: 16,
+    },
+});
