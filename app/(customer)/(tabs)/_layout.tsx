@@ -1,6 +1,7 @@
 import { useTheme } from "@/src/contexts/ThemeContext"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Tabs } from "expo-router"
+import { HouseIcon, ShoppingCartIcon } from "phosphor-react-native"
 
 export default function TabsLayout() {
     const { theme } = useTheme()
@@ -21,7 +22,14 @@ export default function TabsLayout() {
                 name="home"
                 options={{
                     title: "Home",
-                    tabBarIcon: ({ color }) => <FontAwesome size={18} name="home" color={color} />
+                    tabBarIcon: ({ color }) => <HouseIcon size={18} color={color} />
+                }}
+            />
+            <Tabs.Screen
+                name="cart"
+                options={{
+                    title: "Carrinho",
+                  tabBarIcon: ({ color }) => <ShoppingCartIcon size={18} color={color} />
                 }}
             />
         </Tabs>

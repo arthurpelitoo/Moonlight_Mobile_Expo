@@ -3,6 +3,7 @@ import { CustomerHeader } from "@/src/components/layout/Customer/Header/Customer
 import { useTheme } from "@/src/contexts/ThemeContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Drawer } from "expo-router/drawer";
+import { HouseIcon } from "phosphor-react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function CustomerLayout() {
@@ -25,9 +26,12 @@ export default function CustomerLayout() {
         {/* aponta pro GRUPO de tabs inteiro, não pra uma tela individual */}
         <Drawer.Screen name="(tabs)" options={{
             title: "Home",
-            drawerIcon: ({ color, size }) => <FontAwesome name="home" size={size} color={color} />,
+            drawerIcon: ({ color, size }) => <HouseIcon size={size} color={color} />,
           }}
         />
+
+        {/* tela de checkout é exclusivamente redirecionada pela tela do carrinho */}
+        <Drawer.Screen name="checkout" options={{ title: "Checkout", drawerItemStyle: { display: "none" } }} />
 
         {/* telas de detalhe: existem, navegáveis, mas escondidas da lista do menu */}
         <Drawer.Screen name="categories/[id]" options={{ title: "Categoria", drawerItemStyle: { display: "none" } }} />
