@@ -1,23 +1,31 @@
-import { passwordRules } from "..";
+import { View, Text, StyleSheet } from "react-native";
+import { passwordRules } from "@/src/utils/Validation/dataRules/User/userPassword";
+import { useTheme } from "@/src/contexts/ThemeContext";
 
-type PasswordRulesProps = { password: string; }
-
-export function PasswordCheckList({password} : PasswordRulesProps) {
-    return(
-            <div className="grid grid-cols-1 gap-1 mt-1">
-                {passwordRules.map((rule) => {
-                    const passed = rule.test(password);
-                    return (
-                        <div key={rule.label} className="flex items-center gap-2">
-                            <span className={`transition-colors duration-300 ${passed ? "text-emerald-400" : "text-white/20"}`}>
-                                {passed ? <CheckIcon size={12} weight="bold" /> : <XIcon size={12} weight="bold" />}
-                            </span>
-                            <span className={`text-xs transition-colors duration-300 ${passed ? "text-white/60" : "text-white/25"}`}>
-                                {rule.label}
-                            </span>
-                        </div>
-                    );
-                })}
-            </div>
-    )
+export function PasswordCheckList({ password }: { password: string }) {
+    const { theme } = useTheme();
+    return (
+        <View style={styles.container}>
+            {passwordRules.map((rule) => {
+                const passed = rule.test(password);
+                return (
+                    <View key={rule.label} style={styles.row}>
+                        <Text style={[styles.icon, { color: passed ? theme.success : theme.tertiaryColor }]}>
+                            {passed ? "✓" : "✕"}
+                        </Text>
+                        <Text style={[styles.label, { color: passed ? theme.secondaryColor : theme.tertiaryColor }]}>
+                            {rule.label}
+                        </Text>
+                    </View>
+                );
+            })}
+        </View>
+    );
 }
+
+const styles = StyleSheet.create({
+    container: { gap: 4, marginTop: 4 },
+    row: { flexDirection: "row", alignItems: "center", gap: 8 },
+    icon: { fontSize: 12, fontWeight: "bold" },
+    label: { fontSize: 12 },
+});

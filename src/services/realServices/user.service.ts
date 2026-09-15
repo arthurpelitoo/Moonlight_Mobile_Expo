@@ -1,10 +1,22 @@
 import type { ApiResponse } from "../../@types/common/apiResponse";
 import type { PaginatedResponse } from "../../@types/common/pagination";
-import type { UpdateMeResponseDTO, UserResponseDTO } from "../../@types/user/user.dto";
-import type { UpdateMePayload, UserPaginatedQueryPayload, UserPayload } from "../../@types/user/user.payload";
+import type {
+    UpdateMeResponseDTO,
+    UserResponseDTO,
+} from "../../@types/user/user.dto";
+import type {
+    UpdateMePayload,
+    UserPaginatedQueryPayload,
+    UserPayload,
+} from "../../@types/user/user.payload";
 import { sanitizeData } from "../../utils/sanitizer/sanitizer";
 import { api } from "../api";
-import { createUserMock, fetchUserByIdMock, fetchUsersMock, updateMeMock } from "../fakeServices/user.fakeservice";
+import {
+    createUserMock,
+    fetchUserByIdMock,
+    fetchUsersMock,
+    updateMeMock,
+} from "../fakeServices/user.fakeservice";
 
 
 export async function fetchUsersPaginated(query: UserPaginatedQueryPayload): Promise<PaginatedResponse<UserResponseDTO>> {
@@ -33,21 +45,24 @@ export async function createUser(data: UserPayload): Promise<ApiResponse>{
     return response.data;
 }
 
-
-export async function updateUser(id_user: number, data: UserPayload): Promise<ApiResponse> {
-    const cleanData = sanitizeData(data);
-    const response = await api.put(`/api/users/${id_user}`, cleanData);
-    return response.data;
+export async function updateUser(
+  id_user: number,
+  data: UserPayload,
+): Promise<ApiResponse> {
+  const cleanData = sanitizeData(data);
+  const response = await api.put(`/api/users/${id_user}`, cleanData);
+  return response.data;
 }
 
 export async function deleteUser(id_user: number): Promise<ApiResponse> {
-    const response = await api.delete(`/api/users/${id_user}`);
-    return response.data;
+  const response = await api.delete(`/api/users/${id_user}`);
+  return response.data;
 }
 
-
 // /me para edição permitida do usuario
-export async function updateMe(data: UpdateMePayload): Promise<UpdateMeResponseDTO> {
+export async function updateMe(
+  data: UpdateMePayload,
+): Promise<UpdateMeResponseDTO> {
 
     const cleanData = sanitizeData(data);
     if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {

@@ -1,57 +1,77 @@
-import { useEffect, useState } from "react";
-import { getPasswordVerifiedLevel} from "../../../../utils/Validation/dataRules/User/userPassword";
-import { getAnimationState } from "../../../../utils/ui/animation/animationState";
-import { StrengthBar } from "./section/StrengthBar";
+import { useEffect, useRef, useState } from "react";
+import { View, Text, Animated, StyleSheet } from "react-native";
+import { getPasswordVerifiedLevel } from "@/src/utils/Validation/dataRules/User/userPassword";
 import { PasswordCheckList } from "./section/PasswordCheckList";
+import { StrengthBar } from "./section/StrengthBar";
 
 type PasswordStrengthProps = {
     password: string;
-    showError: boolean
-}
+    showError: boolean;
+};
 
+// Escala de força de senha usa cores próprias (não são tokens do tema) —
+// intencional, pois o tema não define uma escala semântica de 5 níveis.
 function getStrengthLabelText(level: number): { labelText: string; color: string } {
     if (level === 0) return { labelText: "Insira uma senha", color: "#E24B4A" };
-    if (level <= 2) return { labelText: "Fraca", color: "#E24B4A" };
-    if (level === 3) return { labelText: "Razoável", color: "#EF9F27" };
-    if (level === 4) return { labelText: "Boa", color: "#639922" };
-    return { labelText: "Forte", color: "#1D9E75" };
+    if (level <= 2) return { labelText: "Fraca",            color: "#E24B4A" };
+    if (level === 3) return { labelText: "Razoável",        color: "#EF9F27" };
+    if (level === 4) return { labelText: "Boa",             color: "#639922" };
+    return             { labelText: "Forte",                color: "#1D9E75" };
 }
- 
+
 export function PasswordStrength({ password, showError }: PasswordStrengthProps) {
-    const level = getPasswordVerifiedLevel(password); // Level (devolve do 5 até 0)
-    const { labelText, color } = getStrengthLabelText(level); 
+    const level = getPasswordVerifiedLevel(password);
+    const { labelText, color } = getStrengthLabelText(level);
     const [visible, setVisible] = useState(false);
-    const [hidden, setHidden] = useState(false);
-    const animHiddenBar = getAnimationState(hidden);
+    const opacity = useRef(new Animated.Value(1)).current;
 
     useEffect(() => {
-        if(showError) setVisible(true);
+        if (showError) setVisible(true);
     }, [showError]);
 
     useEffect(() => {
         if (level === 5 && visible) {
             const timer = setTimeout(() => {
-                setHidden(true); 
-                setTimeout(() => setVisible(false), 700);
-            }, 2000); 
+                Animated.timing(opacity, {
+                    toValue: 0,
+                    duration: 700,
+                    useNativeDriver: true,
+                }).start(() => setVisible(false));
+            }, 2000);
             return () => clearTimeout(timer);
-        } else{
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            setHidden(false); 
+        } else {
+            Animated.timing(opacity, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
         }
     }, [level, visible]);
- 
+
     if (!visible) return null;
 
     return (
-        <div className={`flex flex-col gap-2 mt-1 transition-all duration-700 ${animHiddenBar.styles.fadeOutOpacity} ${animHiddenBar.styles.heightZero} overflow-hidden`}>
-            <StrengthBar color={color} level={level}/>
-            <div className="flex items-center justify-between">
-                <span className="text-xs" style={{ color }}>
-                    {labelText}
-                </span>
-            </div>
-            <PasswordCheckList password={password}/>
-        </div>
+        <Animated.View style={[styles.container, { opacity }]}>
+            <StrengthBar color={color} level={level} />
+            <View style={styles.labelRow}>
+                <Text style={[styles.label, { color }]}>{labelText}</Text>
+            </View>
+            <PasswordCheckList password={password} />
+        </Animated.View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        gap: 8,
+        marginTop: 4,
+    },
+    labelRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    label: {
+        fontSize: 11,
+    },
+});

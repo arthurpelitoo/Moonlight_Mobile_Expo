@@ -1,36 +1,54 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { InputBar } from "../";
+import { useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import type { ReactNode } from "react";
+import type { TextInputProps } from "react-native";
+import { InputBar } from "@/src/components/common/Generic/InputBar";
+import { useTheme } from "@/src/contexts/ThemeContext";
 
-type InputFieldFormProps = ComponentPropsWithoutRef<"input"> & {
+type InputFieldFormProps = TextInputProps & {
     onChangeState?: (value: string) => void;
     icon?: ReactNode;
     rightElement?: ReactNode;
     label: string;
 };
 
-export function InputFieldForm(props : InputFieldFormProps){
-    const {className = "", onChange, onChangeState, icon, rightElement, label = "...:", id, disabled, ...rest } = props;
+export function InputFieldForm(props: InputFieldFormProps) {
+    const { theme, font, fontSize } = useTheme();
+    const { onChangeText, onChangeState, icon, rightElement, label, editable = true, ...rest } = props;
+    const [focused, setFocused] = useState(false);
 
-    const classPattern = `${className}`.trim();
+    const styles = StyleSheet.create({
+        wrapper: { gap: 6 },
+        label: { fontSize: fontSize.sm },
+        container: { flexDirection: "row", alignItems: "center", gap: 12, borderWidth: 1, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12 },
+        dimmed: { opacity: 0.5 },
+        input: { flex: 1 },
+    });
 
-    return(
-        <>
-            <label htmlFor={id} className={`text-sm ${disabled ? "opacity-50" : ""}`}>{label}</label>
-            <div className={`${disabled ? "opacity-50 cursor-not-allowed" : ""} flex items-center gap-3 bg-white/5 border rounded-md px-4 py-3 transition-all duration-300 focus-within:border-white/40 focus-within:bg-white/8`}>
+
+    return (
+        <View style={styles.wrapper}>
+            <Text style={[styles.label, { color: theme.textPrimary, fontFamily: font.base }, !editable && styles.dimmed]}>
+                {label}
+            </Text>
+            <View style={[
+                styles.container,
+                { backgroundColor: theme.opacityBase, borderColor: theme.borderBase },
+                focused && { borderColor: theme.secondaryColor },
+                !editable && styles.dimmed,
+            ]}>
                 {icon}
                 <InputBar
-                    className={`${classPattern} ${disabled ? "cursor-not-allowed" : ""} w-full pl-2`}
-                    onChange={(event) => {
-                        onChange?.(event); // comportamento padrão
-                        onChangeState?.(event.target.value); // comportamento simplificado
-                    }}
                     variant="terciary"
-                    disabled={disabled}
-                    id={id}
+                    editable={editable}
+                    onChangeText={(value) => { onChangeText?.(value); onChangeState?.(value); }}
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setFocused(false)}
+                    style={styles.input}
                     {...rest}
                 />
                 {rightElement}
-            </div>
-        </>
-    )
+            </View>
+        </View>
+    );
 }

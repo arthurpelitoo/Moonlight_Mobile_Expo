@@ -3,7 +3,7 @@ import { CustomerHeader } from "@/src/components/layout/Customer/Header/Customer
 import { useTheme } from "@/src/contexts/ThemeContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Drawer } from "expo-router/drawer";
-import { HouseIcon } from "phosphor-react-native";
+import { HouseIcon, UserIcon } from "phosphor-react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function CustomerLayout() {
@@ -29,6 +29,14 @@ export default function CustomerLayout() {
             drawerIcon: ({ color, size }) => <HouseIcon size={size} color={color} />,
           }}
         />
+        <Drawer.Screen name="register" options={{
+            title: "Fazer Cadastro ou Login",
+            drawerIcon: ({ color, size }) => <UserIcon size={size} color={color} />,
+          }}
+        />
+
+        {/* Provisorio*/}
+        <Drawer.Screen name="login" options={{ title: "Login", drawerItemStyle: { display: "none" } }}/>
 
         {/* tela de checkout é exclusivamente redirecionada pela tela do carrinho */}
         <Drawer.Screen name="checkout" options={{ title: "Checkout", drawerItemStyle: { display: "none" } }} />

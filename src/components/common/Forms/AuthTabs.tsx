@@ -1,30 +1,56 @@
-
-import { useRouter } from "expo-router";
-import { Button } from "../";
-import { View } from "react-native";
+import React from "react";
+import { View, Pressable } from "react-native";
+import { useRouter, usePathname } from "expo-router";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { P } from "@/src/components/common/Generic/Text";
 
 export function AuthTabs() {
     const router = useRouter();
-    const navigate = useNavigate();
+    const pathname = usePathname();
+    const { theme, space, font } = useTheme();
 
-    return(
-        <View>
-            <Button
-                onPress={() => (router.push("/home"))}
-                variant="primary"
-                className={`flex-1 pb-3 pt-3 text-xs tracking-widest uppercase transition-all duration-300
-                    ${pathname === "/login" ? "text-white border-b border-white -mb-px" : "text-white/30 hover:text-white/60 mb-0"}`}
+    const isLogin = pathname.includes("/login");
+    const isRegister = pathname.includes("/register");
+
+    return (
+        <View style={{ flexDirection: "row", borderBottomWidth: 1, borderBottomColor: theme.borderBase, marginBottom: space[4] }}>
+            <Pressable
+                style={{ flex: 1, alignItems: "center", paddingBottom: space[3], paddingTop: space[1] }}
+                onPress={() => router.push("/login")}
             >
-                Entrar
-            </Button>
-            <Button
-                onPress={() => (router.push("/home"))}
-                variant="primary"
-                className={`flex-1 pb-3 pt-3 text-xs tracking-widest uppercase transition-all duration-300
-                    ${pathname === "/register" ? "text-white border-b border-white -mb-px" : "text-white/30 hover:text-white/60 mb-0"}`}
+                <P style={{
+                    fontFamily: font.baseMedium,
+                    letterSpacing: 1.5,
+                    color: isLogin ? theme.textPrimary : theme.tertiaryColor
+                }}>
+                    ENTRAR
+                </P>
+                {isLogin && (
+                    <View style={{
+                        position: "absolute", bottom: -1, height: 2, width: "50%",
+                        borderRadius: 1, backgroundColor: theme.blueCta
+                    }} />
+                )}
+            </Pressable>
+
+            <Pressable
+                style={{ flex: 1, alignItems: "center", paddingBottom: space[3], paddingTop: space[1] }}
+                onPress={() => router.push("/register")}
             >
-                Criar conta
-            </Button>
+                <P style={{
+                    fontFamily: font.baseMedium,
+                    letterSpacing: 1.5,
+                    color: isRegister ? theme.textPrimary : theme.tertiaryColor
+                }}>
+                    CRIAR CONTA
+                </P>
+                {isRegister && (
+                    <View style={{
+                        position: "absolute", bottom: -1, height: 2, width: "50%",
+                        borderRadius: 1, backgroundColor: theme.blueCta
+                    }} />
+                )}
+            </Pressable>
         </View>
-    )
+    );
 }

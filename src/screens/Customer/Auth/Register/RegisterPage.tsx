@@ -1,34 +1,69 @@
-import moonlightIcone from "@/assets/MoonlightIcone.png";
+import React from "react";
+import {
+    View, Image, ScrollView,
+    KeyboardAvoidingView, Platform, StyleSheet,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
+import { AuthTabs } from "@/src/components/common/Forms/AuthTabs";
 import { RegisterForm } from "./sections/RegisterForm";
-import { BackgroundCircle } from "../../../../components/common/Generic/BackgroundCircle";
-import { Button } from "../../../../components/common/Generic/Button/Button";
-import { Card } from "../../../../components/common/Generic/Card";
-import { AuthTabs } from "../../../../components/common/Forms/AuthTabs";
 
-function RegisterPage() {
+const moonlightIcon = require("@/src/styles/MoonlightIcone.png");
+
+export default function RegisterPage() {
+    const { theme } = useTheme();
 
     return (
-          <main className="p-24 bg-gradient-to-b from-base-soft via-base-soft to-base flex items-center justify-center">
-            {/* Fundo decorativo */}
-              <BackgroundCircle />
+        <GradientBackground>
+            <View pointerEvents="none" style={[styles.glow, { backgroundColor: theme.blueCta }]} />
 
-              <div className="relative w-full max-w-md animate-fade-in">
-                {/* Logo */}
-                <div className="flex justify-center mb-8">
-                    <Button as="link" href="/" className="bg-transparent flex items-center gap-3 group">
-                        <img src={moonlightIcone} alt="Moonlight" className="h-auto w-auto" />
-                    </Button>
-                </div>
+            <SafeAreaView style={styles.safe} edges={["bottom"]}>
+                <KeyboardAvoidingView
+                    style={styles.flex}
+                    behavior={Platform.OS === "ios" ? "padding" : undefined}
+                >
+                    <ScrollView
+                        contentContainerStyle={styles.scroll}
+                        keyboardShouldPersistTaps="handled"
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <View style={styles.content}>
+                            <View style={styles.logoRow}>
+                                <Image source={moonlightIcon} style={styles.logo} resizeMode="contain" />
+                            </View>
 
-                {/* Card */}
-                <Card className="bg-white/5 border border-white/8 rounded-sm p-8 backdrop-blur-sm">
-                    <AuthTabs/>
-                    <RegisterForm />
-                </Card>
-
-              </div>
-          </main>
+                            <View style={[styles.card, { backgroundColor: theme.baseSoft, borderColor: theme.borderBase }]}>
+                                <AuthTabs />
+                                <RegisterForm />
+                            </View>
+                        </View>
+                    </ScrollView>
+                </KeyboardAvoidingView>
+            </SafeAreaView>
+        </GradientBackground>
     );
 }
 
-export default RegisterPage;
+const styles = StyleSheet.create({
+    safe: { flex: 1 },
+    flex: { flex: 1 },
+    glow: {
+        position: "absolute",
+        width: 380, height: 380,
+        borderRadius: 190,
+        opacity: 0.07,
+        alignSelf: "center",
+        top: -80,
+    },
+    scroll: {
+        flexGrow: 1,
+        justifyContent: "center",
+        paddingHorizontal: 24,
+        paddingVertical: 32,
+    },
+    content: { width: "100%", maxWidth: 420, alignSelf: "center" },
+    logoRow: { alignItems: "center", marginBottom: 28 },
+    logo: { width: 70, height: 80 },
+    card: { borderWidth: 1, borderRadius: 14, padding: 24, gap: 16 },
+});
