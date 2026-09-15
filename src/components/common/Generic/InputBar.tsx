@@ -1,6 +1,6 @@
 import { TextInput, StyleSheet } from "react-native";
 import type { TextInputProps } from "react-native";
-import { DARK, FONT, FONT_SIZE } from "@/src/style/theme-pattern";
+import { useTheme } from "@/src/contexts/ThemeContext";
 
 type InputBarStyle = "primary" | "secondary" | "terciary";
 
@@ -8,28 +8,30 @@ type InputBarProps = TextInputProps & {
     variant?: InputBarStyle;
 };
 
-const variantStyles = {
-    primary:   { backgroundColor: DARK.secondaryBg, borderWidth: 1, borderColor: DARK.borderColor },
-    secondary: { backgroundColor: DARK.bodyBg,      borderWidth: 1, borderColor: DARK.primary },
-    terciary:  { backgroundColor: "transparent",    borderWidth: 0 },
-};
-
 export function InputBar({ variant = "primary", style, ...rest }: InputBarProps) {
-    return (
-        <TextInput
-            style={[styles.base, variantStyles[variant], style]}
-            placeholderTextColor={DARK.tertiaryColor}
-            {...rest}
-        />
-    );
-}
+  const {theme, font, fontSize} = useTheme()
 
-const styles = StyleSheet.create({
-    base: {
-        flex: 1,
-        fontFamily: FONT.base,
-        fontSize: FONT_SIZE.base,
-        color: DARK.primaryText,
-        paddingVertical: 0,
-    },
-});
+  const styles = StyleSheet.create({
+      base: {
+          flex: 1,
+          fontFamily: font.base,
+          fontSize: fontSize.base,
+          color: theme.textPrimary,
+          paddingVertical: 0,
+      },
+  });
+
+  const variantStyles = {
+      primary:   { backgroundColor: theme.baseSoft, borderWidth: 1, borderColor: theme.surfaceCard },
+      secondary: { backgroundColor: theme.base,      borderWidth: 1, borderColor: theme.borderBase },
+      terciary:  { backgroundColor: "transparent",    borderWidth: 0 },
+  };
+
+  return (
+      <TextInput
+          style={[styles.base, variantStyles[variant], style]}
+          placeholderTextColor={theme.secondaryColor}
+          {...rest}
+      />
+  );
+}

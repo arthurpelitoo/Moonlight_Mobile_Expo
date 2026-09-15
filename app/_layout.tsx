@@ -1,13 +1,17 @@
 import { useFonts, Poppins_400Regular, Poppins_500Medium, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-
+import { IconContext } from "phosphor-react-native";
 import { Stack } from "expo-router";
-import { ThemeProvider } from '@/src/contexts/ThemeContext';
+import { ThemeProvider, useTheme } from '@/src/contexts/ThemeContext';
+import Toast from 'react-native-toast-message';
+import { CartProvider } from '@/src/contexts/CartContext';
+import { LibraryProvider } from '@/src/contexts/LibraryContext';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
@@ -24,7 +28,22 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <InnerLayout/>
     </ThemeProvider>
   );
+}
+
+function InnerLayout() {
+  const {theme} = useTheme();
+
+  return (
+    <LibraryProvider>
+      <CartProvider>
+        <IconContext.Provider value={{ color: theme.iconBase, size: 24, weight: "regular" }}>
+          <Stack screenOptions={{ headerShown: false }} />
+          <Toast />
+        </IconContext.Provider>
+      </CartProvider>
+    </LibraryProvider>
+  )
 }

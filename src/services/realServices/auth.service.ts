@@ -12,9 +12,9 @@ export async function register(data: {
 
   const cleanData = sanitizeData(data);
 
-  if (process.env.EXPO_USE_MOCK === "true") {
-    return registerMock(cleanData);
-  }
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
+        return registerMock(cleanData);
+    }
 
   const response = await api.post("/api/auth/register", cleanData);
   return response.data;
@@ -25,9 +25,9 @@ export async function loginUser(data: { email: string; password: string }) {
 
   const cleanData = sanitizeData(data);
 
-  if (process.env.EXPO_USE_MOCK === "true") {
-    return loginMock(cleanData);
-  }
+    if(process.env.EXPO_PUBLIC_USE_MOCK === "true"){
+        return loginMock(cleanData);
+    }
 
   const response = await api.post("/api/auth/login", cleanData);
   return response.data;

@@ -1,90 +1,51 @@
-import { Pressable, Text, StyleSheet, Linking } from "react-native";
-import { Link } from "expo-router";
-import { DARK } from "@/src/style/theme-pattern";
+import { Text, TouchableOpacity } from "react-native";
+import { useTheme } from "@/src/contexts/ThemeContext";
 import type { ButtonProps, ButtonVariant } from "./Button.types";
+import React from "react";
 
-const BG: Record<ButtonVariant, string> = {
-    primary:     DARK.secondaryBg,
-    secondary:   DARK.tertiaryBg,
-    cta:         DARK.cta,
-    transparent: "transparent",
-    danger:      DARK.danger,
-};
+// O porque de estar diferente do web: ver ADR em docs/decisions/mobile/components/button
+export function Button({ children, icon, onPress, variant = "transparent", disabled, style, onLayout }: ButtonProps) {
+  const { theme, radius, font, fontSize } = useTheme();
 
-const TEXT_COLOR: Record<ButtonVariant, string> = {
-    primary:     DARK.primaryText,
-    secondary:   DARK.primaryText,
-    cta:         DARK.ctaText,
-    transparent: DARK.primaryText,
-    danger:      "#FFFFFF",
-};
+  const variantStyle: Record<ButtonVariant, { bg: string; text: string }> = {
+    primary: { bg: theme.base, text: theme.textPrimary },
+    secondary: { bg: theme.baseSoft, text: theme.textPrimary },
+    cta: { bg: theme.blueCta, text: theme.ctaText },
+    transparent: { bg: "transparent", text: theme.textPrimary },
+    danger: { bg: theme.danger, text: "#FFFFFF" },
+  };
 
-export function Button(props: ButtonProps) {
-    const { children, icon, variant = "transparent" } = props;
+  const { bg, text } = variantStyle[variant];
 
-    const bg        = BG[variant];
-    const textColor = TEXT_COLOR[variant];
-
-    const inner = (
-        <>
-            {icon}
-            {typeof children === "string"
-                ? <Text style={[styles.label, { color: textColor }]}>{children}</Text>
-                : children}
-        </>
-    );
-
-    // Navegação interna (expo-router)
-    if (props.as === "link") {
-        return (
-            <Link href={props.href as any} asChild>
-                <Pressable style={({ pressed }) => [styles.base, { backgroundColor: bg, opacity: pressed ? 0.8 : 1 }]}>
-                    {inner}
-                </Pressable>
-            </Link>
-        );
-    }
-
-    // Link externo
-    if (props.as === "a") {
-        return (
-            <Pressable
-                style={({ pressed }) => [styles.base, { backgroundColor: bg, opacity: pressed ? 0.8 : 1 }]}
-                onPress={() => Linking.openURL(props.href)}
-            >
-                {inner}
-            </Pressable>
-        );
-    }
-
-    // Botão padrão
-    const { as: _as, href: _href, ...rest } = props as any;
-    return (
-        <Pressable
-            {...rest}
-            style={({ pressed }) => [
-                styles.base,
-                { backgroundColor: bg, opacity: pressed ? 0.8 : 1 },
-                typeof rest.style === "function" ? rest.style({ pressed }) : rest.style,
-            ]}
-        >
-            {inner}
-        </Pressable>
-    );
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      onLayout={onLayout}
+      disabled={disabled}
+      activeOpacity={0.7} // equivalente ao active:scale-95/hover do web — feedback visual ao toque
+      style={[
+        {
+          backgroundColor: bg,
+          opacity: disabled ? 0.5 : 1,
+          borderRadius: radius.md,
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        style, // igual ao do frontweb, permite colocar estilização adicional.
+      ]}
+    >
+      {icon}
+      {React.Children.map(children, (child) =>
+        // string ou número solto precisa de <Text> — qualquer outro tipo (ícone, JSX) passa direto
+        typeof child === "string" || typeof child === "number" ? (
+          <Text style={{ color: text, fontFamily: font.base, fontSize: fontSize.h4 }}>
+            {child}
+          </Text>
+        ) : (
+          child
+        )
+      )}
+    </TouchableOpacity>
+  );
 }
-
-const styles = StyleSheet.create({
-    base: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 8,
-        borderRadius: 8,
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-    },
-    label: {
-        fontFamily: "Poppins_500Medium",
-        fontSize: 13,
-    },
-});

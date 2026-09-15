@@ -1,0 +1,50 @@
+import { CustomDrawerContent } from "@/src/components/layout/Customer/Header/CustomDrawerContent";
+import { CustomerHeader } from "@/src/components/layout/Customer/Header/CustomerHeader";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Drawer } from "expo-router/drawer";
+import { HouseIcon, UserIcon } from "phosphor-react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+export default function CustomerLayout() {
+  const { theme, radius } = useTheme();
+
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Drawer
+        drawerContent={(props) => <CustomDrawerContent {...props} />}
+        screenOptions={{
+          header: () => <CustomerHeader />,
+          drawerStyle: { backgroundColor: theme.base, width: "75%" },
+          drawerActiveTintColor: theme.inverseBase,
+          drawerInactiveTintColor: theme.textPrimary,
+          drawerItemStyle: {
+            borderRadius: radius.md, // troca o "pill" (raio bem alto, padrão da lib) por um raio mais sutil
+          },
+        }}
+      >
+        {/* aponta pro GRUPO de tabs inteiro, não pra uma tela individual */}
+        <Drawer.Screen name="(tabs)" options={{
+            title: "Home",
+            drawerIcon: ({ color, size }) => <HouseIcon size={size} color={color} />,
+          }}
+        />
+        <Drawer.Screen name="register" options={{
+            title: "Fazer Cadastro ou Login",
+            drawerIcon: ({ color, size }) => <UserIcon size={size} color={color} />,
+          }}
+        />
+
+        {/* Provisorio*/}
+        <Drawer.Screen name="login" options={{ title: "Login", drawerItemStyle: { display: "none" } }}/>
+
+        {/* tela de checkout é exclusivamente redirecionada pela tela do carrinho */}
+        <Drawer.Screen name="checkout" options={{ title: "Checkout", drawerItemStyle: { display: "none" } }} />
+
+        {/* telas de detalhe: existem, navegáveis, mas escondidas da lista do menu */}
+        <Drawer.Screen name="categories/[id]" options={{ title: "Categoria", drawerItemStyle: { display: "none" } }} />
+        <Drawer.Screen name="games/[id]" options={{ title: "Jogo", drawerItemStyle: { display: "none" } }} />
+      </Drawer>
+    </GestureHandlerRootView>
+  );
+}

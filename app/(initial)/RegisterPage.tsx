@@ -1,2 +1,0 @@
-export { default } from "@/src/pages/Customer/Auth/Register/RegisterPage";
-

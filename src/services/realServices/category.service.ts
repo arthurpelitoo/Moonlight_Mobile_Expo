@@ -14,34 +14,30 @@ import {
 } from "../fakeServices/category.fakeservice";
 
 export async function fetchCategories(): Promise<CategoryResponseDTO[]> {
-  if (process.env.EXPO_USE_MOCK === "true") {
-    return fetchCategoryMock();
-  }
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
+        return fetchCategoryMock();
+    }
 
   const response = await api.get(`/api/categories`);
   return response.data;
 }
 
-export async function fetchPaginatedCategories(
-  query: CategoryPaginatedQueryPayload,
-): Promise<PaginatedResponse<CategoryResponseDTO>> {
-  if (process.env.EXPO_USE_MOCK === "true") {
-    return fetchPaginatedCategoryMock(query.page, query.limit);
-  }
+export async function fetchPaginatedCategories(query: CategoryPaginatedQueryPayload): Promise<PaginatedResponse<CategoryResponseDTO>> {
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
+        return fetchPaginatedCategoryMock(query.page, query.limit);
+    }
 
   const response = await api.get(`/api/categories/pag`, { params: query });
   return response.data;
 }
 
-export async function fetchCategoryById(
-  id_category: number,
-): Promise<CategoryResponseDTO> {
-  if (process.env.EXPO_USE_MOCK === "true") {
-    return fetchCategoryByIdMock(id_category);
-  }
+export async function fetchCategoryById(id_category: number): Promise<CategoryResponseDTO> {
+    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
+        return fetchCategoryByIdMock(id_category);
+    }
 
-  const response = await api.get(`/api/categories/${id_category}`);
-  return response.data;
+    const response = await api.get(`/api/categories/${id_category}`);
+    return response.data;
 }
 
 export async function createCategory(

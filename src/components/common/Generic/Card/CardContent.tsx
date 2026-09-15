@@ -1,14 +1,16 @@
 import type {ComponentPropsWithoutRef, ReactNode} from "react";
+import { StyleProp, View, ViewStyle } from "react-native";
 
-type CardContentProps = ComponentPropsWithoutRef<"div"> & {
+type CardContentProps = {
   children: React.ReactNode
+  style?: StyleProp<ViewStyle>;
 }
 
 export function CardContent(props: CardContentProps) {
-  const { children, ...rest } = props;
+  const { children, style } = props;
   return (
-    <div {...rest}>
+    <View style={[style]}>
       {children}
-    </div>
+    </View>
   )
 }

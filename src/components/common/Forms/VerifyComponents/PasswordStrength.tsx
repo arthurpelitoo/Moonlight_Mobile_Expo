@@ -9,6 +9,8 @@ type PasswordStrengthProps = {
     showError: boolean;
 };
 
+// Escala de força de senha usa cores próprias (não são tokens do tema) —
+// intencional, pois o tema não define uma escala semântica de 5 níveis.
 function getStrengthLabelText(level: number): { labelText: string; color: string } {
     if (level === 0) return { labelText: "Insira uma senha", color: "#E24B4A" };
     if (level <= 2) return { labelText: "Fraca",            color: "#E24B4A" };

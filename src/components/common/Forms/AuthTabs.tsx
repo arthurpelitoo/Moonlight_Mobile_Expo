@@ -1,51 +1,56 @@
 import React from "react";
-import { View, Pressable, Text, StyleSheet } from "react-native";
+import { View, Pressable } from "react-native";
 import { useRouter, usePathname } from "expo-router";
 import { useTheme } from "@/src/contexts/ThemeContext";
-import { FONT, FONT_SIZE } from "@/src/style/theme-pattern";
+import { P } from "@/src/components/common/Generic/Text";
 
 export function AuthTabs() {
     const router = useRouter();
     const pathname = usePathname();
-    const { theme } = useTheme();
+    const { theme, space, font } = useTheme();
 
-    const isLogin = pathname.includes("Login");
-    const isRegister = pathname.includes("Register");
+    const isLogin = pathname.includes("/login");
+    const isRegister = pathname.includes("/register");
 
     return (
-        <View style={[styles.wrap, { borderBottomColor: theme.borderColor }]}>
+        <View style={{ flexDirection: "row", borderBottomWidth: 1, borderBottomColor: theme.borderBase, marginBottom: space[4] }}>
             <Pressable
-                style={styles.tab}
-                onPress={() => router.push("/(initial)/LoginPage")}
+                style={{ flex: 1, alignItems: "center", paddingBottom: space[3], paddingTop: space[1] }}
+                onPress={() => router.push("/login")}
             >
-                <Text style={[
-                    styles.label,
-                    { color: isLogin ? theme.primaryText : theme.tertiaryColor }
-                ]}>
+                <P style={{
+                    fontFamily: font.baseMedium,
+                    letterSpacing: 1.5,
+                    color: isLogin ? theme.textPrimary : theme.tertiaryColor
+                }}>
                     ENTRAR
-                </Text>
-                {isLogin && <View style={[styles.underline, { backgroundColor: theme.cta }]} />}
+                </P>
+                {isLogin && (
+                    <View style={{
+                        position: "absolute", bottom: -1, height: 2, width: "50%",
+                        borderRadius: 1, backgroundColor: theme.blueCta
+                    }} />
+                )}
             </Pressable>
 
             <Pressable
-                style={styles.tab}
-                onPress={() => router.push("/(initial)/RegisterPage")}
+                style={{ flex: 1, alignItems: "center", paddingBottom: space[3], paddingTop: space[1] }}
+                onPress={() => router.push("/register")}
             >
-                <Text style={[
-                    styles.label,
-                    { color: isRegister ? theme.primaryText : theme.tertiaryColor }
-                ]}>
+                <P style={{
+                    fontFamily: font.baseMedium,
+                    letterSpacing: 1.5,
+                    color: isRegister ? theme.textPrimary : theme.tertiaryColor
+                }}>
                     CRIAR CONTA
-                </Text>
-                {isRegister && <View style={[styles.underline, { backgroundColor: theme.cta }]} />}
+                </P>
+                {isRegister && (
+                    <View style={{
+                        position: "absolute", bottom: -1, height: 2, width: "50%",
+                        borderRadius: 1, backgroundColor: theme.blueCta
+                    }} />
+                )}
             </Pressable>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    wrap:      { flexDirection: "row", borderBottomWidth: 1, marginBottom: 16 },
-    tab:       { flex: 1, alignItems: "center", paddingBottom: 12, paddingTop: 4 },
-    label:     { fontSize: FONT_SIZE.sm, fontFamily: FONT.baseMedium, letterSpacing: 1.5 },
-    underline: { position: "absolute", bottom: -1, height: 2, width: "50%", borderRadius: 1 },
-});
