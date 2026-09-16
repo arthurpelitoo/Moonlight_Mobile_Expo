@@ -21,7 +21,7 @@ export default function Home() {
 
     return (
       <GradientBackground>
-        <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
+        <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
           <ScrollView
             contentContainerStyle={{
               flexGrow: 1,

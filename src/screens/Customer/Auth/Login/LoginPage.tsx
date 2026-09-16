@@ -4,27 +4,26 @@ import {
     KeyboardAvoidingView, Platform, StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
 import { useTheme } from "@/src/contexts/ThemeContext";
 import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
 import { AuthTabs } from "@/src/components/common/Forms/AuthTabs";
 import { LoginForm } from "./sections/LoginForm";
 
-const moonlightIcon = require("@/src/styles/MoonlightIcone.png");
-
 export default function LoginPage() {
-    const router = useRouter();
-    const { theme } = useTheme();
+    const { currentColor, theme } = useTheme();
+    const moonlightIcon =
+      currentColor === "dark" ? require("@/src/styles/MoonlightIcone.png")
+                              : require("@/src/styles/MoonlightIcone_black.webp");
 
     return (
         <GradientBackground>
             {/* Glow decorativo */}
             <View pointerEvents="none" style={[styles.glow, { backgroundColor: theme.blueCta }]} />
 
-            <SafeAreaView style={styles.safe} edges={["bottom"]}>
+            <SafeAreaView style={styles.safe} edges={["left", "right", "bottom"]} >
                 <KeyboardAvoidingView
                     style={styles.flex}
-                    behavior={Platform.OS === "ios" ? "padding" : undefined}
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
                 >
                     <ScrollView
                         contentContainerStyle={styles.scroll}
@@ -61,12 +60,11 @@ const styles = StyleSheet.create({
     },
     scroll: {
         flexGrow: 1,
-        justifyContent: "center",
         paddingHorizontal: 24,
-        paddingVertical: 32,
+        paddingVertical: 64,
     },
     content: { width: "100%", maxWidth: 420, alignSelf: "center" },
-    logoRow: { alignItems: "center", marginBottom: 28 },
+    logoRow: { alignItems: "center", marginBottom: 36 },
     logo: { width: 70, height: 80 },
     card: { borderWidth: 1, borderRadius: 14, padding: 24, gap: 16 },
 });

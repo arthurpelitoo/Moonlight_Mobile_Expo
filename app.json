@@ -4,7 +4,7 @@
     "slug": "Moonlight_Mobile_Expo",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/favicon.png",
+    "icon": "./src/styles/Moonlight_black.webp",
     "scheme": "moonlightmobileexpo",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,32 +14,31 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./src/assets/images/favicon.png",
-        "backgroundImage": "./src/assets/images/favicon.png",
-        "monochromeImage": "./src/assets/images/favicon.png"
+        "foregroundImage": "./src/styles/Moonlight_black.webp",
+        "backgroundImage": "./src/styles/Moonlight_black.webp",
+        "monochromeImage": "./src/styles/Moonlight_black.webp"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "output": "static",
-      "favicon": "./src/assets/images/favicon.png"
+      "favicon": "./src/styles/Moonlight_black.webp"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./src/assets/images/favicon.png",
-          "imageWidth": 200,
+          "image": "./src/styles/Moonlight_black.webp",
+          "imageWidth": 300,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "dark": {
-            "backgroundColor": "#000000"
-          }
+          "backgroundColor": "#ffffff"
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

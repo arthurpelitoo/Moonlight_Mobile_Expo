@@ -7,6 +7,7 @@ import { ThemeProvider, useTheme } from '@/src/contexts/ThemeContext';
 import Toast from 'react-native-toast-message';
 import { CartProvider } from '@/src/contexts/CartContext';
 import { LibraryProvider } from '@/src/contexts/LibraryContext';
+import { AuthProvider } from '@/src/contexts/AuthContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -37,13 +38,15 @@ function InnerLayout() {
   const {theme} = useTheme();
 
   return (
-    <LibraryProvider>
-      <CartProvider>
-        <IconContext.Provider value={{ color: theme.iconBase, size: 24, weight: "regular" }}>
-          <Stack screenOptions={{ headerShown: false }} />
-          <Toast />
-        </IconContext.Provider>
-      </CartProvider>
-    </LibraryProvider>
+    <AuthProvider>
+      <LibraryProvider>
+        <CartProvider>
+          <IconContext.Provider value={{ color: theme.iconBase, size: 24, weight: "regular" }}>
+            <Stack screenOptions={{ headerShown: false }} />
+            <Toast />
+          </IconContext.Provider>
+        </CartProvider>
+      </LibraryProvider>
+    </AuthProvider>
   )
 }

@@ -13,7 +13,7 @@ export function AuthTabs() {
     const isRegister = pathname.includes("/register");
 
     return (
-        <View style={{ flexDirection: "row", borderBottomWidth: 1, borderBottomColor: theme.borderBase, marginBottom: space[4] }}>
+        <View style={{ flexDirection: "row", borderBottomWidth: 1, borderBottomColor: theme.tertiaryColor, marginBottom: space[4] }}>
             <Pressable
                 style={{ flex: 1, alignItems: "center", paddingBottom: space[3], paddingTop: space[1] }}
                 onPress={() => router.push("/login")}

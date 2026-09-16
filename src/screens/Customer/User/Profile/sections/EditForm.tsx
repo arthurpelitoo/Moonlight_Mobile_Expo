@@ -1,121 +1,151 @@
-import { AddressBookIcon, ArrowRightIcon, CheckIcon, EnvelopeIcon, EyeIcon, EyeSlashIcon, LockKeyIcon, UserIcon } from "@phosphor-icons/react";
 import { useAuth } from "../../../../../hooks/auth/useAuth";
 import { Button } from "../../../../../components/common/Generic/Button/Button";
 import { LoadingDots } from "../../../../../components/common/Forms/LoadingDots";
-import { useEditForm } from "../../../../../hooks/validation/customer/useEditForm";
 import { InputFieldForm } from "../../../../../components/common/Forms/InputFieldForm";
 import { PasswordStrength } from "../../../../../components/common/Forms/VerifyComponents/PasswordStrength";
-import { FieldVerify } from "../../../../../components/common/Forms/VerifyComponents/FieldVerify";
 import { isNameValid } from "../../../../../utils/Validation/dataRules/User/userName";
 import { isCPFValid } from "../../../../../utils/Validation/dataRules/User/userCpf";
+import { useEditForm } from "@/src/hooks/validation/Customer/useEditForm";
+import { AddressBookIcon, ArrowRightIcon, CheckIcon, EnvelopeIcon, EyeIcon, EyeSlashIcon, LockKeyIcon, UserIcon } from "phosphor-react-native";
+import { FieldVerify } from "@/src/components/common/Forms/VerifyComponents/section/FieldVerify";
+import { Text, View } from "react-native";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { useFocusEffect } from "expo-router";
+import { useCallback } from "react";
 
 
-export function EditForm(){
+export function EditForm() {
+    const {theme, font, fontSize, space} = useTheme();
     const {user} = useAuth();
-    
-    const {fields, setField, setCpf, showErrors, ui, toggleShowPassword, toggleShowConfirm, handleBlur, handleSubmit} = useEditForm({
+
+    const {fields, setField, setCpf, showErrors, ui, toggleShowPassword, toggleShowConfirm, handleBlur, handleSubmit, resetForm} = useEditForm({
         name: user?.name ?? "",
         cpf: user?.cpf ?? ""
     });
 
     if(!user) return null;
-    
+
+    useFocusEffect(
+      useCallback(() => {
+        resetForm();
+      }, [])
+    )
+
     /**
      * sucesso
      */
     if(ui.success && ui.submitted && !ui.apiError){
         return (
-            <div className="flex flex-col items-center gap-6 py-8 text-center animate-fade-in">
-                <div className="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center">
-                    <CheckIcon size={32} className="text-emerald-400" weight="bold" />
-                </div>
-                <h3 className="text-white text-lg font-light tracking-wider">Alterações Realizadas com sucesso!</h3>
-            </div>
+            <View style={{ alignItems: "center", gap: 24, paddingVertical: 32 }}>
+                <View style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: 32,
+                    borderWidth: 1,
+                    borderColor: "rgba(255,255,255,0.2)",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}>
+                    <CheckIcon size={32} color={theme.success} weight="bold" />
+                </View>
+                <Text style={{ color: theme.textPrimary, fontSize: fontSize.lg, fontFamily: font.base }}>
+                  Alterações Realizadas com sucesso!
+                </Text>
+            </View>
         );
     }
 
     return(
-        <div className="flex flex-col gap-3 w-full">
-            <InputFieldForm 
-                id="edit-name" 
-                label="Nome de usuário" 
-                type="text" 
-                value={fields.name}
-                onChangeState={setField("name")}
-                onBlur={handleBlur("name")}
-                maxLength={16} 
-                icon={<UserIcon size={18} />} 
-                placeholder="Meu nome de usuário" />
+        <View style={{ gap: 12, width: "100%" }}>
+            <InputFieldForm
+                label="Nome de usuário"
+                value={fields.name} onChangeState={setField("name")}
+                onBlur={handleBlur("name")} maxLength={16}
+                icon={<UserIcon size={18} color={theme.secondaryColor} />}
+                placeholder="Meu nome de usuário"
+            />
             <FieldVerify passed={isNameValid(fields.name)} showError={showErrors.showErrorUser} errorMessage="Insira 1 ou até 16 caracteres" />
-            
-            <InputFieldForm id="edit-email" label="Email" type="email" value={user.email} icon={<EnvelopeIcon size={18} />} placeholder="Meu Email" disabled />
 
-            <InputFieldForm 
-                id="edit-cpf" 
-                label="CPF" 
-                type="text" 
-                value={fields.cpf} 
-                inputMode="numeric"
-                autoComplete="off"
-                onChangeState={setCpf}
-                onBlur={handleBlur("cpf")}
-                maxLength={14} 
-                icon={<AddressBookIcon size={18} weight="thin" />}
-                placeholder="Meu Cpf" 
-                />
+            <InputFieldForm
+                label="Email"
+                value={user.email}
+                icon={<EnvelopeIcon size={18} color={theme.secondaryColor} />}
+                placeholder="Meu Email"
+                editable={false}
+            />
+
+            <InputFieldForm
+                label="CPF"
+                keyboardType="numeric"
+                value={fields.cpf} onChangeState={setCpf}
+                onBlur={handleBlur("cpf")} maxLength={14}
+                icon={<AddressBookIcon size={18} color={theme.secondaryColor} weight="thin" />}
+                placeholder="Meu Cpf"
+            />
             <FieldVerify passed={isCPFValid(fields.cpf)} showError={showErrors.showErrorCpf} errorMessage="O cpf não é válido" />
 
-
-            <InputFieldForm 
-                id="edit-password" 
-                label="Senha" 
-                type={ui.showPassword ? "text" : "password"}
+            <InputFieldForm
+                label="Senha"
+                secureTextEntry={!ui.showPassword}
                 value={fields.password} onChangeState={setField("password")}
-                onBlur={handleBlur("password")}
+                onBlur={handleBlur("password")} maxLength={16}
+                icon={<LockKeyIcon size={18} color={theme.secondaryColor} />}
                 placeholder="Minha Senha ou outra nova"
-                maxLength={16}
-                icon={<LockKeyIcon size={18} />}
                 rightElement={
-                    <Button onClick={toggleShowPassword} className="p-0.5 bg-white/5 border rounded-md">
-                        {ui.showPassword ? <EyeSlashIcon size={18} /> : <EyeIcon size={18} />}
+                    <Button onPress={toggleShowPassword} variant="transparent">
+                        {ui.showPassword ? <EyeSlashIcon size={18} color={theme.secondaryColor} /> : <EyeIcon size={18} color={theme.secondaryColor} />}
                     </Button>
-                } 
-                />
-            <PasswordStrength password={fields.password} showError={showErrors.showErrorPassword}/>
+                }
+            />
+            <PasswordStrength password={fields.password} showError={showErrors.showErrorPassword} />
 
-            <InputFieldForm 
-                id="edit-confirm" 
-                label="Confirmar Senha" 
-                type={ui.showPassword ? "text" : "password"}
+            <InputFieldForm
+                label="Confirmar senha"
+                secureTextEntry={!ui.showConfirm}
                 value={fields.confirmPassword} onChangeState={setField("confirmPassword")}
-                onBlur={handleBlur("confirmPassword")}
-                placeholder="Confirme a Senha"
-                maxLength={16}
-                icon={<LockKeyIcon size={18} />}
+                onBlur={handleBlur("confirmPassword")} maxLength={16}
+                icon={<LockKeyIcon size={18} color={theme.secondaryColor} />}
+                placeholder="Confirme a senha"
                 rightElement={
-                    <Button onClick={toggleShowConfirm} className="p-0.5 bg-white/5 border rounded-md">
-                        {ui.showConfirm ? <EyeSlashIcon size={18} /> : <EyeIcon size={18} />}
+                    <Button onPress={toggleShowConfirm} variant="transparent">
+                        {ui.showConfirm ? <EyeSlashIcon size={18} color={theme.secondaryColor} /> : <EyeIcon size={18} color={theme.secondaryColor} />}
                     </Button>
-                } 
-                />
+                }
+            />
             <FieldVerify
                 showError={showErrors.showErrorConfirmPass}
-                passed={fields.password == fields.confirmPassword}
+                passed={fields.password === fields.confirmPassword}
                 errorMessage="As senhas não coincidem"
             />
 
             {ui.apiError && (
-                <p className="text-sm text-red-400 text-center">{ui.apiError}</p>
+                <Text style={{ fontSize: fontSize.sm, color: theme.danger, textAlign: "center", fontFamily: font.base }}>
+                    {ui.apiError}
+                </Text>
             )}
 
             <Button
-                onClick={handleSubmit} disabled={ui.loading}
-                as="button"
-                variant="primary" 
-                className="w-full py-3.5 rounded-md text-sm tracking-widest uppercase font-medium flex items-center justify-center gap-2 mt-2"
+                onPress={handleSubmit}
+                disabled={ui.loading}
+                variant="cta"
+                style={{ padding: space[2], marginVertical: space[2] }}
             >
-                {ui.loading ? <LoadingDots /> : <>Finalizar Alterações <ArrowRightIcon size={16} weight="bold" /></>}
+              {ui.loading
+                  ? <LoadingDots />
+                  : <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                      <Text style={{
+                          color: theme.ctaText,
+                          fontSize: fontSize.md,
+                          fontFamily: font.baseMedium,
+                          letterSpacing: 1.5,
+                          textTransform: "uppercase",
+                      }}>
+                        Finalizar Alterações
+                      </Text>
+                      <ArrowRightIcon size={16} color={theme.ctaText} weight="bold" />
+                  </View>
+              }
             </Button>
-        </div>
+        </View>
     )
 }

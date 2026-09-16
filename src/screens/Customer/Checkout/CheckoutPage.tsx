@@ -21,9 +21,15 @@ export default function CheckoutPage() {
 
     if (isLoading) {
       return (
-        <Animated.View style={{ justifyContent: "center", width: "100%", height: "100%", padding: 24, opacity: fadeIn.opacity, transform: fadeIn.transform}}>
-          <Spinner />
-        </Animated.View>
+        <GradientBackground>
+          <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+            <ScrollView contentContainerStyle={{flexGrow: 1}}>
+              <Animated.View style={{ justifyContent: "center", width: "100%", height: "100%", padding: 24, opacity: fadeIn.opacity, transform: fadeIn.transform}}>
+                <Spinner />
+              </Animated.View>
+            </ScrollView>
+          </SafeAreaView>
+        </GradientBackground>
       );
     }
 
@@ -34,7 +40,7 @@ export default function CheckoutPage() {
 
     return (
     <GradientBackground>
-      <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
+      <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <Animated.View style={{ opacity: fadeIn.opacity, transform: fadeIn.transform}}>
             <Card variant="primary" style={{padding: space[6]}}>

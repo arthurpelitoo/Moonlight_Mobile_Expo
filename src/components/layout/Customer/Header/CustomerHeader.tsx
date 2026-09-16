@@ -6,7 +6,10 @@ import { Link, useNavigation } from "expo-router";
 import { useTheme } from "@/src/contexts/ThemeContext";
 
 export function CustomerHeader() {
-  const { theme, space } = useTheme();
+  const { currentColor, theme, space } = useTheme();
+  const moonlightIcon =
+    currentColor === "dark" ? require("@/src/styles/MoonlightMenor.png")
+                            : require("@/src/styles/MoonlightMenor_black.webp");
   const navigation = useNavigation();
 
   return (
@@ -23,7 +26,7 @@ export function CustomerHeader() {
         <View>
           <Link href={"/home"}>
             <Image
-              source={require("@/src/styles/MoonlightMenor.png")}
+              source={moonlightIcon}
               style={{ width: 200, height: 75 }}
               resizeMode="cover"
             />

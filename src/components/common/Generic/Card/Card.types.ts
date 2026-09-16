@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 
-export type CardVariant = "primary" | "container";
+export type CardVariant = "primary" | "container" | "solid";
 
 export type CardProps = {
   children?: ReactNode // texto dentro do botão

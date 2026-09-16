@@ -23,6 +23,11 @@ export function Card({ children, variant = "primary", style }: CardProps) {
       blur: true,
     },
     container: { bg: "transparent" },
+    solid: {
+      bg: theme.baseSoft,
+      border: theme.borderBase,
+      blur: false,
+    },
   };
 
   const { bg, border, blur } = variantStyle[variant];
