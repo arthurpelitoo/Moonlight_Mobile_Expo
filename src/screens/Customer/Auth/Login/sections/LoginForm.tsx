@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { View, Text } from "react-native";
 import {
     ArrowRightIcon, CheckIcon, EnvelopeIcon,
     EyeIcon, EyeSlashIcon, LockKeyIcon,
 } from "phosphor-react-native";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { Button } from "@/src/components/common/Generic/Button/Button";
 import { LoadingDots } from "@/src/components/common/Forms/LoadingDots";
 import { useLoginForm } from "@/src/hooks/validation/Customer/useLoginForm";
@@ -17,7 +17,16 @@ import { H3 } from "@/src/components/common/Generic/Text";
 export function LoginForm() {
     const {theme, fontSize, font, space} = useTheme();
     const router = useRouter();
-    const { fields, ui, showErrors, setField, handleBlur, toggleShowPassword, handleSubmit } = useLoginForm();
+    const { fields, ui, showErrors, setField, handleBlur, toggleShowPassword, handleSubmit, resetForm } = useLoginForm();
+
+    // useFocusEffect roda toda vez que a tela recebe foco de navegação,
+    // independente de estar montada ou não, que é exatamente o gatilho que precisamos no mobile
+    // (login → home → volta pra login = novo foco = reset).
+    useFocusEffect(
+      useCallback(() => {
+        resetForm();
+      }, [])
+    )
 
     if (ui.submitted && !ui.apiError && ui.success) {
         return (
@@ -98,7 +107,7 @@ export function LoginForm() {
                   ? <LoadingDots />
                   : <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                         <Text style={{
-                            color: "#FFFFFF",
+                            color: theme.ctaText,
                             fontSize: fontSize.md,
                             fontFamily: font.baseMedium,
                             letterSpacing: 1.5,
@@ -106,14 +115,14 @@ export function LoginForm() {
                         }}>
                             Fazer Login
                         </Text>
-                        <ArrowRightIcon size={16} color="#FFFFFF" weight="bold" />
+                        <ArrowRightIcon size={16} color={theme.ctaText} weight="bold" />
                     </View>
                 }
             </Button>
 
             {/* Navega para o cadastro */}
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                <H3 style={{ fontSize: fontSize.md, color: "rgba(255,255,255,0.3)", fontFamily: font.base }}>
+                <H3 style={{ fontSize: fontSize.md, color: theme.textPrimary, fontFamily: font.base }}>
                     Não tem uma conta?{" "}
                 </H3>
                 <Button
@@ -122,7 +131,7 @@ export function LoginForm() {
                 >
                     <Text style={{
                         fontSize: fontSize.md,
-                        color: "rgba(255,255,255,0.7)",
+                        color: theme.textPrimary,
                         fontFamily: font.base,
                         textDecorationLine: "underline",
                     }}>

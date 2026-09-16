@@ -19,7 +19,7 @@ export function InputFieldForm(props: InputFieldFormProps) {
 
     const styles = StyleSheet.create({
         wrapper: { gap: 6 },
-        label: { fontSize: fontSize.sm },
+        label: { fontSize: fontSize.md },
         container: { flexDirection: "row", alignItems: "center", gap: 12, borderWidth: 1, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12 },
         dimmed: { opacity: 0.5 },
         input: { flex: 1 },
@@ -28,7 +28,7 @@ export function InputFieldForm(props: InputFieldFormProps) {
 
     return (
         <View style={styles.wrapper}>
-            <Text style={[styles.label, { color: theme.textPrimary, fontFamily: font.base }, !editable && styles.dimmed]}>
+            <Text style={[styles.label, { color: theme.textPrimary, fontFamily: font.baseMedium }, !editable && styles.dimmed]}>
                 {label}
             </Text>
             <View style={[

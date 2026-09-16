@@ -28,11 +28,11 @@ export function Collapse({ label, children }: CollapseProps) {
         onPress={toggle}
         style={{ backgroundColor: theme.blueCta, width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: space[2], paddingVertical: space[3]}}
       >
-        <P style={{ color: theme.textPrimary }}>{label}</P>
+        <P style={{ color: theme.ctaText }}>{label}</P>
         {open ? (
-          <CaretUpIcon size={16} color={theme.iconBase}/>
+          <CaretUpIcon size={16} color={theme.ctaText}/>
         ) : (
-          <CaretDownIcon size={16} color={theme.iconBase}/>
+          <CaretDownIcon size={16} color={theme.ctaText}/>
         )}
       </Pressable>
 

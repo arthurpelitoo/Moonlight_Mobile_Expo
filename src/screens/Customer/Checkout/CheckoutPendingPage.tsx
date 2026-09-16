@@ -17,7 +17,7 @@ export function CheckoutPendingPage() {
 
   return (
     <GradientBackground style={{ justifyContent: "center", alignItems: "center" }}>
-      <SafeAreaView style={{ flex: 1, width: "100%" }} edges={["bottom"]}>
+      <SafeAreaView style={{ flex: 1, width: "100%" }} edges={["left", "right"]}>
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
           <Animated.View style={{ opacity: fadeIn.opacity, transform: fadeIn.transform, paddingHorizontal: space[5] }}>
             <Card variant="primary" style={{ padding: space[6] }}>

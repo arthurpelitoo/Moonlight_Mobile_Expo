@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from "react-native";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { AddressBookIcon, ArrowRightIcon, CheckIcon, EnvelopeIcon, EyeIcon, EyeSlashIcon, LockKeyIcon, UserIcon } from "phosphor-react-native";
 import { Button } from "@/src/components/common/Generic/Button/Button";
 import { LoadingDots } from "@/src/components/common/Forms/LoadingDots";
@@ -12,6 +12,7 @@ import { isCPFValid } from "@/src/utils/Validation/dataRules/User/userCpf";
 import { isEmailValid } from "@/src/utils/Validation/dataRules/User/userEmail";
 import { useTheme } from "@/src/contexts/ThemeContext";
 import { H3 } from "@/src/components/common/Generic/Text";
+import { useCallback } from "react";
 
 export function RegisterForm() {
     const {theme, fontSize, font, space} = useTheme();
@@ -20,8 +21,14 @@ export function RegisterForm() {
         fields, ui, showErrors,
         setField, setCpf, handleBlur,
         toggleShowPassword, toggleShowConfirm,
-        handleSubmit,
+        handleSubmit, resetForm
     } = useRegisterForm();
+
+    useFocusEffect(
+      useCallback(() : void => {
+        resetForm();
+      }, [])
+    );
 
     if (ui.submitted && !ui.apiError && ui.success) {
         return (
@@ -127,7 +134,7 @@ export function RegisterForm() {
                     ? <LoadingDots />
                     : <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                         <Text style={{
-                            color: "#FFFFFF",
+                            color: theme.ctaText,
                             fontSize: fontSize.md,
                             fontFamily: font.baseMedium,
                             letterSpacing: 1.5,
@@ -135,19 +142,19 @@ export function RegisterForm() {
                         }}>
                             Criar Conta
                         </Text>
-                        <ArrowRightIcon size={16} color={theme.textPrimary} weight="bold" />
+                        <ArrowRightIcon size={16} color={theme.ctaText} weight="bold" />
                     </View>
                 }
             </Button>
 
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                <H3 style={{ fontSize: fontSize.md, color: "rgba(255,255,255,0.3)", fontFamily: font.base }}>
+                <H3 style={{ fontSize: fontSize.md, color: theme.textPrimary, fontFamily: font.base }}>
                     Já tem uma conta?{" "}
                 </H3>
                 <Pressable onPress={() => router.push("/login")}>
                     <Text style={{
                       fontSize: fontSize.md,
-                      color: "rgba(255,255,255,0.7)",
+                      color: theme.textPrimary,
                       fontFamily: font.base,
                       textDecorationLine: "underline",
                     }}>

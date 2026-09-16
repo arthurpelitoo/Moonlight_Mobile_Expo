@@ -10,7 +10,7 @@ export default function GameScreen() {
 
   return (
     <GradientBackground>
-      <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
+      <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <GameDetail id_game={id_game} />
         </ScrollView>

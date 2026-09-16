@@ -4,8 +4,8 @@ import type { AuthUserResponseDTO } from "../../@types/auth/auth.dto";
 export type AuthContextType = {
     user: AuthUserResponseDTO | null;
     token: string | null;
-    login: (token: string, user: AuthUserResponseDTO) => void;
-    logout: () => void;
+    login: (token: string, user: AuthUserResponseDTO) => Promise<void>;
+    logout: () => Promise<void>;
     isAuthenticated: boolean;
     loading: boolean;
 }

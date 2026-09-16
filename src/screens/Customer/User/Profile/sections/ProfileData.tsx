@@ -1,24 +1,30 @@
-import { AddressBookIcon, CoffeeIcon, EnvelopeIcon, UserIcon } from "@phosphor-icons/react";
-import { Card, CardHeader } from "../../../../../components/common/Generic/Card";
+
+import { Card } from "@/src/components/common/Generic/Card/Card";
 import { useAuth } from "../../../../../hooks/auth/useAuth";
 import { formatCPF } from "../../../../../utils/Validation/dataRules/User/userCpf";
+import { CardHeader } from "@/src/components/common/Generic/Card/CardHeader";
+import { H1, P } from "@/src/components/common/Generic/Text";
+import { View } from "react-native";
+import { AddressBookIcon, CoffeeIcon, EnvelopeIcon, UserIcon } from "phosphor-react-native";
+import { useTheme } from "@/src/contexts/ThemeContext";
 
 export function ProfileData() {
+    const {theme, space} = useTheme();
     const {user} = useAuth();
     const isAdmin = user!.roles.includes("admin");
 
     return(
-          <Card className="flex flex-col gap-10 border p-8">
-            <CardHeader><h1 className="text-2xl text-center">Meu Perfil:</h1></CardHeader>
+          <Card variant="solid" style={{gap: space[8], padding: space[8]}}>
+            <CardHeader><H1 style={{textAlign: "center"}}>Meu Perfil:</H1></CardHeader>
             { user && (
-              <div className="flex flex-col items-center">
-                <p className="flex items-center"><UserIcon size={32} weight="thin" /> Nome: {user.name}</p>
-                <p className="flex items-center"><EnvelopeIcon size={32} weight="thin" /> Email: {user.email}</p>
-                <p className="flex items-center"><AddressBookIcon size={32} weight="thin" /> Cpf: {formatCPF(user.cpf)}</p>
+              <View style={{alignItems: "center"}}>
+                <P style={{alignItems: "center"}}><UserIcon color={theme.iconBase} size={32} weight="thin" /> Nome: {user.name}</P>
+                <P style={{alignItems: "center"}}><EnvelopeIcon color={theme.iconBase} size={32} weight="thin" /> Email: {user.email}</P>
+                <P style={{alignItems: "center"}}><AddressBookIcon color={theme.iconBase} size={32} weight="thin" /> Cpf: {formatCPF(user.cpf)}</P>
                 {isAdmin && (
-                  <p className="flex items-center"><CoffeeIcon size={32} weight="thin" /> Admin</p>
+                  <P style={{alignItems: "center"}}><CoffeeIcon color={theme.iconBase} size={32} weight="thin" /> Admin</P>
                 )}
-              </div>
+              </View>
             )}
           </Card>
     )

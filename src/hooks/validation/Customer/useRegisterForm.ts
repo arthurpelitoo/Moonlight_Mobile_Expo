@@ -5,32 +5,38 @@ import { getRegisterFormErrors } from "../../../utils/Validation/formErrors/Cust
 import { formatCPF } from "../../../utils/Validation/dataRules/User/userCpf";
 import { register } from "../../../services/realServices/auth.service";
 
+const initialFields = {
+    name: "",
+    email: "",
+    cpf: "",
+    password: "",
+    confirmPassword: "",
+}
+
+const initialTouched = {
+    name: false,
+    email: false,
+    cpf: false,
+    password: false,
+    confirmPassword: false,
+}
+
+const initialUi = {
+    showPassword: false,
+    showConfirm: false,
+    loading: false,
+    submitted: false,
+    success: false,
+    apiError: null as string | null,
+}
+
 export function useRegisterForm() {
 
-    const [fields, setFields] = useState({
-        name: "",
-        email: "",
-        cpf: "",
-        password: "",
-        confirmPassword: "",
-    });
+    const [fields, setFields] = useState(initialFields);
 
-    const [touched, setTouched] = useState({
-        name: false,
-        email: false,
-        cpf: false,
-        password: false,
-        confirmPassword: false,
-    });
+    const [touched, setTouched] = useState(initialTouched);
 
-    const [ui, setUi] = useState({
-        showPassword: false,
-        showConfirm: false,
-        loading: false,
-        submitted: false,
-        success: false,
-        apiError: null as string | null,
-    });
+    const [ui, setUi] = useState(initialUi);
 
     const { isValid } = validateRegister(fields);
     const showErrors = getRegisterFormErrors(fields, touched, ui.submitted);
@@ -54,6 +60,12 @@ export function useRegisterForm() {
     const toggleShowConfirm = () =>
         setUi(prev => ({ ...prev, showConfirm: !prev.showConfirm }));
 
+    const resetForm = () => {
+      setFields(initialFields);
+      setTouched(initialTouched);
+      setUi(initialUi);
+    }
+
     const handleSubmit = async () => {
         setUi(prev => ({ ...prev, submitted: true, apiError: null }));
         if (!isValid) return;
@@ -67,7 +79,7 @@ export function useRegisterForm() {
                 password: fields.password,
             });
             setUi(prev => ({ ...prev, success: true }));
-            // setTimeout(() => router.replace("/login"), 1500);
+            setTimeout(() => router.replace("/login"), 1500);
         } catch (err) {
             const message = err instanceof Error ? err.message : "Erro inesperado.";
             setUi(prev => ({ ...prev, apiError: message }));
@@ -76,5 +88,5 @@ export function useRegisterForm() {
         }
     };
 
-    return { fields, ui, showErrors, setField, setCpf, handleBlur, toggleShowPassword, toggleShowConfirm, handleSubmit };
+    return { fields, ui, showErrors, setField, setCpf, handleBlur, toggleShowPassword, toggleShowConfirm, handleSubmit, resetForm };
 }

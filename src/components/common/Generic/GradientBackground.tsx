@@ -8,7 +8,10 @@ type Props = {
 };
 
 export function GradientBackground({ children, style }: Props) {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
+  const styles = StyleSheet.create({
+    container: { flex: 1 },
+  });
   return (
     <LinearGradient
       colors={[theme.baseSoft, theme.base, theme.base]} // reaproveita os tokens do theme-pattern.ts
@@ -18,7 +21,3 @@ export function GradientBackground({ children, style }: Props) {
     </LinearGradient>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-});

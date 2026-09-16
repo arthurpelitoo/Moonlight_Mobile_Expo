@@ -2,9 +2,9 @@ import { useEffect, useRef } from "react";
 import { View, Animated, StyleSheet } from "react-native";
 import { useTheme } from "@/src/contexts/ThemeContext";
 
-export function LoadingDots({ color = "light" }: { color?: "light" | "dark" }) {
+export function LoadingDots() {
     const { theme } = useTheme();
-    const dotColor = color === "dark" ? theme.base : theme.tertiaryColor;
+    const dotColor = theme.iconBase;
     const anims = [useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current];
 
     useEffect(() => {

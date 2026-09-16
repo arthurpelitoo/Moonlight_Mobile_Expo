@@ -2,42 +2,58 @@ import { useEffect, useState } from "react";
 import { AuthContext } from "../hooks/auth/useAuth";
 import { setLogoutFn } from "../utils/authBridge/logout";
 import type { AuthUserResponseDTO } from "../@types/auth/auth.dto";
+import * as SecureStore from "expo-secure-store";
 
+const TOKEN_KEY = "token";
+const USER_KEY = "user";
 
 export function AuthProvider({children}: { children: React.ReactNode }){
-    const [loading, setLoading] = useState(true);
-    const [token, setToken] = useState<string | null>(null);
-    const [user, setUser] = useState<AuthUserResponseDTO | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<AuthUserResponseDTO | null>(null);
 
-    useEffect(() => {
-        const savedToken = localStorage.getItem("token");
-        const savedUser = localStorage.getItem("user");
+  useEffect(() => {
+      (async () => {
+        try {
+          const [savedToken, savedUser] = await Promise.all([
+            SecureStore.getItemAsync(TOKEN_KEY),
+            SecureStore.getItemAsync(USER_KEY)
+          ])
 
-        if(savedToken && savedUser){
-             // eslint-disable-next-line react-hooks/exhaustive-deps
-            setToken(savedToken);
-            setUser(JSON.parse(savedUser));
+          if(savedToken && savedUser){
+              setToken(savedToken);
+              setUser(JSON.parse(savedUser));
+          }
+
+        } catch (error) {
+          console.error("Erro ao carregar sessão do SecureStore:", error);
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
+      })
     }, []);
 
     useEffect(() => {
         setLogoutFn(logout);
     }, [])
 
-    const login = (token: string, user: AuthUserResponseDTO) => {
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-        setToken(token);
-        setUser(user);
-    }
+    const login = async (newToken: string, newUser: AuthUserResponseDTO) => {
+        await Promise.all([
+            SecureStore.setItemAsync(TOKEN_KEY, newToken),
+            SecureStore.setItemAsync(USER_KEY, JSON.stringify(newUser)),
+        ]);
+        setToken(newToken);
+        setUser(newUser);
+    };
 
-    const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+    const logout = async () => {
+        await Promise.all([
+            SecureStore.deleteItemAsync(TOKEN_KEY),
+            SecureStore.deleteItemAsync(USER_KEY),
+        ]);
         setToken(null);
         setUser(null);
-    }
+    };
 
     return(
         <AuthContext.Provider value={{ user, token, login, logout, isAuthenticated: !!token, loading }}>

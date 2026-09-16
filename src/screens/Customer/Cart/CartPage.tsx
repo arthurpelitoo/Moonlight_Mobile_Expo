@@ -17,7 +17,7 @@ function CartPage() {
 
   return (
   <GradientBackground>
-    <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
+    <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <Animated.View style={{padding: space[7], position: "relative", width: "100%", gap: space[7], opacity: fadeIn.opacity, transform: fadeIn.transform}}>
           <CartItemsQuantity quantity={items.length}/>

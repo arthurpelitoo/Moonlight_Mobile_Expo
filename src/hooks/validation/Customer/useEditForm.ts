@@ -10,28 +10,34 @@ import { updateMe } from "../../../services/realServices/user.service";
 export function useEditForm(initialData: {name: string, cpf: string}){
     const { login, token, user } = useAuth();
 
-    const [fields, setFields] = useState({
-            name: initialData.name,
-            password: "",
-            confirmPassword: "",
-            cpf: formatCPF(initialData.cpf)
-        });
+        const initialFields = {
+          name: initialData.name,
+          password: "",
+          confirmPassword: "",
+          cpf: formatCPF(initialData.cpf)
+        }
 
-        const [touched, setTouched] = useState({
+        const initialTouched = {
             name: false,
             cpf: false,
             password: false,
             confirmPassword: false,
-        });
+        }
 
-        const [ui, setUi] = useState({
+        const initialUi = {
             showPassword: false,
             showConfirm: false,
             loading: false,
             submitted: false,
             success: false,
             apiError: null as string | null,
-        });
+        }
+
+        const [fields, setFields] = useState(initialFields);
+
+        const [touched, setTouched] = useState(initialTouched);
+
+        const [ui, setUi] = useState(initialUi);
 
         const { isValid } = validateEditUser(fields);
         const showErrors = getEditFormErrors(fields, touched, ui.submitted);
@@ -56,6 +62,11 @@ export function useEditForm(initialData: {name: string, cpf: string}){
         const toggleShowConfirm = () =>
             setUi(prev => ({ ...prev, showConfirm: !prev.showConfirm }));
 
+        const resetForm = () =>{
+          setFields(initialFields);
+          setTouched(initialTouched);
+          setUi(initialUi);
+        }
 
         const handleSubmit = async () => {
             setUi(prev => ({ ...prev, submitted: true, apiError: null }));
@@ -69,13 +80,13 @@ export function useEditForm(initialData: {name: string, cpf: string}){
                     cpf: fields.cpf,
                     password: fields.password,
                 });
-                login(token!, data.user);
+                await login(token!, data.user);
                 setUi(prev => ({ ...prev, success: true }));
                 setTimeout(() => {
                     setUi({ showPassword: false, showConfirm: false, loading: false, success: false, submitted: false, apiError: null }); // reseta
                     setFields(prev => ({ ...prev, password: "", confirmPassword: ""}));
                     setTouched({ name: false, cpf: false, password: false, confirmPassword: false})
-                    // router.replace("/profile");
+                    router.replace("/profile");
                 }, 1500);
             } catch (err) {
                 const message = err instanceof Error ? err.message : "Erro inesperado.";
@@ -85,5 +96,5 @@ export function useEditForm(initialData: {name: string, cpf: string}){
             }
         };
 
-        return { fields, ui, showErrors, setField, setCpf, handleBlur, toggleShowPassword, toggleShowConfirm, handleSubmit };
+        return { fields, ui, showErrors, setField, setCpf, handleBlur, toggleShowPassword, toggleShowConfirm, handleSubmit, resetForm };
 }
