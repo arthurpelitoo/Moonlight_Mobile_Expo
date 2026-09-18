@@ -21,8 +21,6 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     router.replace("/login");
   };
 
-  const protectedItemStyle = { borderRadius: radius.md };
-
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: theme.base, flex: 1 }}>
       <View style={{ padding: space[2], marginBottom: space[4] }}>
