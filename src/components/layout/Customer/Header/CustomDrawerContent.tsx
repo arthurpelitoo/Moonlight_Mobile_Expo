@@ -11,7 +11,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const router = useRouter();
   const moonlightIcon =
     currentColor === "dark" ? require("@/src/styles/MoonlightMenor.png")
-                            : require("@/src/styles/MoonlightMenor_black.webp");
+                            : require("@/src/styles/MoonlightMenor_black.png");
 
   const handleLogout = async () => {
       await logout();
