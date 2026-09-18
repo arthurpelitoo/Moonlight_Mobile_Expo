@@ -34,7 +34,7 @@ export default function CheckoutPage() {
     }
 
     if (!checkoutUrl) {
-      router.replace("/home");
+      router.replace("/");
       return null;
     }
 
@@ -42,24 +42,28 @@ export default function CheckoutPage() {
     <GradientBackground>
       <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
-          <Animated.View style={{ opacity: fadeIn.opacity, transform: fadeIn.transform}}>
-            <Card variant="primary" style={{padding: space[6]}}>
+          <Animated.View style={{ width: "100%", opacity: fadeIn.opacity, transform: fadeIn.transform, gap: space[3], marginVertical: space[7]}}>
+            <Card variant="solid" style={{padding: space[4], alignSelf: "center"}}>
                 <CardHeader><H1 style={{textAlign: "center", fontFamily: font.baseSemibold}}>Checkout</H1></CardHeader>
-                <CardContent>
-                  <WebView
-                    source={{ uri: checkoutUrl }}
-                    onNavigationStateChange={(navState) => {
-                      // detecta quando o MP redireciona pra sua URL de sucesso/falha/pending
-                      if (navState.url.includes('/checkout/success')) {
-                        router.replace('/home');
-                      } else if (navState.url.includes('/checkout/failure')) {
-                        router.replace('/home');
-                      } else if (navState.url.includes('/checkout/pending')) {
-                        router.replace('/home');
-                      }
-                    }}
-                  />
-                </CardContent>
+            </Card>
+
+            <Card variant='solid' style={{padding: space[4], height: "auto"}}>
+              <CardContent style={{ flex: 1 }}>
+                <WebView
+                  source={{ uri: checkoutUrl }}
+                  style={{ flex: 1, width: 300, height: 450 }}
+                  onNavigationStateChange={(navState) => {
+                    // detecta quando o MP redireciona pra sua URL de sucesso/falha/pending
+                    if (navState.url.includes('/checkout/success')) {
+                      router.replace('/(customer)/(protected)/checkout/success');
+                    } else if (navState.url.includes('/checkout/failure')) {
+                      router.replace('/(customer)/(protected)/checkout/failure');
+                    } else if (navState.url.includes('/checkout/pending')) {
+                      router.replace('/(customer)/(protected)/checkout/pending');
+                    }
+                  }}
+                />
+              </CardContent>
             </Card>
           </Animated.View>
         </ScrollView>

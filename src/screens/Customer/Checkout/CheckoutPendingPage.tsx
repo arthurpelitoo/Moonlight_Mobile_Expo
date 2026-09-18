@@ -10,7 +10,7 @@ import { Button } from "@/src/components/common/Generic/Button/Button";
 import { useTheme } from "@/src/contexts/ThemeContext";
 import { useFadeIn } from "@/src/hooks/animation/useFadeIn";
 
-export function CheckoutPendingPage() {
+export default function CheckoutPendingPage() {
   const { space, font } = useTheme();
   const fadeIn = useFadeIn();
   const router = useRouter();
@@ -28,10 +28,10 @@ export function CheckoutPendingPage() {
                 <P style={{ textAlign: "center" }}>
                   Sua compra foi registrada, mas o pagamento (geralmente via Boleto ou Pix) ainda está sendo processado. Atualizaremos o status em "Pedidos" assim que for confirmado.
                 </P>
-                {/*<Button variant="cta" style={{ padding: space[2] }} onPress={() => router.replace("/orders")}>
+                <Button variant="cta" style={{ padding: space[2] }} onPress={() => router.replace("/orders")}>
                   Ver Meus Pedidos
-                </Button>*/}
-                <Button variant="primary" style={{ padding: space[2] }} onPress={() => router.replace("/home")}>
+                </Button>
+                <Button variant="primary" style={{ padding: space[2] }} onPress={() => router.replace("/")}>
                   Continuar Comprando
                 </Button>
               </CardContent>

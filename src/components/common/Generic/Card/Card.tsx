@@ -2,16 +2,7 @@ import { View } from "react-native";
 import { BlurView } from "expo-blur";
 import { useTheme } from "@/src/contexts/ThemeContext";
 import type { CardProps, CardVariant } from "./Card.types";
-
-// converte hex ("#FFFFFF") pra "r, g, b", pra poder aplicar opacidade via rgba()
-// necessário porque theme.inverseBase é hex fixo, não vem pronto em rgb
-function hexToRgb(hex: string): string {
-  const parsed = hex.replace("#", "");
-  const r = parseInt(parsed.substring(0, 2), 16);
-  const g = parseInt(parsed.substring(2, 4), 16);
-  const b = parseInt(parsed.substring(4, 6), 16);
-  return `${r}, ${g}, ${b}`;
-}
+import { hexToRgb } from "@/src/utils/hexToRgb";
 
 export function Card({ children, variant = "primary", style }: CardProps) {
   const { theme, currentColor, radius, space } = useTheme();

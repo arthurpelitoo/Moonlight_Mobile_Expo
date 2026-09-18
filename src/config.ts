@@ -19,6 +19,5 @@ const getDynamicHost = (): string => {
     return `http://${resultIp}:3000`;
 };
 
-//export const API_URL = process.env.EXPO_PUBLIC_API_URL || getDynamicHost();
-export const API_URL = getDynamicHost();
+export const API_URL = process.env.EXPO_PUBLIC_API_URL || getDynamicHost();
 console.log('🔍 [API Debug] FINAL:', API_URL);

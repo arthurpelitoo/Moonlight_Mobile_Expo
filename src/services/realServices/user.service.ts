@@ -14,15 +14,11 @@ import { api } from "../api";
 import {
     createUserMock,
     fetchUserByIdMock,
-    fetchUsersMock,
     updateMeMock,
 } from "../fakeServices/user.fakeservice";
 
 
 export async function fetchUsersPaginated(query: UserPaginatedQueryPayload): Promise<PaginatedResponse<UserResponseDTO>> {
-    if (process.env.EXPO_PUBLIC_USE_MOCK === "true") {
-        return fetchUsersMock(query.page, query.limit);
-    }
 
     const response = await api.get(`/api/users/pag`, { params: query });
     return response.data;

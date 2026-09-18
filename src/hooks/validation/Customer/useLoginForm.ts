@@ -65,7 +65,7 @@ export function useLoginForm() {
             await login(data.token, data.user);
             refreshLibrary();
             setUi(prev => ({ ...prev, success: true }));
-            setTimeout(() => router.replace("/home"), 1500);
+            setTimeout(() => router.replace("/"), 1500);
         } catch (err) {
             const message = err instanceof Error ? err.message : "Erro inesperado.";
             setUi(prev => ({ ...prev, apiError: message }));

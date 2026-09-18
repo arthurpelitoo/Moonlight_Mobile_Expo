@@ -1,27 +1,70 @@
+import { useTheme } from "@/src/contexts/ThemeContext";
 import type { OrderResponseDTO } from "../../../../../@types/order/order.dto";
 import { formatCurrency } from "../../../../../utils/currencyFormatter/formatCurrency";
 import { resolveImageUrl } from "../../../../../utils/resolveImage/resolveImageUrl";
+import { Image, View } from "react-native";
+import { P } from "@/src/components/common/Generic/Text";
 
-export const ExpandedOrderItems = ({ data }: { data: OrderResponseDTO }) => (
-    <div className="p-4 border-l-2 border-primary">
-        <h4 className="text-white/70 text-sm mb-2 uppercase tracking-tighter">Itens do Pedido</h4>
-        <table className="w-full text-white text-sm">
-            <thead>
-                <tr className="border-b border-white/10 text-left">
-                    <th className="py-2">Título</th>
-                    <th className="py-2">Imagem</th>
-                    <th className="py-2 text-right">Preço</th>
-                </tr>
-            </thead>
-            <tbody>
-                {data.games?.map((item, index) => (
-                    <tr key={index} className="border-b border-white/5">
-                        <td className="py-2">{item.title}</td>
-                        <td className="py-2"><img src={`${resolveImageUrl(item.image)}`} className="h-45" /></td>
-                        <td className="py-2 text-right">{formatCurrency(item.price)}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-    </div>
-);
+export function ExpandedOrderItems({ order }: { order: OrderResponseDTO }) {
+  const { theme, space, font, fontSize } = useTheme();
+
+  return (
+    <View
+      style={{
+        borderLeftWidth: 2,
+        borderLeftColor: theme.blueCta, // equivalente ao border-primary do web
+        paddingLeft: space[4],
+        paddingVertical: space[3],
+        gap: space[2],
+      }}
+    >
+      <P style={{
+        color: theme.secondaryColor,
+        fontSize: fontSize.sm,
+        fontFamily: font.baseMedium,
+        textTransform: "uppercase",
+        letterSpacing: 1,
+      }}>
+        Itens do Pedido
+      </P>
+
+      {/* cabeçalho da "tabela", igual ao <thead> do web */}
+      <View style={{
+        flexDirection: "row",
+        borderBottomWidth: 1,
+        borderBottomColor: theme.borderBase,
+        paddingBottom: space[2],
+      }}>
+        <P style={{ flex: 2, color: theme.textPrimary, fontSize: fontSize.sm }}>Título</P>
+        <P style={{ flex: 1, color: theme.textPrimary, fontSize: fontSize.sm }}>Imagem</P>
+        <P style={{ flex: 1, color: theme.textPrimary, fontSize: fontSize.sm, textAlign: "right" }}>Preço</P>
+      </View>
+
+      {/* corpo da "tabela", igual ao <tbody>: um .map() por item, igual ao web */}
+      {order.games?.map((item, index) => (
+        <View
+          key={index}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: space[2],
+            borderBottomWidth: 1,
+            borderBottomColor: theme.opacityBase,
+          }}
+        >
+          <P style={{ flex: 2, color: theme.textPrimary, fontSize: fontSize.sm }} numberOfLines={1}>
+            {item.title}
+          </P>
+          <Image
+            source={{ uri: resolveImageUrl(item.image) }}
+            style={{ flex: 1, height: 45, borderRadius: 4 }}
+            resizeMode="cover"
+          />
+          <P style={{ flex: 1, color: theme.textPrimary, fontSize: fontSize.sm, textAlign: "right" }}>
+            {formatCurrency(item.price)}
+          </P>
+        </View>
+      ))}
+    </View>
+  );
+};

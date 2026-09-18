@@ -43,7 +43,7 @@ export function CartItemsQuantity({ quantity }: CartItemsQuantityProps) {
                           opacity: glowOpacity,
                         }}
                       />
-                      <Link href={`/home`} asChild>
+                      <Link href={`/`} asChild>
                         <Button variant="cta" style={{padding: space[2], gap: space[1], alignItems: "center"}}>
                           <ShoppingCartIcon size={28}/> Ver jogos
                         </Button>

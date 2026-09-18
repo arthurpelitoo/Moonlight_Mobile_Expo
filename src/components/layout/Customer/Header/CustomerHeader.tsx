@@ -24,7 +24,7 @@ export function CustomerHeader() {
         }}
       >
         <View>
-          <Link href={"/home"}>
+          <Link href={"/"}>
             <Image
               source={moonlightIcon}
               style={{ width: 200, height: 75 }}

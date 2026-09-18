@@ -1,41 +1,20 @@
-import { useCallback, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
+import { urlParamStore } from "@/src/utils/urlParamStore";
 
-
-type ParamsRecord = Record<string, string | undefined>;
-
-/**
- * Hook para usar funções que atualizam parametros de pesquisa.
- */
 export function useUpdateUrlParam() {
-  const [params, setParams] = useState<ParamsRecord>({});
+  const params = useSyncExternalStore(urlParamStore.subscribe, urlParamStore.getSnapshot);
 
   const updateURLParam = useCallback((key: string, value: string | undefined) => {
-    setParams((prev) => {
-      const next = { ...prev };
-      if (value) next[key] = value;
-      else delete next[key];
-      return next;
-    });
+    urlParamStore.setParam(key, value);
   }, []);
 
-  const updateURLParams = useCallback((
-    paramsToUpdate: Record<string, string | undefined>,
-  ) => {
-    setParams((prev) => {
-      const next = { ...prev };
-      Object.entries(paramsToUpdate).forEach(([key, value]) => {
-        if (value) next[key] = value;
-        else delete next[key];
-      });
-      return next;
-    });
+  const updateURLParams = useCallback((paramsToUpdate: Record<string, string | undefined>) => {
+    urlParamStore.setParams(paramsToUpdate);
   }, []);
 
   const searchParams = {
-    get: (key: string) => params[key] ?? null
-  }
+    get: (key: string): string | null => params[key] ?? null,
+  };
 
-  return {
-    searchParams, updateURLParam, updateURLParams
-  }
+  return { searchParams, updateURLParam, updateURLParams };
 }
