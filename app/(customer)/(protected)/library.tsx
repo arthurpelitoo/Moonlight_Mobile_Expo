@@ -1,5 +1,1 @@
-export default function LibraryPage() {
-  return (
-    <></>
-  );
-}
+export { default } from "@/src/screens/Customer/User/Library/LibraryPage";
