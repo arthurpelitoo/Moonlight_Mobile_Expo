@@ -1,18 +1,23 @@
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
 const getDynamicHost = (): string => {
+  if (Platform.OS === 'web') {
+      // No navegador, a própria página já roda no host correto (geralmente localhost)
+      const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+      console.log('🔍 [API Debug] Rodando na WEB, host da página:', host);
+      return `http://${host}:3000`;
+    }
 
-  // Pega o IP que o servidor do Expo (Metro Bundler) está usando
-  // Exemplo de retorno de hostUri: "192.168.1.42:8081"
-  const hostUri = Constants.expoConfig?.hostUri;
-  const resultIp = hostUri ? hostUri.split(':')[0] : '10.0.2.2';
+    // Fluxo nativo (Android/iOS/emulador), igual já funcionava
+    const hostUri = Constants.expoConfig?.hostUri;
+    const resultIp = hostUri ? hostUri.split(':')[0] : '10.0.2.2';
 
-  // Log estruturado mostrando entradas e saída
-  console.log('🔍 [API Debug] hostUri do Metro:', hostUri);
-  console.log('🔍 [API Debug] IP Extraído:', resultIp);
-  console.log('🔍 [API Debug] FINAL:' + `http://${resultIp}:3000`);
+    console.log('🔍 [API Debug] hostUri do Metro:', hostUri);
+    console.log('🔍 [API Debug] IP Extraído:', resultIp);
 
-  return `http://${resultIp}:3000`;
+    return `http://${resultIp}:3000`;
 };
 
-export const API_URL = getDynamicHost() || process.env.EXPO_PUBLIC_API_URL ;
+export const API_URL = process.env.EXPO_PUBLIC_API_URL || getDynamicHost();
+console.log('🔍 [API Debug] FINAL:', API_URL);

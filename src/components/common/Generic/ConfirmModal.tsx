@@ -1,34 +1,56 @@
+import { Modal, View } from "react-native";
 import { Button } from "./Button/Button";
+import { P } from "./Text";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import type { ReactNode } from "react";
 
 type ConfirmModalProps = {
-  icon: React.ReactNode;
+  icon: ReactNode;
   title: string;
   message: string;
   onConfirm: () => void;
   onCancel: () => void;
-}
+};
 
 export function ConfirmModal({ icon, title, message, onConfirm, onCancel }: ConfirmModalProps) {
+  const { theme, space, radius, font, fontSize } = useTheme();
+
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 animate-fade-in">
-      <div className="bg-base-soft border border-white/10 rounded-xl p-8 w-[340px] flex flex-col gap-6">
+    <Modal visible transparent animationType="fade" onRequestClose={onCancel}>
+      <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.6)", alignItems: "center", justifyContent: "center" }}>
+        <View style={{
+          backgroundColor: theme.baseSoft,
+          borderWidth: 1,
+          borderColor: theme.borderBase,
+          borderRadius: radius.xl,
+          padding: space[8],
+          width: 340,
+          gap: space[6],
+        }}>
+          <View style={{ gap: space[2] }}>
+            {icon}
+            <P style={{ color: theme.textPrimary, fontFamily: font.baseMedium }}>{title}</P>
+            <P style={{ fontSize: fontSize.sm, color: theme.secondaryColor, lineHeight: 20 }}>{message}</P>
+          </View>
 
-        <div className="flex flex-col gap-2">
-          {icon}
-          <p className="text-white font-medium">{title}</p>
-          <p className="text-sm text-slate-400 leading-relaxed">{message}</p>
-        </div>
-
-        <div className="flex gap-2 justify-end">
-          <Button id="modal-cancel-btn" variant="secondary" onClick={onCancel} className="px-4 py-2 rounded-md border border-white/15 text-slate-400 text-sm hover:bg-white/5 hover:text-white transition-all">
-            Cancelar
-          </Button>
-          <Button id="modal-confirm-btn" variant="danger" onClick={onConfirm} className="px-4 py-2 rounded-md text-sm font-medium">
-            Confirmar
-          </Button>
-        </div>
-
-      </div>
-    </div>
+          <View style={{ flexDirection: "row", gap: space[2], justifyContent: "flex-end" }}>
+            <Button
+              variant="primary"
+              onPress={onCancel}
+              style={{ paddingHorizontal: space[4], paddingVertical: space[2], borderRadius: radius.md, borderWidth: 1, borderColor: theme.borderBase }}
+            >
+              <P style={{ color: theme.secondaryColor, fontSize: fontSize.sm }}>Cancelar</P>
+            </Button>
+            <Button
+              variant="danger"
+              onPress={onConfirm}
+              style={{ paddingHorizontal: space[4], paddingVertical: space[2], borderRadius: radius.md }}
+            >
+              <P style={{ color: "#FFF", fontSize: fontSize.sm, fontFamily: font.baseMedium }}>Confirmar</P>
+            </Button>
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 }

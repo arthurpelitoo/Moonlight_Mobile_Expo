@@ -50,7 +50,7 @@ export function GameDetail({id_game} : GameDetailProps){
 
     useEffect(() => {
       if (!isLoading && !game) {
-        router.replace("/home");
+        router.replace("/");
       }
     }, [isLoading, game]);
 

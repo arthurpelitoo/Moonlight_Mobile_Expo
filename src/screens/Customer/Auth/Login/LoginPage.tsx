@@ -13,7 +13,7 @@ export default function LoginPage() {
     const { currentColor, theme } = useTheme();
     const moonlightIcon =
       currentColor === "dark" ? require("@/src/styles/MoonlightIcone.png")
-                              : require("@/src/styles/MoonlightIcone_black.webp");
+                              : require("@/src/styles/MoonlightIcone_black.png");
 
     return (
         <GradientBackground>

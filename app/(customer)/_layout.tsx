@@ -2,14 +2,16 @@ import { CustomDrawerContent } from "@/src/components/layout/Customer/Header/Cus
 import { CustomerHeader } from "@/src/components/layout/Customer/Header/CustomerHeader";
 import { useTheme } from "@/src/contexts/ThemeContext";
 import { useAuth } from "@/src/hooks/auth/useAuth";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Drawer } from "expo-router/drawer";
-import { BooksIcon, HouseIcon, ReceiptIcon, SignInIcon, UserIcon } from "phosphor-react-native";
+import { HouseIcon, SignInIcon} from "phosphor-react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function CustomerLayout() {
   const { theme, radius } = useTheme();
   const { isAuthenticated } = useAuth();
+
+  const visibleItemStyle = { borderRadius: radius.md };
+  const hiddenItemStyle = { display: "none" as const };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -20,9 +22,7 @@ export default function CustomerLayout() {
           drawerStyle: { backgroundColor: theme.base, width: "75%" },
           drawerActiveTintColor: theme.inverseBase,
           drawerInactiveTintColor: theme.textPrimary,
-          drawerItemStyle: {
-            borderRadius: radius.md,
-          },
+          drawerItemStyle: visibleItemStyle
         }}
       >
         {/* aponta pro GRUPO de tabs inteiro, não pra uma tela individual */}
@@ -35,44 +35,19 @@ export default function CustomerLayout() {
         <Drawer.Screen name="register" options={{
             title: "Fazer Cadastro ou Login",
             drawerIcon: ({ color, size }) => <SignInIcon size={size} color={color} />,
-            drawerItemStyle: isAuthenticated
-              ? { display: "none" }
-              : { borderRadius: radius.md },
+            drawerItemStyle: isAuthenticated ? hiddenItemStyle : visibleItemStyle,
           }}
         />
 
-        <Drawer.Screen name="profile" options={{
-            title: "Perfil",
-            drawerIcon: ({ color, size }) => <UserIcon size={size} color={color} />,
-            drawerItemStyle: isAuthenticated
-              ? { borderRadius: radius.md }
-              : { display: "none" },
-          }}
-        />
+        <Drawer.Screen name="(protected)" options={{ drawerItemStyle: hiddenItemStyle }} />
 
-        <Drawer.Screen name="library" options={{
-            title: "Biblioteca",
-            drawerIcon: ({ color, size }) => <BooksIcon size={size} color={color} />,
-            drawerItemStyle: isAuthenticated
-              ? { borderRadius: radius.md }
-              : { display: "none" },
-          }}
-        />
-
-        <Drawer.Screen name="orders" options={{
-            title: "Meus Pedidos",
-            drawerIcon: ({ color, size }) => <ReceiptIcon size={size} color={color} />,
-            drawerItemStyle: isAuthenticated
-              ? { borderRadius: radius.md }
-              : { display: "none" },
-          }}
-        />
-        {/* Telas Ocultas do Menu Lateral */}
-
-        <Drawer.Screen name="login" options={{ title: "Login", drawerItemStyle: { display: "none" } }}/>
-        <Drawer.Screen name="checkout" options={{ title: "Checkout", drawerItemStyle: { display: "none" } }} />
-        <Drawer.Screen name="categories/[id]" options={{ title: "Categoria", drawerItemStyle: { display: "none" } }} />
-        <Drawer.Screen name="games/[id]" options={{ title: "Jogo", drawerItemStyle: { display: "none" } }} />
+        <Drawer.Screen name="(protected)/checkout/success" options={{ title: "Checkout", drawerItemStyle: hiddenItemStyle }} />
+        <Drawer.Screen name="(protected)/checkout/pending" options={{ title: "Checkout Pendente", drawerItemStyle: hiddenItemStyle }} />
+        <Drawer.Screen name="(protected)/checkout/failure" options={{ title: "Falha de Checkout", drawerItemStyle: hiddenItemStyle }} />
+        <Drawer.Screen name="(protected)/checkout" options={{ title: "Checkout", drawerItemStyle: hiddenItemStyle }} />
+        <Drawer.Screen name="login" options={{ title: "Login", drawerItemStyle: hiddenItemStyle }} />
+        <Drawer.Screen name="categories/[id]" options={{ title: "Categoria", drawerItemStyle: hiddenItemStyle }} />
+        <Drawer.Screen name="games/[id]" options={{ title: "Jogo", drawerItemStyle: hiddenItemStyle }} />
       </Drawer>
     </GestureHandlerRootView>
   );

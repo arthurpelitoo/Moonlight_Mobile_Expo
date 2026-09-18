@@ -13,24 +13,25 @@ export function AuthProvider({children}: { children: React.ReactNode }){
   const [user, setUser] = useState<AuthUserResponseDTO | null>(null);
 
   useEffect(() => {
-      (async () => {
-        try {
-          const [savedToken, savedUser] = await Promise.all([
-            SecureStore.getItemAsync(TOKEN_KEY),
-            SecureStore.getItemAsync(USER_KEY)
-          ])
+        async function loadSession() {
+          try {
+            const [savedToken, savedUser] = await Promise.all([
+              SecureStore.getItemAsync(TOKEN_KEY),
+              SecureStore.getItemAsync(USER_KEY)
+            ]);
 
-          if(savedToken && savedUser){
-              setToken(savedToken);
-              setUser(JSON.parse(savedUser));
+            if (savedToken && savedUser) {
+                setToken(savedToken);
+                setUser(JSON.parse(savedUser));
+            }
+          } catch (error) {
+            console.error("Erro ao carregar sessão do SecureStore:", error);
+          } finally {
+            setLoading(false);
           }
-
-        } catch (error) {
-          console.error("Erro ao carregar sessão do SecureStore:", error);
-        } finally {
-          setLoading(false);
         }
-      })
+
+        loadSession();
     }, []);
 
     useEffect(() => {

@@ -1,18 +1,22 @@
+import { ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
+import { Card } from "@/src/components/common/Generic/Card/Card";
+import { H2 } from "@/src/components/common/Generic/Text";
+import { useTheme } from "@/src/contexts/ThemeContext";
 import { UserDataTable } from "./sections/UserDataTable";
-import { useUserFilters } from "../../../hooks/filters/admin/useUserFilters";
 
-export function UserDashboardPage() {
-    const { filters } = useUserFilters();
+export default function UserDashboardPage() {
+  const { space } = useTheme();
 
-    return(
-        <main className="pt-10 min-h-screen bg-gradient-to-b from-base-soft via-base-soft to-base">
-            <header className="mb-10 justify-self-center w-fit bg-white/5 text-white rounded-xl p-4 border border-white/8 backdrop-blur-sm">
-                <h1 className="text-2xl text-center ">Tabela de Usuarios</h1>
-            </header>
-
-            <div className="container justify-self-center">
-              <UserDataTable {...filters}/>
-            </div>
-        </main>
-    )
+  return (
+    <GradientBackground>
+      <SafeAreaView style={{ flex: 1 }} edges={["right", "left"]}>
+        <ScrollView contentContainerStyle={{ padding: space[5], gap: space[6], alignItems: "center" }}>
+          <Card variant="solid"><H2>Tabela de Usuários</H2></Card>
+          <UserDataTable/>
+        </ScrollView>
+      </SafeAreaView>
+    </GradientBackground>
+  );
 }

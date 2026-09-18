@@ -9,7 +9,7 @@ export function CustomerHeader() {
   const { currentColor, theme, space } = useTheme();
   const moonlightIcon =
     currentColor === "dark" ? require("@/src/styles/MoonlightMenor.png")
-                            : require("@/src/styles/MoonlightMenor_black.webp");
+                            : require("@/src/styles/MoonlightMenor_black.png");
   const navigation = useNavigation();
 
   return (
@@ -24,7 +24,7 @@ export function CustomerHeader() {
         }}
       >
         <View>
-          <Link href={"/home"}>
+          <Link href={"/"}>
             <Image
               source={moonlightIcon}
               style={{ width: 200, height: 75 }}

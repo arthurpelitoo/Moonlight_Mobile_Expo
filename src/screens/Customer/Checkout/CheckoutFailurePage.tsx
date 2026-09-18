@@ -10,7 +10,7 @@ import { Button } from "@/src/components/common/Generic/Button/Button";
 import { useTheme } from "@/src/contexts/ThemeContext";
 import { useFadeIn } from "@/src/hooks/animation/useFadeIn";
 
-export function CheckoutFailurePage() {
+export default function CheckoutFailurePage() {
   const { space, font } = useTheme();
   const fadeIn = useFadeIn();
   const router = useRouter();
@@ -28,10 +28,10 @@ export function CheckoutFailurePage() {
                 <P style={{ textAlign: "center" }}>
                   Seu pagamento foi recusado pela operadora. Tente com outra forma de pagamento ou entre em contato com seu banco.
                 </P>
-                {/*<Button variant="cta" style={{ padding: space[2] }} onPress={() => router.replace("/orders")}>
+                <Button variant="cta" style={{ padding: space[2] }} onPress={() => router.replace("/orders")}>
                   Ver Meus Pedidos
-                </Button>*/}
-                <Button variant="primary" style={{ padding: space[2] }} onPress={() => router.replace("/home")}>
+                </Button>
+                <Button variant="primary" style={{ padding: space[2] }} onPress={() => router.replace("/")}>
                   Continuar Comprando
                 </Button>
               </CardContent>

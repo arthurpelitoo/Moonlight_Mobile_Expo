@@ -1,12 +1,9 @@
 import { useTheme } from "@/src/contexts/ThemeContext"
-import { useAuth } from "@/src/hooks/auth/useAuth"
-import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Tabs } from "expo-router"
-import { HouseIcon, ShoppingCartIcon, UserIcon } from "phosphor-react-native"
+import { HouseIcon, ShoppingCartIcon} from "phosphor-react-native"
 
 export default function TabsLayout() {
     const { theme } = useTheme()
-    const { isAuthenticated } = useAuth();
 
     return (
         <Tabs
@@ -21,7 +18,7 @@ export default function TabsLayout() {
             }}
         >
             <Tabs.Screen
-                name="home"
+                name="index"
                 options={{
                     title: "Home",
                     tabBarIcon: ({ color }) => <HouseIcon size={18} color={color} />
@@ -34,15 +31,6 @@ export default function TabsLayout() {
                   tabBarIcon: ({ color }) => <ShoppingCartIcon size={18} color={color} />
                 }}
             />
-
-            {/*<Tabs.Screen
-              name="profile"
-              options={{
-                  title: "Perfil",
-                  tabBarIcon: ({ color }) => <UserIcon size={18} color={color} />,
-                  href: isAuthenticated ? undefined : null
-              }}
-            />*/}
         </Tabs>
     )
 }

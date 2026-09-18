@@ -1,99 +1,92 @@
-import { PlusIcon, SlidersIcon, WarningIcon } from "@phosphor-icons/react/dist/ssr";
-import { ConfirmModal } from "../../../../components/common/Generic/ConfirmModal";
-import { Table } from "../../../../components/common/Generic/Table/Table";
-import { Button } from "../../../../components/common/Generic/Button/Button";
-import { useFetchUsersTable } from "../../../../hooks/fetchItems/table/useFetchUsersTable";
-import { useUserTable } from "../../../../hooks/tables/useUserTable";
-import { useMemo, useState } from "react";
-import type { UserPaginatedQueryPayload } from "../../../../@types/user/user.payload";
-import { useUserFilters } from "../../../../hooks/filters/admin/useUserFilters";
-import { SearchInputBar } from "../../../../components/common/Generic/SearchInputBar";
-import { useUpdateUrlParam } from "../../../../hooks/updateUrlParam/useUpdateUrlParam";
+import { useCallback, useMemo, useState } from "react";
+import { View } from "react-native";
+import { PlusIcon, SlidersIcon, WarningIcon } from "phosphor-react-native";
+import { ConfirmModal } from "@/src/components/common/Generic/ConfirmModal";
+import { Table } from "@/src/components/common/Generic/Table/Table";
+import { Button } from "@/src/components/common/Generic/Button/Button";
+import { SearchInputBar } from "@/src/components/common/Generic/SearchInputBar";
+import { P } from "@/src/components/common/Generic/Text";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { useFetchUsersTable } from "@/src/hooks/fetchItems/table/useFetchUsersTable";
+import { useUserTable } from "@/src/hooks/tables/admin/useUserTable";
+import { useUserFilters } from "@/src/hooks/filters/admin/useUserFilters";
+import { useUpdateUrlParam } from "@/src/hooks/updateUrlParam/useUpdateUrlParam";
 import { UserFilterSideBar } from "./UserFilterSideBar";
+import type { UserPaginatedQueryPayload } from "@/src/@types/user/user.payload";
+import { useFocusEffect, useRouter } from "expo-router";
 
-type UserDataTableProps = {
-  email?: string;
-  cpf?: string;
-  role?: string;
-};
+export function UserDataTable() {
+  const { theme, space, radius } = useTheme();
+  const router = useRouter();
 
-export function UserDataTable(props: UserDataTableProps) {
   const { filters } = useUserFilters();
-  const { updateURLParam } = useUpdateUrlParam();
+  const { updateURLParam, updateURLParams } = useUpdateUrlParam();
   const [name, setName] = useState(filters.name ?? "");
 
   const query: UserPaginatedQueryPayload = useMemo(() => ({
-      page: 1,
-      limit: 5,
-      random: false,
-      name: filters.name,
-      cpf: props.cpf,
-      email: props.email,
-      role: props.role
-  }), [props, filters.name]);
+    limit: 5, random: false,
+    name: filters.name, cpf: filters.cpf, email: filters.email, role: filters.role,
+  }), [filters.name, filters.cpf, filters.email, filters.role]);
 
-  const {users, isLoading, refetch, onPageChange, totalRows} = useFetchUsersTable(query);
+  const { users, isLoading, refetch, internalPage, setInternalPage, totalRows } = useFetchUsersTable(query);
+
   const { UserColumns, confirmDeleteId, setConfirmDeleteId, handleDelete } = useUserTable(refetch);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      updateURLParams({ name: undefined, cpf: undefined, email: undefined, role: undefined });
+      refetch();
+    }, [])
+  )
 
   return (
     <>
-      {drawerOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-20 transition-opacity"
-          onClick={() => setDrawerOpen(false)}
+      <UserFilterSideBar open={filterOpen} onClose={() => setFilterOpen(false)} />
+      {confirmDeleteId && (
+        <ConfirmModal
+          icon={<WarningIcon size={18} color="#f87171" />}
+          title="Apagar Registro"
+          message="Tem certeza de que deseja apagar este registro?"
+          onConfirm={() => {
+            handleDelete(confirmDeleteId)
+            refetch();
+          }}
+          onCancel={() => setConfirmDeleteId(null)}
         />
       )}
-      <UserFilterSideBar open={drawerOpen} onClose={() => setDrawerOpen(false)} />
-      {confirmDeleteId &&
-          <ConfirmModal
-              icon={
-                  <div className="w-10 h-10 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center">
-                      <WarningIcon size={18} color="#f87171" />
-                  </div>
-              }
-              title="Apagar Registro"
-              message="Tem certeza de que deseja apagar este registro?"
-              onConfirm={() => handleDelete(confirmDeleteId)}
-              onCancel={() => setConfirmDeleteId(null)}
-          />
-      }
       <Table
-          columns={UserColumns}
-          data={users || []}
-          isLoading={isLoading}
-          subHeader
-          subHeaderComponent={
-            <div className="flex max-md:flex-col items-center justify-between gap-4 w-full">
-              <div className="flex flex-col gap-2 p-2 w-full">
-                <h3 className="text-left max-md:text-center">Pesquisar por nome:</h3>
-                <div className="flex max-md:flex-col items-center gap-4 w-full">
-                  <SearchInputBar
-                    classNameDiv="w-full"
-                    id="user-name-search"
-                    placeholder="Pesquisar nome..."
-                    name="user-name"
-                    value={name}
-                    onChange={setName}
-                    onSearch={(value) => updateURLParam("name", value)}
-                  />
-                  <Button
-                    onClick={() => setDrawerOpen(true)}
-                    className="shrink-0 w-fit flex items-center gap-2 px-2 py-2 border border-white/20 rounded-md text-sm text-white hover:bg-white/10 transition-colors"
-                  >
-                    <SlidersIcon size={18} />
-                    <span className="max-md:hidden">Filtros</span>
-                  </Button>
-                </div>
-              </div>
-              <Button id="user-add-btn" as="link" href="/admin/users/create" variant="cta" className="flex items-center gap-2 px-4 py-2 rounded-md">
-                  <PlusIcon size={32} weight="thin" /> Cadastrar usuário
+        columns={UserColumns}
+        data={users || []}
+        isLoading={isLoading}
+        subHeader
+        subHeaderComponent={
+          <View style={{ gap: space[3], width: "100%" }}>
+            <P>Pesquisar por nome:</P>
+            <View style={{ flexDirection: "row", gap: space[2], alignItems: "center" }}>
+              <View style={{ flex: 1 }}>
+                <SearchInputBar
+                  placeholder="Pesquisar nome..."
+                  value={name}
+                  onChangeText={setName}
+                  onSearch={(value: string) => updateURLParam("name", value)}
+                />
+              </View>
+              <Button variant="primary" onPress={() => setFilterOpen(true)} style={{ padding: space[2], borderRadius: radius.md }}>
+                <SlidersIcon size={18} color={theme.textPrimary} />
               </Button>
-            </div>
-          }
-          onPageChange={onPageChange}
-          totalRows={totalRows}
-        />
+            </View>
+            <Button variant="cta" onPress={() => router.push("/admin/users/create")} style={{ padding: space[3], borderRadius: radius.md, flexDirection: "row", gap: space[2], justifyContent: "center" }}>
+              <PlusIcon size={18} color="#FFF" weight="thin" />
+              <P style={{ color: "#FFF" }}>Cadastrar usuário</P>
+            </Button>
+          </View>
+        }
+        pageSize={query.limit}
+        currentPage={internalPage}
+        onPageChange={setInternalPage}
+        totalRows={totalRows}
+      />
     </>
-  )
+  );
 }

@@ -4,7 +4,7 @@
     "slug": "Moonlight_Mobile_Expo",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/styles/Moonlight_black.webp",
+    "icon": "./src/styles/Moonlight_black.png",
     "scheme": "moonlightmobileexpo",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,24 +14,23 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./src/styles/Moonlight_black.webp",
-        "backgroundImage": "./src/styles/Moonlight_black.webp",
-        "monochromeImage": "./src/styles/Moonlight_black.webp"
+        "foregroundImage": "./src/styles/Moonlight_black.png",
+        "backgroundImage": "./src/styles/Moonlight_black.png",
+        "monochromeImage": "./src/styles/Moonlight_black.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
-      "output": "static",
-      "favicon": "./src/styles/Moonlight_black.webp"
+      "output": "static"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./src/styles/Moonlight_black.webp",
+          "image": "./src/styles/Moonlight_black.png",
           "imageWidth": 300,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"

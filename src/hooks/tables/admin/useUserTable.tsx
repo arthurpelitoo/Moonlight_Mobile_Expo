@@ -1,40 +1,23 @@
-// import type { TableColumn } from "react-data-table-component";
-// import { PencilIcon, TrashIcon } from "@phosphor-icons/react";
-// import { Button } from "../../components/common/Generic/Button/Button";
+import { UserResponseDTO } from "@/src/@types/user/user.dto";
+import { Button } from "@/src/components/common/Generic/Button/Button";
+import { P } from "@/src/components/common/Generic/Text";
+import { deleteUser } from "@/src/services/realServices/user.service";
+import { appTableFeatures } from "@/src/utils/tableFeatures";
+import { formatCPF } from "@/src/utils/Validation/dataRules/User/userCpf";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useRouter } from "expo-router";
+import { PencilIcon, TrashIcon } from "phosphor-react-native";
 import { useState } from "react";
-import { deleteUser } from "../../../services/realServices/user.service";
-import { router } from "expo-router";
-import { formatCPF } from "../../../utils/Validation/dataRules/User/userCpf";
 import Toast from "react-native-toast-message";
-import type { UserResponseDTO } from "../../../@types/user/user.dto";
+
+const columnHelper = createColumnHelper<typeof appTableFeatures, UserResponseDTO>();
 
 export function useUserTable(refetch: () => void){
     const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
-
-
-    // const UserColumns: TableColumn<UserResponseDTO>[] = [
-    //     { name: 'Nome', selector: (row: UserResponseDTO) => row.name, sortable: true },
-    //     { name: 'Email', selector: (row: UserResponseDTO) => row.email },
-    //     { name: 'Cpf', selector: (row: UserResponseDTO) => formatCPF(row.cpf) },
-    //     {
-    //         name: 'Tipo',
-    //         selector: (row: UserResponseDTO) => (
-    //             row.type === "customer" ? 'Cliente': row.type === "admin" ? 'Admin' : ''
-    //         )
-    //     },
-    //     {
-    //         name: 'Ações',
-    //         cell: (row: UserResponseDTO, rowIndex: number) => (
-    //         <>
-    //             <Button id={`user-edit-btn-${rowIndex}`} variant="transparent" onClick={() => handleEdit(row)}>{<PencilIcon size={32}/>}</Button>
-    //             <Button id={`user-delete-btn-${rowIndex}`} variant="transparent" onClick={() => setConfirmDeleteId(row.id_user!)}>{<TrashIcon size={32}/>}</Button>
-    //         </>
-    //         ),
-    //     }
-    // ]
+    const router = useRouter();
 
     const handleEdit = (row: UserResponseDTO) => {
-        // router.push(`/admin/users/edit/${row.id_user}`, { state: {user: row} });
+        router.push(`/admin/users/edit/${row.id_user}`);
     }
     const handleDelete = async (id_user: number) => {
         try{
@@ -43,10 +26,42 @@ export function useUserTable(refetch: () => void){
             refetch();
         } catch(err){
             const message = err instanceof Error ? err.message : "Erro inesperado.";
-          Toast.show({ type: "error", text1: message});
+            Toast.show({ type: "error", text1: message })
         }
     }
 
-    // return {UserColumns, confirmDeleteId, setConfirmDeleteId, handleDelete};
-    return {confirmDeleteId, setConfirmDeleteId, handleDelete};
+    const UserColumns = columnHelper.columns([
+      columnHelper.accessor("name", {
+        header: "Nome",
+        cell: (info) => <P>{info.getValue()}</P>
+      }),
+      columnHelper.accessor("email", {
+        header: "E-Mail",
+        cell: (info) => <P>{info.getValue()}</P>
+      }),
+      columnHelper.accessor("cpf", {
+        header: "Cpf",
+        cell: (info) => <P>{formatCPF(info.getValue())}</P>
+      }),
+      columnHelper.accessor("roles", {
+        header: "Cargos",
+        cell: (info) => <P>{info.getValue().join(", ")}</P>
+      }),
+      columnHelper.display({
+        id: "actions",
+        header: "Ações",
+        cell: ({ row }) => (
+          <>
+            <Button variant="transparent" onPress={() => handleEdit(row.original)}>
+              <PencilIcon size={32} />
+            </Button>
+            <Button variant="transparent" onPress={() => setConfirmDeleteId(row.original.id_user!)}>
+              <TrashIcon size={32} />
+            </Button>
+          </>
+        ),
+      }),
+    ])
+
+    return {UserColumns, confirmDeleteId, setConfirmDeleteId, handleDelete};
 }

@@ -12,7 +12,7 @@ import { useTheme } from "@/src/contexts/ThemeContext";
 import { useFadeIn } from "@/src/hooks/animation/useFadeIn";
 import { useCart } from "@/src/hooks/cart/useCart";
 
-export function CheckoutSuccessPage() {
+export default function CheckoutSuccessPage() {
   const { space, font } = useTheme();
   const fadeIn = useFadeIn();
   const router = useRouter();
@@ -33,10 +33,10 @@ export function CheckoutSuccessPage() {
               </CardHeader>
               <CardContent style={{ gap: space[5] }}>
                 <P style={{ textAlign: "center" }}>Seus jogos já estão disponíveis na sua biblioteca.</P>
-                {/*<Button variant="cta" style={{ padding: space[2] }} onPress={() => router.replace("/orders")}>
+                <Button variant="cta" style={{ padding: space[2] }} onPress={() => router.replace("/orders")}>
                   Ver Meus Pedidos
-                </Button>*/}
-                <Button variant="primary" style={{ padding: space[2] }} onPress={() => router.replace("/home")}>
+                </Button>
+                <Button variant="primary" style={{ padding: space[2] }} onPress={() => router.replace("/")}>
                   Continuar Comprando
                 </Button>
               </CardContent>
