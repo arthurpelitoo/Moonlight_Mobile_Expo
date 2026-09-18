@@ -5,6 +5,8 @@ import {
     StyleSheet,
     FlatList,
     useWindowDimensions,
+    ScrollView,
+    Animated,
 } from "react-native";
 import { ShoppingCartIcon } from "phosphor-react-native";
 import { useFetchLibrary } from "@/src/hooks/fetchItems/store/useFetchLibrary";
@@ -19,6 +21,9 @@ import { Button } from "@/src/components/common/Generic/Button/Button";
 import { GameCard } from "@/src/components/common/Generic/GameCard/GameCard";
 import type { GameResponseDTO } from "@/src/@types/game/game.dto";
 import { Link } from "expo-router";
+import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useFadeIn } from "@/src/hooks/animation/useFadeIn";
 
 function getColumns(width: number) {
     if (width >= 1024) return 4;
@@ -28,6 +33,7 @@ function getColumns(width: number) {
 }
 
 function LibraryPage() {
+    const fadeIn = useFadeIn();
     const { games: libraryGames, isLoading } = useFetchLibrary();
     const { addItemToCart, removeItemFromCart, items } = useCart();
     const { isOwned } = useContext(LibraryContext);
@@ -51,97 +57,106 @@ function LibraryPage() {
         categories: game.categories,
     });
 
-    const handleToggleCart = (game: GameResponseDTO) => {
-        isInCart(game.id_game!)
-            ? removeItemFromCart(game.id_game!)
-            : addItemToCart(toCartItem(game));
-    };
-
-    const handleBuy = (game: GameResponseDTO) => {
-        addItemToCart(toCartItem(game), "cart");
-    };
-
     if (isLoading) {
         return (
-            <View style={styles.centered}>
-                <Spinner />
-            </View>
+          <GradientBackground>
+            <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+              <ScrollView contentContainerStyle={{flexGrow: 1}}>
+                <Animated.View style={{ justifyContent: "center", width: "100%", height: "100%", padding: 24, opacity: fadeIn.opacity, transform: fadeIn.transform}}>
+                  <Spinner />
+                </Animated.View>
+              </ScrollView>
+            </SafeAreaView>
+          </GradientBackground>
         );
     }
 
     if (!libraryGames || libraryGames.length === 0) {
         return (
-            <View style={styles.centered}>
-                <Card style={styles.emptyCard}>
-                    <CardHeader style={styles.emptyCardHeader}>
-                        <Text style={styles.emptyTitle}>
-                            Você ainda não adquiriu jogos na loja
-                        </Text>
-                    </CardHeader>
-                    <CardContent style={styles.emptyCardContent}>
-                        <Link asChild href={"/(customer)/(tabs)/home"} 
-                        >
-                            <Button
-                            variant="cta"
-                            style={styles.emptyButton}
+          <GradientBackground>
+            <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+              <ScrollView contentContainerStyle={{flexGrow: 1}}>
+                <View style={styles.centered}>
+                    <Card style={styles.emptyCard}>
+                        <CardHeader style={styles.emptyCardHeader}>
+                            <Text style={styles.emptyTitle}>
+                                Você ainda não adquiriu jogos na loja
+                            </Text>
+                        </CardHeader>
+                        <CardContent style={styles.emptyCardContent}>
+                            <Link asChild href={"/"}
                             >
-                            <ShoppingCartIcon size={28} color={theme.ctaText} />
-                            <Text style={styles.emptyButtonText}>Ver jogos</Text>
-                            </Button>
-                        </Link>
-                    </CardContent>
-                </Card>
-            </View>
+                                <Button
+                                variant="cta"
+                                style={styles.emptyButton}
+                                >
+                                <ShoppingCartIcon size={28} color={theme.ctaText} />
+                                <Text style={styles.emptyButtonText}>Ver jogos</Text>
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                </View>
+              </ScrollView>
+            </SafeAreaView>
+          </GradientBackground>
         );
     }
 
-    return (
-        <View style={styles.main}>
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>Meus Jogos</Text>
+  return (
+      <GradientBackground>
+        <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+          <ScrollView contentContainerStyle={{flexGrow: 1}}>
+            <View style={styles.main}>
+                <View style={styles.header}>
+                    <Text style={styles.headerTitle}>Meus Jogos</Text>
+                </View>
+
+                <View style={styles.container}>
+                    <FlatList
+                        key={numColumns}
+                        data={libraryGames}
+                        numColumns={numColumns}
+                        scrollEnabled={false}
+                        keyExtractor={item => String(item.id_game)}
+                        columnWrapperStyle={numColumns > 1 ? styles.row : undefined}
+                        contentContainerStyle={styles.list}
+                        renderItem={({ item: game }) => {
+                            const alreadyInCart = items.some(cartItem => cartItem.id_game === game.id_game);
+                        const cartItem = { id_game: game.id_game!,
+                        title: game.title, price: game.price,
+                        image: game.image, categories: game.categories}
+
+                            return (
+                                <View
+                                    style={[
+                                        styles.cardWrapper,
+                                        { width: `${100 / numColumns}%` },
+                                    ]}
+                                >
+                                    <GameCard
+                                        game={game}
+                                        onCart={() => alreadyInCart
+                                        ? removeItemFromCart(game.id_game!)
+                                        : addItemToCart(cartItem)}
+
+                                        onBuy={() => addItemToCart(game, "cart")}
+                                        gamePage={{
+                                            pathname: "/games/[id]",
+                                            params: { id: String(game.id_game) },
+                                        }}
+                                        isAlreadyInCart={alreadyInCart}
+                                        isOwned={isOwned(game.id_game!)}
+                                    />
+                                </View>
+                            );
+                        }}
+                    />
+                </View>
             </View>
-
-            <View style={styles.container}>
-                <FlatList
-                    key={numColumns}
-                    data={libraryGames}
-                    numColumns={numColumns}
-                    keyExtractor={item => String(item.id_game)}
-                    columnWrapperStyle={numColumns > 1 ? styles.row : undefined}
-                    contentContainerStyle={styles.list}
-                    renderItem={({ item: game }) => {
-                        const alreadyInCart = items.some(cartItem => cartItem.id_game === game.id_game);
-                    const cartItem = { id_game: game.id_game!,
-                    title: game.title, price: game.price,
-                    image: game.image, categories: game.categories}
-
-                        return (
-                            <View
-                                style={[
-                                    styles.cardWrapper,
-                                    { width: `${100 / numColumns}%` },
-                                ]}
-                            >
-                                <GameCard
-                                    game={game}
-                                    onCart={() => alreadyInCart 
-                                    ? removeItemFromCart(game.id_game!)
-                                    : addItemToCart(cartItem)}
-
-                                    onBuy={() => addItemToCart(game, "cart")}
-                                    gamePage={{
-                                        pathname: "/games/[id]",
-                                        params: { id: String(game.id_game) },
-                                    }}
-                                    isAlreadyInCart={alreadyInCart}
-                                    isOwned={isOwned(game.id_game!)}
-                                />
-                            </View>
-                        );
-                    }}
-                />
-            </View>
-        </View>
+          </ScrollView>
+        </SafeAreaView>
+      </GradientBackground>
     );
 }
 
