@@ -1,4 +1,3 @@
-import { PlusIcon, WarningIcon } from "@phosphor-icons/react/dist/ssr";
 import { ConfirmModal } from "../../../../components/common/Generic/ConfirmModal";
 import { Table } from "../../../../components/common/Generic/Table/Table";
 import { Button } from "../../../../components/common/Generic/Button/Button";
@@ -6,69 +5,75 @@ import { useMemo, useState } from "react";
 import { SearchInputBar } from "../../../../components/common/Generic/SearchInputBar";
 import { useUpdateUrlParam } from "../../../../hooks/updateUrlParam/useUpdateUrlParam";
 import type { CategoryPaginatedQueryPayload } from "../../../../@types/category/category.payload";
-import { useCategoryTable } from "../../../../hooks/tables/useCategoryTable";
 import { useCategoryFilters } from "../../../../hooks/filters/admin/useCategoryFilters";
 import { useFetchCategoriesTable } from "../../../../hooks/fetchItems/table/useFetchCategoriesTable";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { useRouter } from "expo-router";
+import { useCategoryTable } from "@/src/hooks/tables/admin/useCategoryTable";
+import { PlusIcon, WarningIcon } from "phosphor-react-native";
+import { View } from "react-native";
+import { P } from "@/src/components/common/Generic/Text";
 
 export function CategoryDataTable() {
+  const { theme, space, radius } = useTheme();
+  const router = useRouter();
+
   const { filters } = useCategoryFilters();
   const { updateURLParam } = useUpdateUrlParam();
   const [name, setName] = useState(filters.name ?? "");
 
   const query: CategoryPaginatedQueryPayload = useMemo(() => ({
-      page: 1,
       limit: 5,
       random: false,
       name: filters.name,
   }), [filters.name]);
 
-  const {categories, isLoading, refetch, onPageChange, totalRows} = useFetchCategoriesTable(query);
+  const {categories, isLoading, refetch, internalPage, setInternalPage, totalRows} = useFetchCategoriesTable(query);
   const { CategoryColumns, confirmDeleteId, setConfirmDeleteId, handleDelete } = useCategoryTable(refetch);
 
   return (
     <>
       {confirmDeleteId &&
           <ConfirmModal
-              icon={
-                  <div className="w-10 h-10 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center">
-                      <WarningIcon size={18} color="#f87171" />
-                  </div>
-              }
-              title="Apagar Registro"
-              message="Tem certeza de que deseja apagar este registro?"
-              onConfirm={() => handleDelete(confirmDeleteId)}
-              onCancel={() => setConfirmDeleteId(null)}
+            icon={<WarningIcon size={18} color="#f87171" />}
+            title="Apagar Registro"
+            message="Tem certeza de que deseja apagar este registro?"
+            onConfirm={() => {
+              handleDelete(confirmDeleteId)
+              refetch();
+            }}
+            onCancel={() => setConfirmDeleteId(null)}
           />
       }
       <Table
-          columns={CategoryColumns}
-          data={categories || []}
-          isLoading={isLoading}
-          subHeader
-          subHeaderComponent={
-            <div className="flex max-md:flex-col items-center justify-between gap-4 w-full">
-              <div className="flex flex-col gap-2 p-2 w-full">
-                <h3 className="text-left max-md:text-center">Pesquisar por nome:</h3>
-                <div className="flex max-md:flex-col items-center gap-4 w-full">
-                  <SearchInputBar
-                    classNameDiv="w-full"
-                    id="category-name-search"
-                    placeholder="Pesquisar nome.."
-                    name="category-name"
-                    value={name}
-                    onChange={setName}
-                    onSearch={(value) => updateURLParam("name", value)}
-                  />
-                </div>
-              </div>
-              <Button id="category-add-btn" as="link" href="/admin/categories/create" variant="cta" className="flex items-center gap-2 px-4 py-2 rounded-md">
-                  <PlusIcon size={32} weight="thin" /> Cadastrar Categoria
-              </Button>
-            </div>
-          }
-          onPageChange={onPageChange}
-          totalRows={totalRows}
-        />
+        columns={CategoryColumns}
+        data={categories || []}
+        isLoading={isLoading}
+        subHeader
+        subHeaderComponent={
+          <View style={{ gap: space[3], width: "100%" }}>
+            <P>Pesquisar por nome:</P>
+            <View style={{ flexDirection: "row", gap: space[2], alignItems: "center" }}>
+              <View style={{ flex: 1 }}>
+                <SearchInputBar
+                  placeholder="Pesquisar nome..."
+                  value={name}
+                  onChangeText={setName}
+                  onSearch={(value: string) => updateURLParam("name", value)}
+                />
+              </View>
+            </View>
+            <Button variant="cta" onPress={() => router.push("/admin/categories/create")} style={{ padding: space[3], borderRadius: radius.md, flexDirection: "row", gap: space[2], justifyContent: "center" }}>
+              <PlusIcon size={18} color="#FFF" weight="thin" />
+              <P style={{ color: "#FFF" }}>Cadastrar categoria</P>
+            </Button>
+          </View>
+        }
+        pageSize={query.limit}
+        currentPage={internalPage}
+        onPageChange={setInternalPage}
+        totalRows={totalRows}
+      />
     </>
   )
 }

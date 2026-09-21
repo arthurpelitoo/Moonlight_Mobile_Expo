@@ -1,14 +1,11 @@
-import { ArrowRightIcon, CheckIcon, ImageIcon, TagIcon} from "@phosphor-icons/react";
 import { InputFieldForm } from "../../../../components/common/Forms/InputFieldForm";
 import { Button } from "../../../../components/common/Generic/Button/Button";
 import { LoadingDots } from "../../../../components/common/Forms/LoadingDots";
-import { FieldVerify } from "../../../../components/common/Forms/VerifyComponents/FieldVerify";
 import { useCategoryForm } from "../../../../hooks/validation/Admin/useCategoryForm";
 import { isCategoryNameValid } from "../../../../utils/Validation/dataRules/Category/categoryName";
 import { isDescriptionValid } from "../../../../utils/Validation/dataRules/Category/categoryDescription";
 import { TextAreaForm } from "../../../../components/common/Forms/TextAreaFrom";
 import type { CategoryResponseDTO } from "../../../../@types/category/category.dto";
-import { useImageUpload } from "../../../../hooks/upload/useImageUpload";
 import { Spinner } from "../../../../components/common/Generic/Spinner";
 import { resolveImageUrl } from "../../../../utils/resolveImage/resolveImageUrl";
 

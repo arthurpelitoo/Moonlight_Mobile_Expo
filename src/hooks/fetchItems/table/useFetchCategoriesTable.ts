@@ -24,21 +24,33 @@ export function useFetchCategoriesTable(query: CategoryPaginatedQueryPayload){
         // eslint-disable-next-line react-hooks/exhaustive-deps
         setIsLoading(true)
 
-        fetchPaginatedCategories({limit, page: internalPage, name, random})
-        .then(({ data, total }) => {
-            if (isMounted) {
-                setCategories(data);
-                setTotalRows(total);
+        const queryPayload: CategoryPaginatedQueryPayload = {
+            ...query,
+            page: internalPage,
+        };
+
+        fetchPaginatedCategories(queryPayload)
+        .then((response) => {
+          if (isMounted) {
+
+            if (internalPage > response.totalPages) {
+              setInternalPage(internalPage - 1);
+              return;
             }
+
+            setCategories(response.data);
+            setTotalRows(response.total);
+          }
         }).catch(() =>
           Toast.show({ type: "error", text1: "Não foi possivel carregar as categorias."})
         ).finally(() => {
             if(isMounted) setIsLoading(false)
         });
-        return () => { isMounted = false; };
+      return () => { isMounted = false; };
+
     }, [limit, internalPage, name, random, version]);
 
     const refetch = () => setVersion(v => v + 1);
 
-    return { categories, isLoading, totalRows, onPageChange: setInternalPage, refetch }
+    return { categories, isLoading, totalRows, internalPage, setInternalPage, refetch }
 }
