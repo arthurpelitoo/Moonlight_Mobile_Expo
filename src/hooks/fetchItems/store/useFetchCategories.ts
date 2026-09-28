@@ -10,7 +10,6 @@ export function useFetchCategories() {
   useEffect(() => {
     let isMounted = true;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     setIsLoading(true);
     fetchCategories()
       .then((response) => {

@@ -1,26 +1,34 @@
-// import { ArrowLeftIcon } from "@phosphor-icons/react";
-// import { Card, CardHeader } from "../../../components/common/Generic/Card";
-// import { Button } from "../../../components/common/Generic/Button/Button";
-// import { useLocation } from "react-router-dom";
-// import { GameForm } from "./sections/GameForm";
-// import type { GameResponseDTO } from "../../../@types/game/game.dto";
-
+import { Button } from "@/src/components/common/Generic/Button/Button";
+import { Card } from "@/src/components/common/Generic/Card/Card";
+import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
+import { H1 } from "@/src/components/common/Generic/Text";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { useRouter } from "expo-router";
+import { ArrowLeftIcon } from "phosphor-react-native";
+import { ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { GameForm } from "./sections/GameForm";
 
 export default function GameEditPage() {
-    // const { state } = useLocation();
-    // const game: GameResponseDTO = state.game;
+  const { theme, space } = useTheme();
+  const router = useRouter();
+
 
     return(
-        // <main className="pt-10 min-h-screen bg-gradient-to-b from-base-soft via-base-soft to-base">
-        //     <Card variant="primary" className="flex flex-col mb-10 gap-10 border py-8 container justify-self-center">
-        //         <CardHeader className="flex items-center gap-4">
-        //             <Button as="link" href="/admin/games" icon={<ArrowLeftIcon size={32} weight="thin" />} className="bg-white/10 p-2 text-white rounded-xl hover:bg-white/20"/>
-        //             <h1 className="text-2xl">Editar Jogo:</h1>
-        //         </CardHeader>
-        //         <hr />
-        //         <GameForm mode="edit" game={game}/>
-        //     </Card>
-        // </main>
-        <></>
+      <GradientBackground>
+        <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
+          <ScrollView contentContainerStyle={{ padding: space[5] }}>
+            <Card variant="solid" style={{ alignItems: "stretch", gap: space[6], padding: space[6] }}>
+              <View style={{ alignItems: "center", gap: space[3] }}>
+                <Button variant="primary" onPress={() => router.back()} style={{ alignSelf: "flex-start", padding: space[2], borderRadius: 12 }}>
+                  <ArrowLeftIcon size={24} color={theme.textPrimary} weight="thin" />
+                </Button>
+                <H1>Editar Jogo:</H1>
+              </View>
+              <GameForm mode="edit" />
+            </Card>
+          </ScrollView>
+        </SafeAreaView>
+      </GradientBackground>
     )
 }

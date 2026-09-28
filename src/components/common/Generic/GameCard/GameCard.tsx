@@ -24,7 +24,7 @@ export function GameCard(props: GameCardProps) {
                   <View style={{ height: 24 }}>
                     {!isOwned ? (
                       <P>
-                        {game.price == 0 ? "Grátis" : formatCurrency(game.price)}
+                        {game.price === 0 ? "Grátis" : formatCurrency(game.price)}
                       </P>
                     ) : (
                       <P>Na Biblioteca</P>

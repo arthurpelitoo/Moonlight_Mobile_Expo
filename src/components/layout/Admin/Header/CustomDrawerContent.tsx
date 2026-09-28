@@ -1,7 +1,7 @@
 import { Image, View } from "react-native";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList, type DrawerContentComponentProps } from "@react-navigation/drawer";
 import { useTheme } from "@/src/contexts/ThemeContext";
-import { BooksIcon, ReceiptIcon, SignOutIcon, StorefrontIcon, UserCircleIcon, UserIcon } from "phosphor-react-native";
+import { BooksIcon, ReceiptIcon, SignOutIcon, StorefrontIcon, UserIcon } from "phosphor-react-native";
 import { useAuth } from "@/src/hooks/auth/useAuth";
 import { useRouter } from "expo-router";
 import { WarmWelcomeTime } from "./components/WarmWelcomeTime";
@@ -19,8 +19,6 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     await logout();
     router.replace("/login");
   };
-
-  const protectedItemStyle = { borderRadius: radius.md };
 
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: theme.base, flex: 1 }}>

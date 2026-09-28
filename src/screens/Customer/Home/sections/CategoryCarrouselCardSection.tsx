@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { Button } from "../../../../components/common/Generic/Button/Button";
 import { Carrousel } from "../../../../components/common/Generic/Carrousel";
 import { CategoryCard } from "../../../../components/common/Generic/CategoryCard/CategoryCard";
 import { CategoryCardSkeleton } from "../../../../components/common/Generic/CategoryCard/CategoryCardSkeleton";
@@ -65,7 +64,7 @@ export function CategoryCarrouselCardSection() {
                     {isLoading //está carregando? se sim placeholder carregando
                         ? Array.from({ length: cardsPerView }).map((_, i) => (<CategoryCardSkeleton key={i} />))
                         : (categories?.map(category => ( //carregou? então componente real
-                          <Link href={`/categories/${category.id_category}`} asChild >
+                          <Link key={category.id_category} href={`/categories/${category.id_category}`} asChild >
                             <CategoryCard category={category} />
                           </Link>
                     )))}

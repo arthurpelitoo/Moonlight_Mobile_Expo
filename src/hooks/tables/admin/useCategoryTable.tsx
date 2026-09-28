@@ -1,5 +1,6 @@
 import { CategoryResponseDTO } from "@/src/@types/category/category.dto";
 import { Button } from "@/src/components/common/Generic/Button/Button";
+import { P } from "@/src/components/common/Generic/Text";
 import { deleteCategory } from "@/src/services/realServices/category.service";
 import { resolveImageUrl } from "@/src/utils/resolveImage/resolveImageUrl";
 import { appTableFeatures } from "@/src/utils/tableFeatures";
@@ -17,7 +18,7 @@ export function useCategoryTable(refetch: () => void){
     const router = useRouter();
 
     const handleEdit = (row: CategoryResponseDTO) => {
-        // router.push(`/admin/categories/edit/${row.id_category}`);
+        router.push(`/admin/categories/edit/${row.id_category}`);
     }
     const handleDelete = async (id_category: number) => {
         try{
@@ -31,11 +32,17 @@ export function useCategoryTable(refetch: () => void){
     }
 
     const CategoryColumns = columnHelper.columns([
-      columnHelper.accessor("name", { header: "Nome" }),
-      columnHelper.accessor("description", { header: "Descrição" }),
+      columnHelper.accessor("name", {
+        header: "Nome",
+        cell: (info) => <P>{info.getValue()}</P>
+      }),
+      columnHelper.accessor("description", {
+        header: "Descrição",
+        cell: (info) => <P>{info.getValue()}</P>
+      }),
       columnHelper.accessor("image", {
         header: "Imagem",
-        cell: (info) => <Image style={{width: 30, height: "auto"}} src={resolveImageUrl(`${info.getValue()}`)}/>
+        cell: (info) => <Image style={{width: 200, height: 100}} source={{ uri: resolveImageUrl(info.getValue())}}/>
       }),
       columnHelper.display({
         id: "actions",

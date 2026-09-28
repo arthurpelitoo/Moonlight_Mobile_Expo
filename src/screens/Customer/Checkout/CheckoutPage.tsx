@@ -1,7 +1,7 @@
 import { WebView } from 'react-native-webview';
 import { useCheckout } from '../../../hooks/checkout/useCheckout';
 import { Spinner } from '../../../components/common/Generic/Spinner';
-import { Animated, ScrollView, View } from 'react-native';
+import { Animated, ScrollView } from 'react-native';
 import { Card } from '@/src/components/common/Generic/Card/Card';
 import { CardHeader } from '@/src/components/common/Generic/Card/CardHeader';
 import { CardContent } from '@/src/components/common/Generic/Card/CardContent';

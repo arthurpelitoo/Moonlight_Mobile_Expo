@@ -13,33 +13,83 @@ import { useFetchRoles } from "@/src/hooks/fetchItems/admin/useFetchRoles";
 import { hasSelectedRole } from "@/src/utils/Validation/dataRules/User/userRole";
 import { P, H3 } from "@/src/components/common/Generic/Text";
 import { useTheme } from "@/src/contexts/ThemeContext";
-import { useCallback, useMemo } from "react";
-import type { UserResponseDTO } from "@/src/@types/user/user.dto";
-import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useFetchUser } from "@/src/hooks/fetchItems/fetchOne/useFetchUser";
+import { Spinner } from "@/src/components/common/Generic/Spinner";
 
-type UserFormProps = { mode: "create" | "edit"; user?: UserResponseDTO };
+type UserFormProps = { mode: "create" | "edit"};
 
-export function UserForm({ mode, user }: UserFormProps) {
+export function UserForm({ mode }: UserFormProps) {
   const { theme, space, radius, font, fontSize } = useTheme();
-  const { roles } = useFetchRoles();
+  const { id_user } = useLocalSearchParams<{ id_user: string }>();
 
-  const RoleIds = useMemo(() => {
-    return user?.roles!
-      .map((name) => roles.find((role) => role.name === name)?.id_role)
-      .filter((id_role): id_role is number => id_role !== undefined) ?? [];
+  const { user, isLoading: isUserLoading, refetch: refetchUser } = useFetchUser(Number(id_user), {
+    enabled: mode === "edit",
+  });
+
+  const { roles, isLoading: isRolesLoading } = useFetchRoles();
+
+  const roleIds = useMemo(() => {
+    if (!user?.roles || !roles) return [];
+
+    const roleNameToIdMap = new Map(
+      roles.map((role) => [role.name, role.id_role])
+    );
+
+    return user.roles.map((name) => roleNameToIdMap.get(name)!)
   }, [user, roles]);
 
-  const { fields, setField, showErrors, toggleRole, toggleShowConfirm, toggleShowPassword, ui, handleBlur, handleSubmit, resetForm } =
-    useUserForm(mode, user ? {
-      name: user.name ?? "", email: user.email ?? "", cpf: user.cpf ?? "",
-      password: "", confirmPassword: "", id_roles: RoleIds,
-    } : undefined);
+  const getInitialData = useMemo(() => {
+    if (!user || mode !== "edit") return undefined;
 
+    return {
+      name: user.name ?? "",
+      email: user.email ?? "",
+      cpf: user.cpf ?? "",
+      password: "",
+      confirmPassword: "",
+      id_roles: roleIds,
+    }
+  }, [user, mode, roleIds]);
+
+  const { fields, setField, showErrors, toggleRole, toggleShowConfirm, toggleShowPassword, ui, handleBlur, handleSubmit, createForm } = useUserForm(mode);
+
+  const isFirstFocus = useRef(true);
   useFocusEffect(
     useCallback(() => {
-      resetForm();
-    }, [user])
+      if (mode === "edit") {
+        if (isFirstFocus.current) { isFirstFocus.current = false; return; }
+        refetchUser();
+      } else if (mode === "create") {
+        createForm();
+      }
+
+    }, [mode, refetchUser, isFirstFocus, createForm])
   )
+
+  useEffect(() => {
+    if (mode === "edit" && getInitialData) {
+      createForm(getInitialData);
+    }
+  }, [getInitialData, mode, createForm])
+
+  const isLoading = (mode === "edit" && isUserLoading) || isRolesLoading;
+  if (isLoading) {
+    return (
+      <View style={{ justifyContent: "center", alignItems: "center", gap: space[3], width: "100%" }}>
+        <Spinner />
+      </View>
+    );
+  }
+
+  if (mode === "edit" && !user) {
+    return (
+      <View style={{ justifyContent: "center", alignItems: "center", gap: space[3], width: "100%" }}>
+        <P style={{ fontSize: fontSize.sm, color: theme.secondaryColor }}>Usuario não encontrado.</P>
+      </View>
+    )
+  }
 
   if (ui.submitted && !ui.apiError && ui.success) {
     return (

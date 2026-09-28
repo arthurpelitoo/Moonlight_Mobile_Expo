@@ -18,7 +18,7 @@ export function useCheckout(){
 
         if (hasFetched.current) return;
         if (!items.length){
-            // router.replace("/cart");
+            router.replace("/cart");
             Toast.show({ type: "error", text1: "Você não possui itens no carrinho."})
             return;
         }
@@ -37,7 +37,7 @@ export function useCheckout(){
             })
             .finally(() => setIsLoading(false));
 
-    }, []);
+    }, [user, totalPrice, items]);
 
     return { preferenceId, checkoutUrl, isLoading }
 }

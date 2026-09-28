@@ -1,4 +1,4 @@
-import axios from "axios";
+import { create } from "axios";
 import Toast from "react-native-toast-message";
 import { logoutFn } from "../utils/authBridge/logout";
 import * as SecureStore from "expo-secure-store";
@@ -6,7 +6,7 @@ import { API_URL } from "../config";
 import { router } from "expo-router";
 let redirecting = false;
 
-export const api = axios.create({
+export const api = create({
   baseURL: API_URL,
   timeout: 5000,
   headers: {"Content-Type": "application/json"}

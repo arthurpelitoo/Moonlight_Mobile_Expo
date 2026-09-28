@@ -1,7 +1,7 @@
-import { Image, Text, View } from "react-native";
+import { Image, View } from "react-native";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList, type DrawerContentComponentProps } from "@react-navigation/drawer";
 import { useTheme } from "@/src/contexts/ThemeContext";
-import { BooksIcon, CoffeeIcon, ReceiptIcon, SignOutIcon, UserCircleIcon, UserIcon } from "phosphor-react-native";
+import { BooksIcon, CoffeeIcon, ReceiptIcon, SignOutIcon, UserIcon } from "phosphor-react-native";
 import { useAuth } from "@/src/hooks/auth/useAuth";
 import { useRouter } from "expo-router";
 import { WarmWelcomeTime } from "./components/WarmWelcomeTime";

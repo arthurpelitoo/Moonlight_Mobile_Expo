@@ -10,7 +10,7 @@ export function useFetchMyOrders(){
     useEffect(() => {
         let isMounted = true;
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
         setIsLoading(true)
         fetchMyOrders()
         .then(response => {

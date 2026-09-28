@@ -1,19 +1,22 @@
-// import { useGameFilters } from "../../../hooks/filters/admin/useGameFilters";
-// import { GameDataTable } from "./sections/GameDataTable";
+import { Card } from "@/src/components/common/Generic/Card/Card";
+import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
+import { H2 } from "@/src/components/common/Generic/Text";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { GameDataTable } from "./sections/GameDataTable";
 
 export default function GameDashboardPage(){
-  // const { filters } = useGameFilters();
+  const { space } = useTheme();
 
   return(
-      // <main className="pt-10 min-h-screen bg-gradient-to-b from-base-soft via-base-soft to-base">
-      //     <header className="mb-10 justify-self-center w-fit bg-white/5 text-white rounded-xl p-4 border border-white/8 backdrop-blur-sm">
-      //         <h1 className="text-2xl text-center ">Tabela de Jogos</h1>
-      //     </header>
-
-      //     <div className="container justify-self-center">
-      //       <GameDataTable {...filters}/>
-      //     </div>
-      // </main>
-      <></>
+    <GradientBackground>
+      <SafeAreaView style={{ flex: 1 }} edges={["right", "left"]}>
+        <ScrollView contentContainerStyle={{ padding: space[5], gap: space[6], alignItems: "center" }}>
+          <Card variant="solid"><H2>Tabela de Jogos</H2></Card>
+          <GameDataTable/>
+        </ScrollView>
+      </SafeAreaView>
+    </GradientBackground>
   )
 }

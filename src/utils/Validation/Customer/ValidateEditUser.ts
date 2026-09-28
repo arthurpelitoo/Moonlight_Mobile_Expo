@@ -17,13 +17,13 @@ export function validateEditUser(data: {
     const cpfValid = isCPFValid(cpf);
 
     const isFormFilled = !!(
-        name && name.length <= 16 && 
+        name && name.length <= 16 &&
         password && password.length <= 16 &&
         confirmPassword &&
         cpf
     );
 
-    
+
     const isPasswordValid = passwordMatch && strengthLevel > 4;
 
     const isValid = isFormFilled && isPasswordValid && nameValid && cpfValid ;

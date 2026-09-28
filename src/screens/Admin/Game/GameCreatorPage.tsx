@@ -1,20 +1,32 @@
-// import { ArrowLeftIcon } from "@phosphor-icons/react";
-// import { Card, CardHeader } from "../../../components/common/Generic/Card";
-// import { Button } from "../../../components/common/Generic/Button/Button";
-// import { GameForm } from "./sections/GameForm";
+import { Button } from "../../../components/common/Generic/Button/Button";
+import { GameForm } from "./sections/GameForm";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { useRouter } from "expo-router";
+import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, View } from "react-native";
+import { H1 } from "@/src/components/common/Generic/Text";
+import { Card } from "@/src/components/common/Generic/Card/Card";
+import { ArrowLeftIcon } from "phosphor-react-native";
 
 export default function GameCreatorPage() {
+  const { theme, space } = useTheme();
+  const router = useRouter();
     return(
-        // <main className="pt-10 min-h-screen bg-gradient-to-b from-base-soft via-base-soft to-base">
-        //     <Card variant="primary" className="flex flex-col mb-10 gap-10 border py-8 container justify-self-center">
-        //         <CardHeader className="flex items-center gap-4">
-        //             <Button as="link" href="/admin/games" icon={<ArrowLeftIcon size={32} weight="thin" />} className="bg-white/10 p-2 text-white rounded-xl hover:bg-white/20"/>
-        //             <h1 className="text-2xl">Criar Jogo:</h1>
-        //         </CardHeader>
-        //         <hr />
-        //         <GameForm mode="create"/>
-        //     </Card>
-        // </main>
-        <></>
+      <GradientBackground>
+        <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
+          <ScrollView contentContainerStyle={{ padding: space[5] }}>
+            <Card variant="solid" style={{ alignItems: "stretch", gap: space[6], padding: space[6] }}>
+              <View style={{ alignItems: "center", gap: space[3] }}>
+                <Button variant="primary" onPress={() => router.back()} style={{ alignSelf: "flex-start", padding: space[2], borderRadius: 12 }}>
+                  <ArrowLeftIcon size={24} color={theme.textPrimary} weight="thin" />
+                </Button>
+                <H1>Criar Jogo:</H1>
+              </View>
+              <GameForm mode="create" />
+            </Card>
+          </ScrollView>
+        </SafeAreaView>
+      </GradientBackground>
     )
 }

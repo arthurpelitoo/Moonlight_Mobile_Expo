@@ -26,7 +26,7 @@ export function validateRegister(data: {
         confirmPassword &&
         cpf
     );
-    
+
     const isPasswordValid = passwordMatch && strengthLevel > 4;
 
     const isValid = isFormFilled && isPasswordValid && emailValid && nameValid && cpfValid;

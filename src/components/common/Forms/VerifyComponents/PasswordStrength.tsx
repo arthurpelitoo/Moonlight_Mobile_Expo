@@ -46,7 +46,7 @@ export function PasswordStrength({ password, showError }: PasswordStrengthProps)
                 useNativeDriver: true,
             }).start();
         }
-    }, [level, visible]);
+    }, [level, visible, opacity]);
 
     if (!visible) return null;
 

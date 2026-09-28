@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { router } from "expo-router";
 import { useAuth } from "../../auth/useAuth";
 import { validateLogin } from "../../../utils/Validation/Customer/ValidateLogin";
@@ -6,7 +6,12 @@ import { getLoginFormErrors } from "../../../utils/Validation/formErrors/Custome
 import { loginUser } from "../../../services/realServices/auth.service";
 import { LibraryContext } from "../../library/useLibrary";
 
-const initialFields = {
+type InitialData = {
+    email: string,
+    password: string,
+}
+
+const initialFields : InitialData = {
     email: "",
     password: "",
 }
@@ -28,7 +33,7 @@ export function useLoginForm() {
     const {refreshLibrary} = useContext(LibraryContext);
     const {login} = useAuth();
 
-    const [fields, setFields] = useState(initialFields);
+    const [fields, setFields] = useState<InitialData>(initialFields);
 
     const [touched, setTouched] = useState(initialTouched);
 
@@ -49,11 +54,11 @@ export function useLoginForm() {
     const toggleShowPassword = () =>
         setUi(prev => ({ ...prev, showPassword: !prev.showPassword }));
 
-    const resetForm = () => {
+    const resetForm = useCallback(() => {
       setFields(initialFields);
       setTouched(initialTouched);
-      setUi(initialUi)
-    }
+      setUi(initialUi);
+    }, []);
 
     const handleSubmit = async () => {
         setUi(prev => ({ ...prev, submitted: true, apiError: null }));

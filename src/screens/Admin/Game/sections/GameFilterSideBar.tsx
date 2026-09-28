@@ -1,13 +1,13 @@
-import { CaretDownIcon, XIcon } from "@phosphor-icons/react/dist/ssr";
 import { Button } from "../../../../components/common/Generic/Button/Button";
-import { Dropdown } from "../../../../components/common/Generic/Dropdown";
-import { getAnimationState } from "../../../../utils/ui/animation/animationState";
 import { InputBar } from "../../../../components/common/Generic/InputBar";
 import { useState } from "react";
-import { CheckIcon } from "@phosphor-icons/react";
 import { useFetchCategories } from "../../../../hooks/fetchItems/store/useFetchCategories";
 import { useGameFilters } from "../../../../hooks/filters/admin/useGameFilters";
 import { maskPrice } from "../../../../utils/Validation/dataRules/Game/gamePrice";
+import { Modal, ScrollView, View } from "react-native";
+import { useTheme } from "@/src/contexts/ThemeContext";
+import { H3, P } from "@/src/components/common/Generic/Text";
+import { XIcon } from "phosphor-react-native";
 
 type GameFilterSideBarProps = {
   open: boolean;
@@ -15,11 +15,9 @@ type GameFilterSideBarProps = {
 }
 
 export function GameFilterSideBar(props: GameFilterSideBarProps) {
-  const { styles } = getAnimationState(props.open);
+  const { theme, space, radius, font, currentColor } = useTheme();
   const { categories } = useFetchCategories();
   const { filters } = useGameFilters();
-  const gameActive = getAnimationState(filters.active == true).styles;
-  const gameNotActive = getAnimationState(filters.active == false).styles;
 
   // estado local — segura o que o usuário está digitando
   const [priceMin, setPriceMin] = useState(filters.price_min ? String(filters.price_min) : "0.00");
@@ -43,241 +41,71 @@ export function GameFilterSideBar(props: GameFilterSideBarProps) {
   function handleConfirmLaunchDate() { filters.onConfirmLaunchDate?.(launchDateFrom, launchDateTo); }
 
   return (
-    <aside className={`
-            fixed top-0 left-0 h-full w-64 z-30
-            bg-base-soft border-r border-white/10
-            flex flex-col gap-6 p-4 overflow-y-auto
-            transition-transform duration-300 ease-in-out
-            ${styles.slideInsideScreen}
-          `}>
-            <div className="flex justify-between items-center">
-              <span className="text-white font-medium">Filtros</span>
-              <Button onClick={props.onClose} className="text-gray-400 hover:text-white">
-                <XIcon size={20} />
-              </Button>
-            </div>
-            <div className="w-full flex justify-center">
-              <Dropdown
-                backgroundActive="on"
-                alignment="middle"
-                trigger={(open) => (
+    <Modal visible={props.open} animationType="slide" transparent onRequestClose={props.onClose}>
+      <View style={{ flex: 1, backgroundColor: currentColor === "dark" ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)", justifyContent: "flex-end" }}>
+        <View style={{ backgroundColor: theme.baseSoft, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, maxHeight: "80%" }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: space[5] }}>
+            <H3>Filtros</H3>
+            <Button variant="transparent" onPress={props.onClose}><XIcon size={20} color={theme.textPrimary} /></Button>
+          </View>
+          <ScrollView contentContainerStyle={{ padding: space[5], gap: space[5] }}>
+            <View style={{ gap: space[2] }}>
+              <P style={{ fontFamily: font.baseMedium }}>Categorias</P>
+              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: space[2] }}>
+                <Button variant="transparent"
+                onPress={() => {
+                  filters.onChangeCategory("");
+                  props.onClose();
+                }}>
+                  Limpar
+                </Button>
+                {categories?.map((category) => (
                   <Button
-                    className="max-lg:justify-self-center max-lg:active:bg-white max-lg:active:text-base max-lg:active:scale-95 duration-300 transition-all hover:bg-transparent fx-underline flex items-center"
-                    as="button"
-                    variant="transparent"
+                    key={category.id_category}
+                    variant={category.name === filters.category ? "cta" : "primary"}
+                    onPress={() => {
+                      filters.onChangeCategory(category.name);
+                      props.onClose()
+                    }}
+                    style={{ paddingHorizontal: space[3], paddingVertical: space[2], borderRadius: radius.md }}
                   >
-                    Categorias
-                    <CaretDownIcon
-                      size={20}
-                      className={`transition-transform duration-300 ${open ? "rotate-180" : "rotate-0"}`}
-                    />
+                    {category.name}
                   </Button>
-                )}
-              >
-                <Button
-                  as="button"
-                  variant="transparent"
-                  onClick={() => filters.onChangeCategory("")}
-                  className={`max-lg:active:bg-white max-lg:active:text-base lg:hover:bg-white lg:hover:text-base transition-all duration-300 w-full py-2 rounded-t-md text-sm`}
-                >
-                  Limpar Filtro
-                </Button>
-                {categories?.map((cat) => {
-                  const active = cat.name === filters.category;
-                  const { styles } = getAnimationState(active);
-                  return (
-                    <Button
-                      key={cat.id_category}
-                      as="button"
-                      variant="transparent"
-                      onClick={() => filters.onChangeCategory(cat.name)}
-                      className={`max-lg:active:bg-white max-lg:active:text-base lg:hover:bg-white lg:hover:text-base transition-all duration-300 text-left w-full flex justify-between items-center gap-2 px-4 py-2 text-sm`}
-                    >
-                      {cat.name}
-                      <span>
-                        <CheckIcon
-                          size={20}
-                          className={`${styles.fadeInOpacity} ${styles.slideDown} transition-all duration-300`}
-                        />
-                      </span>
-                    </Button>
-                  );
-                })}
-              </Dropdown>
-            </div>
-            <div className="w-full flex justify-center">
-              <Dropdown
-                backgroundActive="on"
-                alignment="middle"
-                trigger={(open) => (
-                  <Button
-                    className="max-lg:justify-self-center max-lg:active:bg-white max-lg:active:text-base max-lg:active:scale-95 duration-300 transition-all hover:bg-transparent fx-underline flex items-center"
-                    as="button"
-                    variant="transparent"
-                  >
-                    Preços
-                    <CaretDownIcon
-                      size={20}
-                      className={`transition-transform duration-300 ${open ? "rotate-180" : "rotate-0"}`}
-                    />
-                  </Button>
-                )}
-              >
-                <Button
-                  as="button"
-                  variant="transparent"
-                  onClick={() => handlePriceCleanUp()}
-                  className={`max-lg:active:bg-white max-lg:active:text-base lg:hover:bg-white lg:hover:text-base transition-all duration-300 w-full py-2 rounded-t-md text-sm mb-1`}
-                >
-                  Limpar Filtros
-                </Button>
-                <h3 className="text-center">Preço Mínimo</h3>
-                <InputBar
-                  variant="secondary"
-                  className="w-30 text-center mx-2"
-                  placeholder="Preço min."
-                  id="game-price_min"
-                  type="text"
-                  value={priceMin}
-                  onChange={(e) => setPriceMin(maskPrice(e.target.value))}
-                  inputMode="numeric"
-                />
-                <p className="text-center">até</p>
-                <h3 className="text-center">Preço Máximo</h3>
-                <InputBar
-                  variant="secondary"
-                  className="w-30 text-center mx-2"
-                  placeholder="Preço max."
-                  id="game-price_max"
-                  type="text"
-                  value={priceMax}
-                  onChange={(e) => setPriceMax(maskPrice(e.target.value))}
-                  inputMode="numeric"
-                ></InputBar>
-                <Button
-                  as="button"
-                  variant="cta"
-                  onClick={handleConfirmPrice}
-                  className="w-full p-2 rounded-b-md text-sm mt-2 animate-glow-cta"
-                >
-                  Aplicar
-                </Button>
-              </Dropdown>
-            </div>
-            <div className="w-full flex justify-center">
-              <Dropdown
-                backgroundActive="on"
-                alignment="middle"
-                trigger={(open) => (
-                  <Button
-                    className="max-lg:justify-self-center max-lg:active:bg-white max-lg:active:text-base max-lg:active:scale-95 duration-300 transition-all hover:bg-transparent fx-underline flex items-center"
-                    as="button"
-                    variant="transparent"
-                  >
-                    Data de Lançamento
-                    <CaretDownIcon
-                      size={20}
-                      className={`transition-transform duration-300 ${open ? "rotate-180" : "rotate-0"}`}
-                    />
-                  </Button>
-                )}
-              >
-                <Button
-                  as="button"
-                  variant="transparent"
-                  onClick={() => handleLaunchDateCleanUp()}
-                  className={`max-lg:active:bg-white max-lg:active:text-base lg:hover:bg-white lg:hover:text-base transition-all duration-300 w-full py-2 rounded-t-md text-sm mb-1`}
-                >
-                  Limpar Filtros
-                </Button>
-                <h4 className="text-center">Data a partir de:</h4>
-                <InputBar
-                  variant="secondary"
-                  className="w-35 text-center mx-2"
-                  placeholder="Data a partir de.."
-                  id="game-launch_date_from"
-                  type="date"
-                  value={launchDateFrom}
-                  onChange={(e) => setLaunchDateFrom(e.target.value)}
-                  inputMode="numeric"
-                />
-                <p className="text-center">até</p>
-                <h4 className="text-center">Esta Data:</h4>
-                <InputBar
-                  variant="secondary"
-                  className="w-35 text-center mx-2"
-                  placeholder="Até esta data..."
-                  id="game-launch_date_to"
-                  type="date"
-                  value={launchDateTo}
-                  onChange={(e) => setLaunchDateTo(e.target.value)}
-                  inputMode="numeric"
-                ></InputBar>
-                <Button
-                  as="button"
-                  variant="cta"
-                  onClick={handleConfirmLaunchDate}
-                  className="w-full p-2 rounded-b-md text-sm mt-2 animate-glow-cta"
-                >
-                  Aplicar
-                </Button>
-              </Dropdown>
-            </div>
-            <div className="w-full flex justify-center">
-              <Dropdown
-                backgroundActive="on"
-                alignment="middle"
-                trigger={(open) => (
-                  <Button
-                    className="max-lg:justify-self-center max-lg:active:bg-white max-lg:active:text-base max-lg:active:scale-95 duration-300 transition-all hover:bg-transparent fx-underline flex items-center"
-                    as="button"
-                    variant="transparent"
-                  >
-                    Jogo ativo
-                    <CaretDownIcon
-                      size={20}
-                      className={`transition-transform duration-300 ${open ? "rotate-180" : "rotate-0"}`}
-                    />
-                  </Button>
-                )}
-              >
-                <Button
-                  id=""
-                  as="button"
-                  variant="transparent"
-                  onClick={() => filters.onChangeActive("")}
-                  className={`max-lg:active:bg-white max-lg:active:text-base lg:hover:bg-white lg:hover:text-base transition-all duration-300 text-left w-full flex justify-between items-center gap-2 px-4 py-2 text-sm`}
-                >
-                  Limpar Filtro
-                </Button>
-                <Button
-                  id="" as="button"
-                  variant="transparent" onClick={() => filters.onChangeActive("true")}
-                  className={`max-lg:active:bg-white max-lg:active:text-base lg:hover:bg-white lg:hover:text-base transition-all duration-300 text-left w-full flex justify-between items-center gap-2 px-4 py-2 text-sm`}
-                >
-                  Sim
-                  <span>
-                    <CheckIcon
-                      size={20}
-                      className={`${gameActive.fadeInOpacity} ${gameActive.slideDown} transition-all duration-300`}
-                    />
-                  </span>
-                </Button>
-                <Button
-                  id="" as="button"
-                  variant="transparent" onClick={() => filters.onChangeActive("false")}
-                  className={`max-lg:active:bg-white max-lg:active:text-base lg:hover:bg-white lg:hover:text-base transition-all duration-300 text-left w-full flex justify-between items-center gap-2 px-4 py-2 text-sm`}
-                >
-                  Não
-                  <span>
-                    <CheckIcon
-                      size={20}
-                      className={`${gameNotActive.fadeInOpacity} ${gameNotActive.slideDown} transition-all duration-300`}
-                    />
-                  </span>
-                </Button>
-              </Dropdown>
-            </div>
-    </aside>
+                ))}
+              </View>
+            </View>
+
+            <View style={{ gap: space[2] }}>
+              <P style={{ fontFamily: font.baseMedium }}>Preços</P>
+              <Button onPress={() => handlePriceCleanUp()}>Limpar Filtros</Button>
+              <View style={{ flexDirection: "row", gap: space[3], alignItems: "center" }}>
+                <InputBar variant="secondary" value={priceMin} onChangeText={(v) => setPriceMin(maskPrice(v))} placeholder="min." keyboardType="numeric" style={{ flex: 1 }} />
+                <P>até</P>
+                <InputBar variant="secondary" value={priceMax} onChangeText={(v) => setPriceMax(maskPrice(v))} placeholder="max." keyboardType="numeric" style={{ flex: 1 }} />
+              </View>
+              <Button variant="cta" onPress={() => handleConfirmPrice()} style={{ padding: space[2], borderRadius: radius.md }}><P style={{ color: "#FFF", textAlign: "center" }}>Aplicar</P></Button>
+            </View>
+            <View style={{ gap: space[2] }}>
+              <P style={{ fontFamily: font.baseMedium }}>Data de Lançamento</P>
+              <Button onPress={() => handleLaunchDateCleanUp()}>Limpar Filtros</Button>
+              <View style={{ flexDirection: "row", gap: space[3], alignItems: "center" }}>
+                <InputBar variant="secondary" value={launchDateFrom} onChangeText={setLaunchDateFrom} placeholder="AAAA-MM-DD" style={{ flex: 1 }} />
+                <P>até</P>
+                <InputBar variant="secondary" value={launchDateTo} onChangeText={setLaunchDateTo} placeholder="AAAA-MM-DD" style={{ flex: 1 }} />
+              </View>
+              <Button variant="cta" onPress={() => handleConfirmLaunchDate()} style={{ padding: space[2], borderRadius: radius.md }}><P style={{ color: "#FFF", textAlign: "center" }}>Aplicar</P></Button>
+            </View>
+            <View style={{ gap: space[2] }}>
+              <P style={{ fontFamily: font.baseMedium }}>Jogo Ativo</P>
+              <View style={{ flexDirection: "row", gap: space[2] }}>
+                <Button onPress={() => filters.onChangeActive("")} variant={filters.active === undefined ? "cta" : "primary"} style={{ paddingHorizontal: space[3], paddingVertical: space[2], borderRadius: radius.md }}>Todos</Button>
+                <Button onPress={() => filters.onChangeActive("true")} variant={filters.active === true ? "cta" : "primary"} style={{ paddingHorizontal: space[3], paddingVertical: space[2], borderRadius: radius.md }}>Sim</Button>
+                <Button onPress={() => filters.onChangeActive("false")} variant={filters.active === false ? "cta" : "primary"} style={{ paddingHorizontal: space[3], paddingVertical: space[2], borderRadius: radius.md }}>Não</Button>
+              </View>
+            </View>
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
   );
 }

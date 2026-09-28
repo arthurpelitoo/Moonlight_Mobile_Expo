@@ -9,7 +9,7 @@ export async function registerMock(data: {
 }) { /* empacoto os dados em objeto e transformando o objeto em JSON mando pra rota tal em metodo post para o corpo de requisição (req.body) */
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if(!data.name || data.name.length > 16 || data.name == "" ){
+    if(!data.name || data.name.length > 16 || data.name === "" ){
         throw new Error("Nome de Usuário inválido ou obrigatório!");
     }
 
@@ -17,7 +17,7 @@ export async function registerMock(data: {
         throw new Error("Email inválido ou obrigatório!");
     }
 
-    const mockedDatabase = ["juan@yahoo.com"]; 
+    const mockedDatabase = ["juan@yahoo.com"];
     const userExists = mockedDatabase.includes(data.email.toLowerCase());
 
     if (userExists) {
@@ -28,12 +28,12 @@ export async function registerMock(data: {
         throw new Error('CPF inválido!');
     }
 
-    if(!data.password || data.password == "" || data.password.length > 16 || data.password.length < 8){
+    if(!data.password || data.password === "" || data.password.length > 16 || data.password.length < 8){
         throw new Error('Senha inválida ou obrigatória!');
     }
-    
+
     return { message: "Usuário cadastrado com sucesso." };
-  
+
 }
 
 export async function loginMock(data: {

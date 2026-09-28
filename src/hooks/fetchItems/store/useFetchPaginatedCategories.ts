@@ -13,7 +13,7 @@ export function useFetchPaginatedCategories(query: CategoryPaginatedQueryPayload
     useEffect(() => {
         let isMounted = true;
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
         setIsLoading(true)
 
         fetchPaginatedCategories({ page, limit, random, name })

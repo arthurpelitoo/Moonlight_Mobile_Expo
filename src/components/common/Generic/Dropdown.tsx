@@ -6,7 +6,7 @@ import { useEffect, useRef, useState} from 'react';
 */
 
 type DropdownProps = {
-    trigger: (open: Boolean) => React.ReactNode;
+    trigger: (open: boolean) => React.ReactNode;
     children: React.ReactNode;
     alignment: 'left' | 'middle' | 'right';
     backgroundActive: "on"|"off";
