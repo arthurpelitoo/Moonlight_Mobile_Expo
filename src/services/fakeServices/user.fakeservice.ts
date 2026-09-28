@@ -37,7 +37,7 @@ export async function createUserMock(data: UserPayload): Promise<ApiResponse>{
 
     console.log('[MOCK] createUser:', data);
 
-    if(!data.name || data.name.length > 16 || data.name == "" ){
+    if(!data.name || data.name.length > 16 || data.name === "" ){
         throw new Error("Nome de Usuário inválido ou obrigatório!");
     }
 
@@ -45,7 +45,7 @@ export async function createUserMock(data: UserPayload): Promise<ApiResponse>{
         throw new Error("Email inválido ou obrigatório!");
     }
 
-    const mockedDatabase = ["juan@yahoo.com"]; 
+    const mockedDatabase = ["juan@yahoo.com"];
     const userExists = mockedDatabase.includes(data.email.toLowerCase());
 
     if (userExists) {
@@ -56,14 +56,10 @@ export async function createUserMock(data: UserPayload): Promise<ApiResponse>{
         throw new Error('CPF inválido!');
     }
 
-    if(!data.password || data.password == "" || data.password.length > 16 || data.password.length < 8){
+    if(!data.password || data.password === "" || data.password.length > 16 || data.password.length < 8){
         throw new Error('Senha inválida ou obrigatória!');
     }
 
-    if(!data.type){
-        throw new Error('Tipo de usuário inválido ou obrigatório!');
-    }
-    
     return { message: "Usuário cadastrado com sucesso." };
 }
 
@@ -71,7 +67,7 @@ export async function updateMeMock(data: UpdateMePayload): Promise<UpdateMeRespo
 
     console.log('[MOCK] updateMe:', data);
 
-    if(!data.name || data.name.length > 16 || data.name == "" ){
+    if(!data.name || data.name.length > 16 || data.name === "" ){
         throw new Error("Nome de Usuário inválido ou obrigatório!");
     }
 
@@ -79,9 +75,9 @@ export async function updateMeMock(data: UpdateMePayload): Promise<UpdateMeRespo
         throw new Error('CPF inválido!');
     }
 
-    if(!data.password || data.password == "" || data.password.length > 16 || data.password.length < 8){
+    if(!data.password || data.password === "" || data.password.length > 16 || data.password.length < 8){
         throw new Error('Senha inválida ou obrigatória!');
     }
 
-    return { message: "Usuário editado com sucesso.",  user: { id_user: 4, name: data.name, email: "update@gmail.com",  cpf: data.cpf, type: "admin" } };
+    return { message: "Usuário editado com sucesso.",  user: { id_user: 4, name: data.name, email: "update@gmail.com",  cpf: data.cpf, roles: ["admin"] } };
 }

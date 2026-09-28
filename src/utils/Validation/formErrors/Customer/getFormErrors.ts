@@ -12,7 +12,7 @@ export function getRegisterFormErrors(data: RegisterFormData, touched: RegisterT
     const emailValid = isEmailValid(data.email);
     const strengthLevel = getPasswordVerifiedLevel(data.password);
     const passwordMatch = data.password === data.confirmPassword;
-    
+
     return {
         showErrorUser: (touched.name || submitted) && !nameValid,
         showErrorEmail: (touched.email || submitted) && !emailValid,

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { validateUser } from "../../../utils/Validation/Admin/ValidateUser";
 import { getUserFormErrors } from "../../../utils/Validation/formErrors/Admin/getFormErrorsAdmin";
 import { createUser, updateUser } from "../../../services/realServices/user.service";
@@ -7,7 +7,7 @@ import { router } from "expo-router";
 
 type UserFormData = "create" | "edit";
 
-type InitialData = {
+type UserInitialData = {
     name: string,
     email: string,
     cpf: string,
@@ -16,7 +16,7 @@ type InitialData = {
     id_roles: number[]
 }
 
-const emptyFields: InitialData = {
+const emptyFields: UserInitialData = {
     name: "",
     email: "",
     cpf: "",
@@ -41,22 +41,23 @@ const initialUi = {
 }
 
 /**
+ * Estado e validação do formulário de usuario (criação e edição).
  *
- * @param mode modo do formulario, se é create ou edit
- * @param initialData dados iniciais, se for update resgata os dados da row que a tabela recebe ou então começa com campos vazios mesmo.
- * @returns retorna muitos objetos para auxiliar o formulario sem encher de logica no componente.
+ * O hook não recebe dados iniciais: sempre nasce com `emptyFields`.
+ * Quem preenche o formulário é o componente, chamando `createForm`:
+ *   - modo "create": `createForm()` → campos vazios
+ *   - modo "edit":   `createForm(initialData)` quando o usuario chega da API
+ *
+ * @param mode "create" ou "edit"; decide se `handleSubmit` chama createUser ou updateUser.
+ * @returns
+ *  - `fields`, `ui`, `showErrors`, `isValid`: estado e validação atuais
+ *  - `setField`, `handleBlur`, `toggleCategory`: handlers dos campos
+ *  - `createForm(initialData?)`: (re)inicializa campos, `ui` e `touched`.
+ *    Referência estável (useCallback com `[]`), segura em deps de useEffect/useFocusEffect.
+ *  - `handleSubmit(id_user?)`: valida, envia e redireciona pra tabela em caso de sucesso
  */
-export function useUserForm(mode: UserFormData, initialData?: InitialData){
-    const [fields, setFields] = useState<InitialData>(initialData ?? emptyFields);
-    const hasHydratedRoles = useRef(false);
-
-    useEffect(() => {
-      if (!hasHydratedRoles.current && initialData && initialData.id_roles.length > 0) {
-        setFields(prev => ({ ...prev, id_roles: initialData.id_roles }));
-        hasHydratedRoles.current = true;
-      }
-    }, [initialData?.id_roles]);
-
+export function useUserForm(mode: UserFormData){
+    const [fields, setFields] = useState<UserInitialData>(emptyFields);
     const [ui, setUi] = useState(initialUi);
     const [touched, setTouched] = useState(initialTouched);
 
@@ -99,12 +100,11 @@ export function useUserForm(mode: UserFormData, initialData?: InitialData){
         id_roles: fields.id_roles
     });
 
-    const resetForm = () => {
+    const createForm = useCallback((initialData?: UserInitialData) => {
       setFields(initialData ?? emptyFields);
-      setTouched(initialTouched);
       setUi(initialUi);
-      hasHydratedRoles.current = false;
-    }
+      setTouched(initialTouched);
+    }, []);
 
     const handleSubmit = async (id_user?: number) => {
         setUi(prev => ({ ...prev, submitted: true, apiError: null }));
@@ -130,6 +130,6 @@ export function useUserForm(mode: UserFormData, initialData?: InitialData){
     return {
         fields, ui, showErrors,
         setField, handleBlur, toggleRole,
-        toggleShowPassword, toggleShowConfirm, handleSubmit, resetForm
+        toggleShowPassword, toggleShowConfirm, handleSubmit, createForm
     };
 }

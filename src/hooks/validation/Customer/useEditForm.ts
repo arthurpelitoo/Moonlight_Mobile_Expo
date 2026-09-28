@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useAuth } from "../../auth/useAuth";
 import { formatCPF } from "../../../utils/Validation/dataRules/User/userCpf";
 import { validateEditUser } from "../../../utils/Validation/Customer/ValidateEditUser";
@@ -62,11 +62,11 @@ export function useEditForm(initialData: {name: string, cpf: string}){
         const toggleShowConfirm = () =>
             setUi(prev => ({ ...prev, showConfirm: !prev.showConfirm }));
 
-        const resetForm = () =>{
+        const resetForm = useCallback(() => {
           setFields(initialFields);
           setTouched(initialTouched);
           setUi(initialUi);
-        }
+        }, []);
 
         const handleSubmit = async () => {
             setUi(prev => ({ ...prev, submitted: true, apiError: null }));

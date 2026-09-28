@@ -19,7 +19,6 @@ import { CardHeader } from "@/src/components/common/Generic/Card/CardHeader";
 import { CardContent } from "@/src/components/common/Generic/Card/CardContent";
 import { Button } from "@/src/components/common/Generic/Button/Button";
 import { GameCard } from "@/src/components/common/Generic/GameCard/GameCard";
-import type { GameResponseDTO } from "@/src/@types/game/game.dto";
 import { Link } from "expo-router";
 import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -45,17 +44,6 @@ function LibraryPage() {
         () => getStyles(theme, font, fontSize, space, radius),
         [theme, font, fontSize, space, radius]
     );
-
-    const isInCart = (id: number) =>
-        items.some(cartItem => cartItem.id_game === id);
-
-    const toCartItem = (game: GameResponseDTO) => ({
-        id_game: game.id_game!,
-        title: game.title,
-        price: game.price,
-        image: game.image,
-        categories: game.categories,
-    });
 
     if (isLoading) {
         return (

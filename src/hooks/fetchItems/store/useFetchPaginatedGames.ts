@@ -21,7 +21,7 @@ export function useFetchPaginatedGames(query: GamePaginatedQueryPayload){
     useEffect(() => {
         let isMounted = true;
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
         setIsLoading(true)
 
         fetchGamesPaginated({limit, page: internalPage, category, launch_date_from, launch_date_to, price_max, price_min, random, title})

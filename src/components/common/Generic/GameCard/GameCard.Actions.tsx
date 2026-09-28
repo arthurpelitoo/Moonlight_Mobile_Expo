@@ -31,7 +31,7 @@ export const RenderDefaultActions = (props: GameCardProps) => {
     );
   }
 
-  if(showBuyButton && props.game.price == 0){
+  if(showBuyButton && props.game.price === 0){
     return(
       <>
         <View>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { router } from "expo-router";
 import { validateRegister } from "../../../utils/Validation/Customer/ValidateRegister";
 import { getRegisterFormErrors } from "../../../utils/Validation/formErrors/Customer/getFormErrors";
@@ -60,11 +60,11 @@ export function useRegisterForm() {
     const toggleShowConfirm = () =>
         setUi(prev => ({ ...prev, showConfirm: !prev.showConfirm }));
 
-    const resetForm = () => {
+    const resetForm = useCallback(() => {
       setFields(initialFields);
       setTouched(initialTouched);
       setUi(initialUi);
-    }
+    }, []);
 
     const handleSubmit = async () => {
         setUi(prev => ({ ...prev, submitted: true, apiError: null }));

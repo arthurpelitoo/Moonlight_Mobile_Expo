@@ -27,7 +27,7 @@ export function RegisterForm() {
     useFocusEffect(
       useCallback(() : void => {
         resetForm();
-      }, [])
+      }, [resetForm])
     );
 
     if (ui.submitted && !ui.apiError && ui.success) {

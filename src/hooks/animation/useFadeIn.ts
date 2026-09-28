@@ -10,7 +10,7 @@ export function useFadeIn(duration = 600, withSlideUp = false) {
       Animated.timing(opacity, { toValue: 1, duration, useNativeDriver: true }),
       Animated.timing(translateY, { toValue: 0, duration, useNativeDriver: true }),
     ]).start();
-  }, []);
+  }, [duration, opacity, translateY]);
 
   return { opacity, transform: [{ translateY }] };
 }

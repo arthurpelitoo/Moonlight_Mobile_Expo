@@ -1,9 +1,10 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { LibraryContext } from "../hooks/library/useLibrary";
 import { AuthContext } from "../hooks/auth/useAuth";
 import type { OrderResponseLibraryDTO } from "../@types/order/order.dto";
 import { fetchUserLibrary } from "../services/realServices/order.service";
 import { AppState, AppStateStatus } from "react-native";
+import Toast from "react-native-toast-message";
 
 
 export function LibraryProvider({children}: { children: React.ReactNode }){
@@ -12,18 +13,19 @@ export function LibraryProvider({children}: { children: React.ReactNode }){
     const {isAuthenticated} = useContext(AuthContext);
     const appState = useRef(AppState.currentState);
 
-    const refreshLibrary = async () => {
-        if(!isAuthenticated) return setIsLoading(false); //se nao logou nem faz refresh por nada
+    const refreshLibrary = useCallback(async () => {
+      if(!isAuthenticated) return setIsLoading(false); //se nao logou nem faz refresh por nada
 
-        try {
-          const data = await fetchUserLibrary();
-          setLibrary(data || []);
-        } catch(error){
-            console.error("Erro ao carregar biblioteca", error);
-        } finally{
-            setIsLoading(false);
-        }
-    }
+      try {
+        const data = await fetchUserLibrary();
+        setLibrary(data || []);
+      } catch {
+        Toast.show({type: "error", text1: "Ocorreu um erro ao carregar sua biblioteca por algum motivo, Faça Login novamente!"})
+      } finally{
+          setIsLoading(false);
+      }
+    }, [isAuthenticated])
+
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -41,7 +43,7 @@ export function LibraryProvider({children}: { children: React.ReactNode }){
           });
 
           return () => subscription.remove();
-    }, [isAuthenticated]);
+    }, [isAuthenticated, refreshLibrary]);
 
     /**
      * Memoriza um Set contendo apenas os IDs dos jogos que o usuário possui.

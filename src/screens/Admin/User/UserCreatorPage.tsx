@@ -18,8 +18,8 @@ export default function UserCreatorPage() {
       <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
         <ScrollView contentContainerStyle={{ padding: space[5] }}>
           <Card variant="solid" style={{ alignItems: "stretch", gap: space[6], padding: space[6] }}>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: space[3] }}>
-              <Button variant="primary" onPress={() => router.back()} style={{ padding: space[2], borderRadius: 12 }}>
+            <View style={{ alignItems: "center", gap: space[3] }}>
+              <Button variant="primary" onPress={() => router.back()} style={{ alignSelf: "flex-start", padding: space[2], borderRadius: 12 }}>
                 <ArrowLeftIcon size={24} color={theme.textPrimary} weight="thin" />
               </Button>
               <H1>Criar Usuário:</H1>

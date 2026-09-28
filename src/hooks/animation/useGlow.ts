@@ -13,7 +13,7 @@ export function useGlow(cycleDuration: number = 1000) {
     );
     loop.start();
     return () => loop.stop();
-  }, []);
+  }, [cycleDuration, glowOpacity]);
 
   return glowOpacity;
 }

@@ -10,6 +10,7 @@ import { Image } from "react-native";
 import { resolveImageUrl } from "@/src/utils/resolveImage/resolveImageUrl";
 import { Button } from "@/src/components/common/Generic/Button/Button";
 import { PencilIcon, TrashIcon } from "phosphor-react-native";
+import { P } from "@/src/components/common/Generic/Text";
 
 const columnHelper = createColumnHelper<typeof appTableFeatures, GameResponseDTO>();
 
@@ -18,7 +19,7 @@ export function useGameTable(refetch: () => void){
     const router = useRouter();
 
     const handleEdit = (row: GameResponseDTO) => {
-        // router.push(`/admin/games/edit/${row.id_game}`);
+        router.push(`/admin/games/edit/${row.id_game}`);
     }
     const handleDelete = async (id_game: number) => {
         try{
@@ -32,18 +33,21 @@ export function useGameTable(refetch: () => void){
     }
 
     const GameColumns = columnHelper.columns([
-      columnHelper.accessor("title", { header: "Título" }),
+      columnHelper.accessor("title", {
+        header: "Título",
+        cell: (info) => <P>{info.getValue()}</P>
+      }),
       columnHelper.accessor("price", {
         header: "Preço",
-        cell: (info) => formatCurrency(info.getValue()),
+        cell: (info) => <P>{formatCurrency(info.getValue())}</P>
       }),
       columnHelper.accessor("image", {
         header: "Imagem",
-        cell: (info) => <Image style={{width: 30, height: "auto"}} src={resolveImageUrl(`${info.getValue()}`)}/>
+        cell: (info) => <Image style={{width: 200, height: 100}} resizeMode="contain" source={{ uri: resolveImageUrl(info.getValue())}}/>
       }),
       columnHelper.accessor("active", {
         header: "Ativo",
-        cell: (info) => (info.getValue() ? "Sim" : "Não"),
+        cell: (info) => <P>{info.getValue() ? "Sim" : "Não"}</P>
       }),
       columnHelper.display({
         id: "actions",

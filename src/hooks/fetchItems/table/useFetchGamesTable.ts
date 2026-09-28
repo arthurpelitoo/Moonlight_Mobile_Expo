@@ -1,6 +1,6 @@
 import Toast from "react-native-toast-message";
 import { fetchGamesPaginatedAdmin } from "../../../services/realServices/game.service";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { GamePaginatedQueryPayload } from "../../../@types/game/game.payload";
 import type { GameResponseDTO } from "../../../@types/game/game.dto";
 
@@ -21,13 +21,24 @@ export function useFetchGamesTable(query: GamePaginatedQueryPayload){
     useEffect(() => {
         let isMounted = true;
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
         setIsLoading(true)
-        fetchGamesPaginatedAdmin({active, limit, page: internalPage, category, launch_date_from, launch_date_to, price_max, price_min, random, title})
-        .then(({ data, total }) => {
+
+        const queryPayload: GamePaginatedQueryPayload = {
+            ...query,
+            page: internalPage,
+        };
+
+        fetchGamesPaginatedAdmin(queryPayload)
+        .then((response) => {
             if (isMounted) {
-                setGames(data);
-                setTotalRows(total);
+              if (internalPage > response.totalPages) {
+                setInternalPage(internalPage - 1);
+                return;
+              }
+
+              setGames(response.data);
+              setTotalRows(response.total);
             }
         }).catch(() =>
           Toast.show({ type: "error", text1: "Não foi possivel carregar os Jogos."})
@@ -35,9 +46,9 @@ export function useFetchGamesTable(query: GamePaginatedQueryPayload){
            if(isMounted) setIsLoading(false)
         });
         return () => { isMounted = false; };
-    }, [active, limit, internalPage, category, launch_date_from, launch_date_to, price_max, price_min, random, title, version]);
+    }, [query, active, limit, internalPage, category, launch_date_from, launch_date_to, price_max, price_min, random, title, version]);
 
-    const refetch = () => setVersion(v => v + 1);
+    const refetch = useCallback(() => setVersion(v => v + 1), []);
 
-    return { games, isLoading, totalRows, onPageChange: setInternalPage, refetch }
+    return { games, isLoading, totalRows, internalPage, setInternalPage, refetch }
 }

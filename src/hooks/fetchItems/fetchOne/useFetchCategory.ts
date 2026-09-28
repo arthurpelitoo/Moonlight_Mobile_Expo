@@ -1,29 +1,27 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { CategoryResponseDTO } from "../../../@types/category/category.dto";
 import { fetchCategoryById } from "../../../services/realServices/category.service";
 import Toast from "react-native-toast-message";
+import { UseFetchOptions } from "@/src/@types/common/useFetchOptions";
 
-type UseFetchCategoryOptions = {
-  enabled?: boolean;
-};
-
-export function useFetchCategory(id_category: number, options: UseFetchCategoryOptions = {}){
+export function useFetchCategory(id_category: number, options: UseFetchOptions = {}){
     const { enabled = true } = options;
     const [category, setCategory] = useState<CategoryResponseDTO>();
     const [isLoading, setIsLoading] = useState(enabled);
+    const [version, setVersion] = useState(0);
 
     useEffect(() => {
-        if (!enabled) return;
+      if (!enabled) return;
+      let cancelled = false;
+      setIsLoading(true);
+      fetchCategoryById(id_category)
+        .then(response => { if (!cancelled) setCategory(response); })
+        .catch(() => { if (!cancelled) Toast.show({ type: "error", text1: "Não foi possivel encontrar a categoria ou ela não existe."}) })
+        .finally(() => { if (!cancelled) setIsLoading(false) });
+      return () => { cancelled = true; }
+    }, [id_category, enabled, version]);
 
-        fetchCategoryById(id_category)
-        .then(response => {
-            setCategory(response);
-        }).catch(() =>
-            Toast.show({ type: "error", text1: "Não foi possivel encontrar a categoria ou ele não existe."})
-        ).finally(() =>
-            setIsLoading(false)
-        );
-    }, [id_category]);
+    const refetch = useCallback(() => setVersion(v => v + 1), []);
 
-    return { category, isLoading }
+    return { category, isLoading, refetch }
 }

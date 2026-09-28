@@ -6,7 +6,7 @@ import { formatCurrency } from "@/src/utils/currencyFormatter/formatCurrency";
 import { resolveImageUrl } from "@/src/utils/resolveImage/resolveImageUrl";
 import { Link, useRouter } from "expo-router";
 import { TrashIcon } from "phosphor-react-native";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 

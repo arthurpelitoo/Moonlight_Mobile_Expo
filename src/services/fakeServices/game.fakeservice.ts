@@ -3,7 +3,7 @@ import type { PaginatedResponse } from "../../@types/common/pagination";
 import type { GameResponseDTO } from "../../@types/game/game.dto";
 import { mockGameItems } from "./mockItems/mockGameItems";
 
-// apenas para questão de minha burrice esquecedora, 
+// apenas para questão de minha burrice esquecedora,
 // offset é quantos registros o sql pula pra continuar trazendo dados diferentes.
 
 export async function fetchGamesPaginatedMock(page: number, limit: number): Promise<PaginatedResponse<GameResponseDTO>>{
@@ -43,4 +43,3 @@ export async function fetchGamesPaginatedTableMock(page: number, limit: number):
         totalPages: Math.ceil(mockGameItems.length / limit)
     };
 }
-

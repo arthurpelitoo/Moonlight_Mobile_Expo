@@ -15,7 +15,7 @@ type UserFilterSideBarProps = {
 }
 
 export function UserFilterSideBar(props: UserFilterSideBarProps) {
-  const { theme, space, radius, font } = useTheme();
+  const { theme, space, radius, font, currentColor } = useTheme();
   const { roles } = useFetchRoles();
   const { filters } = useUserFilters();
 
@@ -27,7 +27,7 @@ export function UserFilterSideBar(props: UserFilterSideBarProps) {
 
   return (
     <Modal visible={props.open} animationType="slide" transparent onRequestClose={props.onClose}>
-      <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "flex-end" }}>
+      <View style={{ flex: 1, backgroundColor: currentColor === "dark" ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)", justifyContent: "flex-end" }}>
         <View style={{ backgroundColor: theme.baseSoft, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, maxHeight: "80%" }}>
           <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: space[5] }}>
             <H3>Filtros</H3>

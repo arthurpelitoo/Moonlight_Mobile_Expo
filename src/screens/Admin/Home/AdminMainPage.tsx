@@ -4,7 +4,7 @@ import { useAuth } from "../../../hooks/auth/useAuth";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, View } from "react-native";
 import { Card } from "@/src/components/common/Generic/Card/Card";
-import { H1, H2 } from "@/src/components/common/Generic/Text";
+import { H2 } from "@/src/components/common/Generic/Text";
 import WebView from "react-native-webview";
 import { useTheme } from "@/src/contexts/ThemeContext";
 

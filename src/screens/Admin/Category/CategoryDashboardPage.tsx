@@ -1,5 +1,3 @@
-// import { CategoryDataTable } from "./sections/CategoryDataTable";
-
 import { Card } from "@/src/components/common/Generic/Card/Card";
 import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
 import { H2 } from "@/src/components/common/Generic/Text";

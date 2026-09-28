@@ -52,7 +52,7 @@ export function GameDetail({id_game} : GameDetailProps){
       if (!isLoading && !game) {
         router.replace("/");
       }
-    }, [isLoading, game]);
+    }, [isLoading, game, router]);
 
     if (showLoading) {
         return (

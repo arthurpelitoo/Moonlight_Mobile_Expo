@@ -25,7 +25,7 @@ export function LoginForm() {
     useFocusEffect(
       useCallback(() => {
         resetForm();
-      }, [])
+      }, [resetForm])
     )
 
     if (ui.submitted && !ui.apiError && ui.success) {

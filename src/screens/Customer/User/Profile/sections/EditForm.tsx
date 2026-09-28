@@ -23,13 +23,13 @@ export function EditForm() {
         cpf: user?.cpf ?? ""
     });
 
-    if(!user) return null;
-
     useFocusEffect(
       useCallback(() => {
         resetForm();
-      }, [])
+      }, [resetForm])
     )
+
+    if(!user) return null;
 
     /**
      * sucesso

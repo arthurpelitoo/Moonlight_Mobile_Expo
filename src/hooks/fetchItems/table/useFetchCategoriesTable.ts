@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { fetchPaginatedCategories } from "../../../services/realServices/category.service";
 import type { CategoryPaginatedQueryPayload } from "../../../@types/category/category.payload";
@@ -21,7 +21,7 @@ export function useFetchCategoriesTable(query: CategoryPaginatedQueryPayload){
     useEffect(() => {
         let isMounted = true;
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
         setIsLoading(true)
 
         const queryPayload: CategoryPaginatedQueryPayload = {
@@ -48,9 +48,9 @@ export function useFetchCategoriesTable(query: CategoryPaginatedQueryPayload){
         });
       return () => { isMounted = false; };
 
-    }, [limit, internalPage, name, random, version]);
+    }, [limit, internalPage, name, random, version, query]);
 
-    const refetch = () => setVersion(v => v + 1);
+    const refetch = useCallback(() => setVersion(v => v + 1), []);
 
     return { categories, isLoading, totalRows, internalPage, setInternalPage, refetch }
 }

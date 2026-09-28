@@ -7,7 +7,7 @@ import { CardHeader } from "@/src/components/common/Generic/Card/CardHeader";
 import { useTheme } from "@/src/contexts/ThemeContext";
 import { useFadeIn } from "@/src/hooks/animation/useFadeIn";
 import { H1 } from "@/src/components/common/Generic/Text";
-import { Animated, KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import { Animated, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 
 
 export default function ProfilePage() {

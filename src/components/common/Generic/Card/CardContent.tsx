@@ -1,4 +1,3 @@
-import type {ComponentPropsWithoutRef, ReactNode} from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 type CardContentProps = {

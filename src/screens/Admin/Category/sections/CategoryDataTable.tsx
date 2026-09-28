@@ -1,21 +1,21 @@
 import { ConfirmModal } from "../../../../components/common/Generic/ConfirmModal";
 import { Table } from "../../../../components/common/Generic/Table/Table";
 import { Button } from "../../../../components/common/Generic/Button/Button";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { SearchInputBar } from "../../../../components/common/Generic/SearchInputBar";
 import { useUpdateUrlParam } from "../../../../hooks/updateUrlParam/useUpdateUrlParam";
 import type { CategoryPaginatedQueryPayload } from "../../../../@types/category/category.payload";
 import { useCategoryFilters } from "../../../../hooks/filters/admin/useCategoryFilters";
 import { useFetchCategoriesTable } from "../../../../hooks/fetchItems/table/useFetchCategoriesTable";
 import { useTheme } from "@/src/contexts/ThemeContext";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useCategoryTable } from "@/src/hooks/tables/admin/useCategoryTable";
 import { PlusIcon, WarningIcon } from "phosphor-react-native";
 import { View } from "react-native";
 import { P } from "@/src/components/common/Generic/Text";
 
 export function CategoryDataTable() {
-  const { theme, space, radius } = useTheme();
+  const { space, radius } = useTheme();
   const router = useRouter();
 
   const { filters } = useCategoryFilters();
@@ -30,6 +30,14 @@ export function CategoryDataTable() {
 
   const {categories, isLoading, refetch, internalPage, setInternalPage, totalRows} = useFetchCategoriesTable(query);
   const { CategoryColumns, confirmDeleteId, setConfirmDeleteId, handleDelete } = useCategoryTable(refetch);
+
+  useFocusEffect(
+    useCallback(() => {
+      setName("")
+      updateURLParam("name", undefined);
+      refetch();
+    }, [refetch, updateURLParam])
+  )
 
   return (
     <>

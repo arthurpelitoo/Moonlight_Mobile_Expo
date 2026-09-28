@@ -1,6 +1,6 @@
 import { Animated, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
 import { Card } from "@/src/components/common/Generic/Card/Card";
 import { CardHeader } from "@/src/components/common/Generic/Card/CardHeader";
@@ -9,11 +9,20 @@ import { H1, P } from "@/src/components/common/Generic/Text";
 import { Button } from "@/src/components/common/Generic/Button/Button";
 import { useTheme } from "@/src/contexts/ThemeContext";
 import { useFadeIn } from "@/src/hooks/animation/useFadeIn";
+import { useCart } from "@/src/hooks/cart/useCart";
+import { useCallback } from "react";
 
 export default function CheckoutFailurePage() {
   const { space, font } = useTheme();
   const fadeIn = useFadeIn();
   const router = useRouter();
+
+  const { clearUpCart } = useCart();
+
+  useFocusEffect(
+    useCallback(() => {
+      clearUpCart()
+  }, [clearUpCart]));
 
   return (
     <GradientBackground style={{ justifyContent: "center", alignItems: "center" }}>

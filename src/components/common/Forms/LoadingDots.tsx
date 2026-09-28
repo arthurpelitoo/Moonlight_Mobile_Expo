@@ -1,13 +1,18 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import { View, Animated, StyleSheet } from "react-native";
 import { useTheme } from "@/src/contexts/ThemeContext";
 
 export function LoadingDots() {
-    const { theme } = useTheme();
-    const dotColor = theme.iconBase;
-    const anims = [useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current];
+  const { theme } = useTheme();
+  const dotColor = theme.iconBase;
 
-    useEffect(() => {
+  const anims = useMemo(() => [
+          new Animated.Value(0),
+          new Animated.Value(0),
+          new Animated.Value(0)
+      ], []);
+
+  useEffect(() => {
         const animations = anims.map((anim, i) =>
             Animated.loop(Animated.sequence([
                 Animated.delay(i * 150),
@@ -17,7 +22,7 @@ export function LoadingDots() {
         );
         animations.forEach(a => a.start());
         return () => animations.forEach(a => a.stop());
-    }, []);
+    }, [anims]);
 
     return (
         <View style={styles.container}>

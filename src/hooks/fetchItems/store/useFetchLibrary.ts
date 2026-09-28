@@ -10,7 +10,7 @@ export function useFetchLibrary(){
     useEffect(() => {
         let isMounted = true;
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
         setIsLoading(true)
         fetchUserLibrary()
         .then(response => {

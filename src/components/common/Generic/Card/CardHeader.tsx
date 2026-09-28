@@ -1,4 +1,3 @@
-import type { ComponentPropsWithoutRef } from "react"
 import { StyleProp, View, ViewStyle } from "react-native";
 
 type CardHeaderProps = {

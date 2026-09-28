@@ -13,7 +13,7 @@ export function usePulse(minOpacity = 0.5, cycleDuration = 1000) {
     );
     loop.start();
     return () => loop.stop();
-  }, []);
+  }, [cycleDuration, minOpacity, pulseValue]);
 
   return pulseValue;
 }

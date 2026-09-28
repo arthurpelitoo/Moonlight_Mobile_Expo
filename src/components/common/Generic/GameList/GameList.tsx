@@ -14,7 +14,7 @@ export function GameList(props: GameListProps) {
   const { addItemToCart, removeItemFromCart, items } = useCart();
   const { isOwned } = useContext(LibraryContext);
 
-  if (props.games.length == 0) {
+  if (props.games.length === 0) {
     return <H3>Nenhum jogo encontrado.</H3>
   }
 

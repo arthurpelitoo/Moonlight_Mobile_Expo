@@ -29,15 +29,15 @@ export function UserDataTable() {
   }), [filters.name, filters.cpf, filters.email, filters.role]);
 
   const { users, isLoading, refetch, internalPage, setInternalPage, totalRows } = useFetchUsersTable(query);
-
   const { UserColumns, confirmDeleteId, setConfirmDeleteId, handleDelete } = useUserTable(refetch);
   const [filterOpen, setFilterOpen] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
+      setName("");
       updateURLParams({ name: undefined, cpf: undefined, email: undefined, role: undefined });
       refetch();
-    }, [])
+    }, [refetch, updateURLParams])
   )
 
   return (

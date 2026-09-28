@@ -10,7 +10,6 @@ export function useFetchRoles() {
   useEffect(() => {
     let isMounted = true;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     setIsLoading(true);
     fetchRoles()
       .then((response) => {

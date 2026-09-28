@@ -11,7 +11,7 @@ export async function fetchPaginatedCategoryMock(page: number, limit: number): P
   await new Promise(resolve => setTimeout(resolve, 500));
       const offset = (page - 1) * limit;
       const paginated = mockCategoryItems.slice(offset, offset + limit); // fatia o array igual o OFFSET do SQL
-  
+
     return {
         data: paginated,
         total: mockCategoryItems.length,
@@ -22,7 +22,7 @@ export async function fetchPaginatedCategoryMock(page: number, limit: number): P
 
 export async function fetchRandomCategoryMock(limit: number): Promise<CategoryResponseDTO[]> {
   await new Promise(resolve => setTimeout(resolve, 500));
-  
+
   const shuffled = [...mockCategoryItems].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, limit);
 }

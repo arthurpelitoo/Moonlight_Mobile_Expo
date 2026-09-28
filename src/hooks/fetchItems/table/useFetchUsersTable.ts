@@ -21,7 +21,7 @@ export function useFetchUsersTable(query: UserPaginatedQueryPayload){
     useEffect(() => {
         let isMounted = true;
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
         setIsLoading(true)
 
         const queryPayload: UserPaginatedQueryPayload = {
@@ -48,7 +48,7 @@ export function useFetchUsersTable(query: UserPaginatedQueryPayload){
         });
         return () => { isMounted = false; };
 
-    }, [internalPage, limit, cpf, email, name, role, version]);
+    }, [query, internalPage, limit, cpf, email, name, role, version]);
 
     const refetch = () => setVersion(v => v + 1);
 

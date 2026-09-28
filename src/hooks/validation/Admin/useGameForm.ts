@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { router } from "expo-router";
 import { validateGame } from "../../../utils/Validation/Admin/ValidateGame";
 import { getGameFormErrors } from "../../../utils/Validation/formErrors/Admin/getFormErrorsAdmin";
@@ -7,7 +7,7 @@ import type { GamePayload } from "../../../@types/game/game.payload";
 
 type GameFormData = "create" | "edit";
 
-type InitialData = {
+type GameInitialData = {
   title: string,
   description: string,
   price: string,
@@ -19,7 +19,7 @@ type InitialData = {
   categories: number[],
 }
 
-const emptyFields: InitialData = {
+const emptyFields: GameInitialData = {
   title: "",
   description: "",
   price: "0.00",
@@ -31,32 +31,37 @@ const emptyFields: InitialData = {
   categories: [] as number[],
 }
 
+const initialUi = {
+  showPassword: false, showConfirm: false,
+  loading: false, submitted: false,
+  success: false, apiError: null as string | null,
+}
+
+const initialTouched = {
+  title: false, price: false, launch_date: false, active: false
+}
+
 /**
+ * Estado e validação do formulário de jogo (criação e edição).
  *
- * @param mode modo do formulario, se é create ou edit
- * @param initialData dados iniciais, se for update resgata os dados da row que a tabela recebe ou então começa com campos vazios mesmo.
- * @returns retorna muitos objetos para auxiliar o formulario sem encher de logica no componente.
+ * O hook não recebe dados iniciais: sempre nasce com `emptyFields`.
+ * Quem preenche o formulário é o componente, chamando `createForm`:
+ *   - modo "create": `createForm()` → campos vazios
+ *   - modo "edit":   `createForm(initialData)` quando o jogo chega da API
+ *
+ * @param mode "create" ou "edit"; decide se `handleSubmit` chama createGame ou updateGame.
+ * @returns
+ *  - `fields`, `ui`, `showErrors`, `isValid`: estado e validação atuais
+ *  - `setField`, `handleBlur`, `toggleCategory`: handlers dos campos
+ *  - `createForm(initialData?)`: (re)inicializa campos, `ui` e `touched`.
+ *    Referência estável (useCallback com `[]`), segura em deps de useEffect/useFocusEffect.
+ *  - `handleSubmit(id_game?)`: valida, envia e redireciona pra tabela em caso de sucesso
+ *  - `selectOptions`: opções do select "Jogo ativo"
  */
-export function useGameForm(mode: GameFormData, initialData?: InitialData) {
-  const [fields, setFields] = useState<InitialData>(initialData ?? emptyFields);
-  const hasHydratedCategories = useRef(false);
-
-  useEffect(() => {
-    if (!hasHydratedCategories.current && initialData && initialData.categories.length > 0) {
-      setFields(prev => ({ ...prev, categories: initialData.categories }));
-      hasHydratedCategories.current = true;
-    }
-  }, [initialData?.categories]);
-
-  const [ui, setUi] = useState({
-      showPassword: false, showConfirm: false,
-      loading: false, submitted: false,
-      success: false, apiError: null as string | null,
-  });
-
-  const [touched, setTouched] = useState({
-      title: false, price: false, launch_date: false, active: false
-  });
+export function useGameForm(mode: GameFormData) {
+  const [fields, setFields] = useState<GameInitialData>(emptyFields);
+  const [ui, setUi] = useState(initialUi);
+  const [touched, setTouched] = useState(initialTouched);
 
   const toggleCategory = (id_category: number) => {
       // Atualizo o estado mantendo a imutabilidade
@@ -72,8 +77,8 @@ export function useGameForm(mode: GameFormData, initialData?: InitialData) {
       }));
   };
 
-  const { isValid } = validateGame(fields); // mesma validação
-  const showErrors = getGameFormErrors(fields, touched, ui.submitted); // mesmos erros
+  const { isValid } = validateGame(fields);
+  const showErrors = getGameFormErrors(fields, touched, ui.submitted);
 
   const selectOptions = [
       {
@@ -106,6 +111,12 @@ export function useGameForm(mode: GameFormData, initialData?: InitialData) {
       categories: fields.categories,
   });
 
+  const createForm = useCallback((initialData?: GameInitialData) => {
+    setFields(initialData ?? emptyFields);
+    setUi(initialUi);
+    setTouched(initialTouched);
+  }, []);
+
   const handleSubmit = async (id_game?: number) => {
       setUi(prev => ({ ...prev, submitted: true, apiError: null }));
       if (!isValid) return;
@@ -118,7 +129,7 @@ export function useGameForm(mode: GameFormData, initialData?: InitialData) {
               await createGame(buildPayload());
           }
           setUi(prev => ({ ...prev, success: true }));
-          // setTimeout(() => router.replace("/admin/games"), 1500);
+          setTimeout(() => router.replace("/admin/games"), 1500);
       } catch (err) {
           const message = err instanceof Error ? err.message : "Erro inesperado.";
           setUi(prev => ({ ...prev, apiError: message }));
@@ -128,7 +139,7 @@ export function useGameForm(mode: GameFormData, initialData?: InitialData) {
   };
 
   return {
-      fields, selectOptions, ui, showErrors, isValid,
+      fields, selectOptions, ui, showErrors, isValid, createForm,
       setField, handleBlur, toggleCategory, handleSubmit
   };
 }

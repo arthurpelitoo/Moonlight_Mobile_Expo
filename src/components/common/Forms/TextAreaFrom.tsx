@@ -1,32 +1,41 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { View, TextInput } from "react-native";
+import { P } from "@/src/components/common/Generic/Text";
+import { useTheme } from "@/src/contexts/ThemeContext";
 
-type TextAreaFormProps = ComponentPropsWithoutRef<"textarea"> & {
-    onChangeState?: (value: string) => void;
-    icon?: ReactNode;
-    label: string;
+type TextAreaFormProps = {
+  label: string;
+  value: string;
+  onChangeState: (value: string) => void;
+  placeholder?: string;
+  maxLength?: number;
 };
 
-export function TextAreaForm(props : TextAreaFormProps){
-    const {className = "", onChange, onChangeState, icon, label = "...:", id, disabled, ...rest } = props;
+export function TextAreaForm({ label, value, onChangeState, placeholder, maxLength }: TextAreaFormProps) {
+  const { theme, space, font, fontSize } = useTheme();
 
-    const classPattern = `${className}`.trim();
-
-    return(
-        <>
-            <label htmlFor={id} className={`text-sm ${disabled ? "opacity-50" : ""}`}>{label}</label>
-            <div className={`${disabled ? "opacity-50 cursor-not-allowed" : ""} flex items-center gap-3 bg-white/5 border rounded-md px-4 py-3 transition-all duration-300 focus-within:border-white/40 focus-within:bg-white/8`}>
-                {icon}
-                <textarea
-                    className={`${classPattern} ${disabled ? "cursor-not-allowed" : ""} w-full pl-2 bg-white/5 border rounded-md transition-all duration-300 focus-within:border-white/40 focus-within:bg-white/8`}
-                    onChange={(event) => {
-                        onChange?.(event); // comportamento padrão
-                        onChangeState?.(event.target.value); // comportamento simplificado
-                    }}
-                    disabled={disabled}
-                    id={id}
-                    {...rest}
-                />
-            </div>
-        </>
-    )
+  return (
+    <View style={{ gap: space[2] }}>
+      <P style={{ color: theme.textPrimary, fontSize: fontSize.md, fontFamily: font.baseMedium }}>{label}</P>
+      <TextInput
+        multiline
+        numberOfLines={4}
+        value={value}
+        onChangeText={onChangeState}
+        placeholder={placeholder}
+        placeholderTextColor={theme.secondaryColor}
+        maxLength={maxLength}
+        style={{
+          backgroundColor: theme.opacityBase,
+          borderWidth: 1,
+          borderColor: theme.borderBase,
+          borderRadius: 8,
+          padding: space[3],
+          color: theme.textPrimary,
+          fontFamily: font.base,
+          textAlignVertical: "top",
+          minHeight: 100,
+        }}
+      />
+    </View>
+  );
 }
