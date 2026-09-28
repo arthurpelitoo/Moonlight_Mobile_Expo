@@ -8,11 +8,15 @@ import { useTheme } from "@/src/contexts/ThemeContext";
 import { useFadeIn } from "@/src/hooks/animation/useFadeIn";
 import { H1 } from "@/src/components/common/Generic/Text";
 import { Animated, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { Button } from "@/src/components/common/Generic/Button/Button";
+import { useRouter } from "expo-router";
+import { ArrowLeftIcon } from "phosphor-react-native";
 
 
 export default function ProfilePage() {
-  const { space } = useTheme();
+  const { space, theme } = useTheme();
   const fadeIn = useFadeIn();
+  const router = useRouter();
 
   return (
     <GradientBackground>
@@ -21,11 +25,16 @@ export default function ProfilePage() {
             style={{flex: 1}}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={{flexGrow: 1, paddingVertical: 100}}>
-            <Animated.View style={{padding: space[8], position: "relative", width: "100%", gap: space[8], opacity: fadeIn.opacity, transform: fadeIn.transform }}>
-              <ProfileData/>
-              <Card variant={"solid"} style={{gap: space[8], padding: space[7]}}>
-                <CardHeader><H1>Editar Usuario:</H1></CardHeader>
+          <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={{flexGrow: 1, paddingVertical: 25}}>
+            <Animated.View style={{paddingHorizontal: space[8], position: "relative", width: "100%", gap: space[8], opacity: fadeIn.opacity, transform: fadeIn.transform }}>
+              <Button variant="primary" onPress={() => router.back()} style={{ alignSelf: "flex-start", padding: space[2], borderRadius: 12 }}>
+                <ArrowLeftIcon size={24} color={theme.textPrimary} weight="thin" /> Voltar
+              </Button>
+              <ProfileData />
+              <Card variant={"solid"} style={{ gap: space[8], padding: space[7] }}>
+                <CardHeader>
+                  <H1>Editar Usuario:</H1>
+                </CardHeader>
                 <EditForm/>
               </Card>
             </Animated.View>

@@ -12,12 +12,16 @@ import { useFadeIn } from "@/src/hooks/animation/useFadeIn";
 import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useMyOrdersTable } from "@/src/hooks/tables/customer/useMyOrdersTable";
+import { Button } from "@/src/components/common/Generic/Button/Button";
+import { ArrowLeftIcon } from "phosphor-react-native";
+import { useRouter } from "expo-router";
 
 
 
 function OrderPage() {
-    const {space} = useTheme()
+    const {space, theme} = useTheme()
     const fadeIn = useFadeIn();
+    const router = useRouter();
     const {orders, isLoading} = useFetchMyOrders();
     const { OrderColumns } = useMyOrdersTable();
 
@@ -39,9 +43,11 @@ function OrderPage() {
   return (
   <GradientBackground>
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
-        <Animated.View style={{padding: space[8], position: "relative", width: "100%", gap: space[8], opacity: fadeIn.opacity, transform: fadeIn.transform }}>
-
+      <ScrollView contentContainerStyle={{flexGrow: 1, paddingVertical: 25}}>
+        <Animated.View style={{paddingHorizontal: space[8], position: "relative", width: "100%", gap: space[8], opacity: fadeIn.opacity, transform: fadeIn.transform }}>
+          <Button variant="primary" onPress={() => router.back()} style={{ alignSelf: "flex-start", padding: space[2], borderRadius: 12 }}>
+            <ArrowLeftIcon size={24} color={theme.textPrimary} weight="thin" /> Voltar
+          </Button>
           <Card variant={"solid"} style={{marginBottom: space[8], marginTop: 100, padding: space[2]}}>
             <CardHeader><H1>Meus Pedidos</H1></CardHeader>
           </Card>

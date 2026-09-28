@@ -8,7 +8,7 @@ import {
     ScrollView,
     Animated,
 } from "react-native";
-import { ShoppingCartIcon } from "phosphor-react-native";
+import { ArrowLeftIcon, ShoppingCartIcon } from "phosphor-react-native";
 import { useFetchLibrary } from "@/src/hooks/fetchItems/store/useFetchLibrary";
 import { useCart } from "@/src/hooks/cart/useCart";
 import { LibraryContext } from "@/src/hooks/library/useLibrary";
@@ -19,7 +19,7 @@ import { CardHeader } from "@/src/components/common/Generic/Card/CardHeader";
 import { CardContent } from "@/src/components/common/Generic/Card/CardContent";
 import { Button } from "@/src/components/common/Generic/Button/Button";
 import { GameCard } from "@/src/components/common/Generic/GameCard/GameCard";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { GradientBackground } from "@/src/components/common/Generic/GradientBackground";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFadeIn } from "@/src/hooks/animation/useFadeIn";
@@ -39,10 +39,11 @@ function LibraryPage() {
     const { theme, font, fontSize, space, radius } = useTheme();
     const { width } = useWindowDimensions();
     const numColumns = getColumns(width);
+    const router = useRouter();
 
     const styles = useMemo(
-        () => getStyles(theme, font, fontSize, space, radius),
-        [theme, font, fontSize, space, radius]
+        () => getStyles(theme, font, fontSize, space, radius, fadeIn),
+        [theme, font, fontSize, space, radius, fadeIn]
     );
 
     if (isLoading) {
@@ -63,8 +64,11 @@ function LibraryPage() {
         return (
           <GradientBackground>
             <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
-              <ScrollView contentContainerStyle={{flexGrow: 1}}>
-                <View style={styles.centered}>
+              <ScrollView contentContainerStyle={{flexGrow: 1, paddingVertical: 25}}>
+                <Animated.View style={styles.main}>
+                    <Button variant="primary" onPress={() => router.back()} style={{ alignSelf: "flex-start", padding: space[2], borderRadius: 12 }}>
+                      <ArrowLeftIcon size={24} color={theme.textPrimary} weight="thin" /> Voltar
+                    </Button>
                     <Card style={styles.emptyCard}>
                         <CardHeader style={styles.emptyCardHeader}>
                             <Text style={styles.emptyTitle}>
@@ -84,7 +88,7 @@ function LibraryPage() {
                             </Link>
                         </CardContent>
                     </Card>
-                </View>
+                </Animated.View>
               </ScrollView>
             </SafeAreaView>
           </GradientBackground>
@@ -94,8 +98,13 @@ function LibraryPage() {
   return (
       <GradientBackground>
         <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
-          <ScrollView contentContainerStyle={{flexGrow: 1}}>
-            <View style={styles.main}>
+          <ScrollView contentContainerStyle={{flexGrow: 1, paddingVertical: 25}}>
+            <Animated.View style={styles.main}>
+
+                <Button variant="primary" onPress={() => router.back()} style={{ alignSelf: "flex-start", padding: space[2], borderRadius: 12 }}>
+                  <ArrowLeftIcon size={24} color={theme.textPrimary} weight="thin" /> Voltar
+                </Button>
+
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>Meus Jogos</Text>
                 </View>
@@ -141,7 +150,7 @@ function LibraryPage() {
                         }}
                     />
                 </View>
-            </View>
+            </Animated.View>
           </ScrollView>
         </SafeAreaView>
       </GradientBackground>
@@ -153,23 +162,19 @@ const getStyles = (
     font: ReturnType<typeof useTheme>["font"],
     fontSize: ReturnType<typeof useTheme>["fontSize"],
     space: ReturnType<typeof useTheme>["space"],
-    radius: ReturnType<typeof useTheme>["radius"]
+    radius: ReturnType<typeof useTheme>["radius"],
+    fadeIn: ReturnType<typeof useFadeIn>,
 ) =>
     StyleSheet.create({
-        centered: {
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: theme.base,
-        },
         main: {
-            flex: 1,
-            backgroundColor: theme.base,
-            paddingTop: space[6],
-            paddingHorizontal: space[4],
+            paddingHorizontal: space[8],
+            position: "relative",
+            width: "100%",
+            gap: space[8],
+            opacity: fadeIn.opacity,
+            transform: fadeIn.transform
         },
         header: {
-            marginBottom: space[9],
             alignSelf: "center",
             backgroundColor: theme.opacityBase,
             borderRadius: radius.lg,
